@@ -1,0 +1,25 @@
+* ===================================================================
+* COMPUERTA NAND CMOS DE 2 ENTRADAS (NAND2)
+* Proyecto: MicroNano - S1_Micro
+* Modelos: N_1u y P_1u (cmosedu_models.txt, VDD = 5V)
+* ===================================================================
+
+.include cmosedu_models.txt
+
+* --- RED DE PULL-UP (PMOS en paralelo) ---
+* Sintaxis SPICE: M<nombre> <Drain> <Gate> <Source> <Bulk> <Modelo>
+MPA VDD A Y VDD P_1u
+MPB VDD B Y VDD P_1u
+
+* --- RED DE PULL-DOWN (NMOS en serie) ---
+MNA Y A n_int 0 N_1u
+MNB n_int B 0 0 N_1u
+
+* --- FUENTES DE ALIMENTACIÓN Y ESTÍMULOS ---
+VDD VDD 0 5
+VA  A   0 PULSE(0 5 0 1u 1u 20m 40m)
+VB  B   0 PULSE(0 5 0 1u 1u 10m 20m)
+
+* --- DIRECTIVAS DE SIMULACIÓN ---
+.tran 0 40m 0 10u
+.end

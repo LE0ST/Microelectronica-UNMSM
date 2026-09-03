@@ -1,0 +1,28 @@
+* === A5: Ring Oscillator 5 stages - 45nm LP ===
+.include 45nm_LP.pm
+.param VDDv = 1.1
+.param Lmin = 45n
+.param Wn = 4*Lmin
+.param beta = 2.5
+.param N = 5
+
+.subckt INV in out vdd
+MN out in 0 0 nmos L={Lmin} W={Wn}
+MP out in vdd vdd pmos L={Lmin} W={beta*Wn}
+.ends
+
+V1 vdd 0 {VDDv}
+X1 n1 n2 vdd INV
+X2 n2 n3 vdd INV
+X3 n3 n4 vdd INV
+X4 n4 n5 vdd INV
+X5 n5 n1 vdd INV
+
+.ic V(n1)=0
+.tran 0 20n 5n 0.5p
+
+.meas tran Tosc TRIG V(n1) VAL={VDDv/2} RISE=2 TARG V(n1) VAL={VDDv/2} RISE=3
+.meas tran fosc PARAM 1/Tosc
+.meas tran tpd PARAM Tosc/(2*N)
+.meas tran Iavg AVG I(V1)
+.end

@@ -1,0 +1,18 @@
+* === A1: VTC del inversor CMOS - PTM 45nm HP ===
+.include 45nm_HP.pm
+
+.param VDDv = 1.0
+.param Lmin = 45n
+.param Wn = 4*Lmin
+.param beta = 2
+
+V1 vdd 0 {VDDv}
+VIN in 0 0
+
+MN out in 0 0 nmos L={Lmin} W={Wn}
+MP out in vdd vdd pmos L={Lmin} W={beta*Wn}
+
+.dc VIN 0 {VDDv} 2m
+.step param beta 1 3 0.5
+.meas dc VM FIND V(in) WHEN V(out)=V(in)
+.end

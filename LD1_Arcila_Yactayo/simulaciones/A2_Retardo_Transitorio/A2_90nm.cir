@@ -1,0 +1,23 @@
+* === A2: 90nm bulk ===
+.include 90nm_bulk.pm
+.param VDDv = 1.2
+.param Lmin = 90n
+.param Wn = 4*Lmin
+.param beta = 2.5
+.param Cload = 2f
+
+V1 vdd 0 {VDDv}
+VIN in 0 PULSE(0 {VDDv} 200p 5p 5p 500p 1n)
+
+MN out in 0 0 nmos L={Lmin} W={Wn}
+MP out in vdd vdd pmos L={Lmin} W={beta*Wn}
+C1 out 0 {Cload}
+
+.tran 0 2n 0 0.5p
+
+.meas tran tpHL TRIG V(in) VAL={VDDv/2} TD=100p RISE=1 TARG V(out) VAL={VDDv/2} FALL=1
+.meas tran tpLH TRIG V(in) VAL={VDDv/2} TD=100p FALL=1 TARG V(out) VAL={VDDv/2} RISE=1
+.meas tran tf TRIG V(out) VAL={0.9*VDDv} FALL=1 TARG V(out) VAL={0.1*VDDv} FALL=1
+.meas tran tr TRIG V(out) VAL={0.1*VDDv} RISE=1 TARG V(out) VAL={0.9*VDDv} RISE=1
+.meas tran tp PARAM (tpHL+tpLH)/2
+.end
