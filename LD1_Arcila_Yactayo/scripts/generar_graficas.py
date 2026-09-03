@@ -1,7 +1,7 @@
 """
 Script para generar las 4 figuras requeridas en la Guía de Laboratorio 1
 (Lógica CMOS Estática - UNMSM FIEE)
-Autores: Arcila y Yactayo
+Autores: Leonardo Sait Yactayo Tolentino (23190214) & Marco Antonio Arcila Santander (23190140)
 """
 
 import os

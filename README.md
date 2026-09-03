@@ -4,8 +4,8 @@ Repositorio de prácticas de laboratorio, simulaciones SPICE e informes técnico
 
 * **Docente:** MsC. Luz Adanaqué Infante
 * **Integrantes:**
-  * Arcila
-  * Yactayo
+  * **Leonardo Sait Yactayo Tolentino** (23190214)
+  * **Marco Antonio Arcila Santander** (23190140)
 * **Semestre:** 2026-II
 
 ---
