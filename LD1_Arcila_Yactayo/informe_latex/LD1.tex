@@ -23,6 +23,7 @@
 \usepackage{listings}
 \usepackage[most]{tcolorbox}
 \usepackage{hyperref}
+\usepackage[section]{placeins}
 
 \definecolor{navy}{HTML}{1E2761}
 \definecolor{coral}{HTML}{F96167}
@@ -331,6 +332,7 @@ $\bm{\beta}$ & $\bm{V_M}$ (V) & $\bm{V_{IL}}$ (V) & $\bm{V_{IH}}$ (V) & $\bm{NM_
 \caption{Curvas de transferencia de voltaje (VTC) y derivada $d(V_{out})/d(V_{in})$ para el inversor CMOS de 45~nm HP ante el barrido de $\beta \in [1.0, 3.0]$. Se identifican los puntos de pendiente $-1$ ($V_{IL}, V_{IH}$) y el centrado en $\beta \approx 2.5$.}
 \label{fig:vtc_familia}
 \end{figure}
+\FloatBarrier
 
 \begin{table}[htbp]
 \centering\small
@@ -347,6 +349,7 @@ $\bm{\beta}$ & $\bm{V_M}$ (V) & $\bm{V_{IL}}$ (V) & $\bm{V_{IH}}$ (V) & $\bm{NM_
 \end{tabularx}
 \end{table}
 
+\FloatBarrier
 \begin{preguntas}[Preguntas de la Actividad 1]
 \begin{listapreg}
 \preg{Con la razón de \texttt{u0} obtenida, la regla clásica predice cierto $\beta$ para centrar la VTC. ¿Coincide con el $\beta$ que usted midió? Explique la discrepancia en términos de saturación de velocidad, apoyándose en la ecuación~\eqref{eq:vm}.}
@@ -396,6 +399,7 @@ $\bm{\beta}$ & $\bm{V_M}$ (V) & $\bm{V_{IL}}$ (V) & $\bm{V_{IH}}$ (V) & $\bm{NM_
 \caption{Retardo de propagación frente a la capacitancia de carga $C_L \in [1, 8]$~fF en 45~nm HP con recta de regresión lineal ($m = 1.846$~ps/fF, $t_0 = 2.708$~ps).}
 \label{fig:tp_vs_cl}
 \end{figure}
+\FloatBarrier
 
 \begin{preguntas}[Preguntas de la Actividad 2]
 \begin{listapreg}
@@ -444,6 +448,7 @@ NOR2 (una conm.)    & 180~nm & 720~nm & 1800~nm & 13.86 & 9.96 & 11.91 \\
 \bottomrule
 \end{tabularx}
 \end{table}
+\FloatBarrier
 
 \begin{preguntas}[Preguntas de la Actividad 3]
 \begin{listapreg}
@@ -484,6 +489,7 @@ Y = \overline{(A \cdot B) + C}
 \caption{Verificación funcional transitoria de la compuerta compleja $Y = \overline{(A \cdot B) + C}$ ante el barrido sincronizado de las 8 combinaciones binarias ($000$ a $111$) en una ventana de 8~ns.}
 \label{fig:compleja}
 \end{figure}
+\FloatBarrier
 
 \begin{preguntas}[Preguntas de la Actividad 4]
 \begin{listapreg}
@@ -530,6 +536,7 @@ Y = \overline{(A \cdot B) + C}
 \caption{Oscilación estacionaria del oscilador de anillo de 5 etapas en 45~nm HP ($f_{osc} = 21.94$~GHz, $t_{pd} = 4.56$~ps).}
 \label{fig:ro}
 \end{figure}
+\FloatBarrier
 
 \begin{preguntas}[Preguntas de la Actividad 5]
 \begin{listapreg}
