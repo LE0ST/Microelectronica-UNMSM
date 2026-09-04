@@ -223,78 +223,11 @@ P_{tot} = \underbrace{\alpha\,C_L V_{DD}^{2} f}_{\text{dinámica}}
 \end{equation}
 
 
-\section{Preparación del entorno}
+\section{Entorno y Modelos Tecnológicos}
 
+Las simulaciones fueron implementadas en LTspice 24 utilizando las tarjetas del \emph{Predictive Technology Model} (PTM, Arizona State University) correspondientes a los nodos de 90~nm bulk, 45~nm (procesos HP y LP) y 22~nm HP bajo la formulación BSIM4 (nivel 54 / 14 en LTspice). 
 
-\subsection{Modelos disponibles}
-
-Todos los modelos provienen del \emph{Predictive Technology Model} (Arizona State University). Los valores de la Tabla~\ref{tab:ptm} ya están extraídos de los archivos publicados en el aula virtual y sirven de referencia rápida.
-
-\begin{table}[htbp]
-\centering
-\small
-\caption{Tarjetas de modelo PTM disponibles en el aula virtual.}
-\label{tab:ptm}
-\begin{tabular}{@{}llccccl@{}}
-\toprule
-\textbf{Archivo} & \textbf{Nodo} & $\bm{V_{DD}}$ & $\bm{V_{TH0,n}}$ & $\bm{V_{TH0,p}}$ & $\bm{t_{oxe,n}}$ & \textbf{Modelo} \\
- & & (V) & (V) & (V) & (nm) & \\
-\midrule
-\texttt{180nm\_bulk.txt} & 180 nm    & 1.8\textsuperscript{*} & 0.3999  & $-0.42$    & 4.00 & BSIM3 (lvl 49) \\
-\texttt{130nm\_bulk.pm}  & 130 nm    & 1.3\textsuperscript{*} & 0.3782  & $-0.321$   & 2.25 & BSIM4 (lvl 54) \\
-\texttt{90nm\_bulk.pm}   & 90 nm     & 1.2\textsuperscript{*} & 0.397   & $-0.339$   & 2.05 & BSIM4 \\
-\texttt{65nm\_bulk.pm}   & 65 nm     & 1.1\textsuperscript{*} & 0.423   & $-0.365$   & 1.85 & BSIM4 \\
-\texttt{45nm\_HP.pm}     & 45 nm HP  & 1.0 & 0.46893 & $-0.49158$ & 1.25 & BSIM4 \\
-\texttt{45nm\_LP.pm}     & 45 nm LP  & 1.1 & 0.62261 & $-0.587$   & 1.80 & BSIM4 \\
-\texttt{32nm\_HP.pm}     & 32 nm HP  & 0.9 & 0.49396 & $-0.49155$ & 1.15 & BSIM4 \\
-\texttt{32nm\_LP.pm}     & 32 nm LP  & 1.0 & 0.63    & $-0.5808$  & 1.60 & BSIM4 \\
-\texttt{22nm\_HP.pm}     & 22 nm HP  & 0.8 & 0.50308 & $-0.4606$  & 1.05 & BSIM4 \\
-\texttt{22nm\_LP.pm}     & 22 nm LP  & 0.95& 0.68858 & $-0.63745$ & 1.40 & BSIM4 \\
-\bottomrule
-\end{tabular}
-
-\vspace{0.4em}
-\parbox{0.92\textwidth}{\footnotesize \textsuperscript{*}Los cuatro procesos \emph{bulk} no declaran $V_{DD}$ dentro del archivo; use el valor referencial de la tabla y declárelo explícitamente en su netlist.}
-\end{table}
-
-
-
-\subsection{Inclusión de la tarjeta en LTspice}
-
-\begin{enumerate}[leftmargin=1.6em,itemsep=0.35em]
-  \item Copie el archivo \texttt{.pm} a la \textbf{misma carpeta} que su esquemático o netlist.
-  \item Agregue como directiva SPICE (tecla \texttt{S} en el esquemático):
-        \lstinline|.include 45nm\_HP.pm|
-  \item En el esquemático use los símbolos de \textbf{cuatro terminales} \texttt{nmos4} y \texttt{pmos4} (D--G--S--B). Los de tres terminales asumen sustrato conectado a fuente y le impedirán estudiar el efecto de cuerpo en la Actividad~3.
-  \item Haga clic derecho sobre cada transistor y escriba el nombre del modelo: \texttt{nmos} o \texttt{pmos} (así se llaman literalmente dentro de las tarjetas), además de \texttt{L} y \texttt{W}.
-\end{enumerate}
-
-\paragraph{Longitud de canal.} Use como longitud dibujada el valor nominal del nodo (\texttt{L=45n} para la tarjeta de 45~nm). La tarjeta ya incorpora \texttt{xl} y \texttt{lint} para obtener la longitud efectiva; \textbf{no} corrija usted esos valores.
-
-\paragraph{Anchos.} Trabaje siempre en múltiplos del ancho mínimo. En esta guía se adopta $W_n = 4L$ como transistor unitario.
-
-\subsection{Colisión de nombres al comparar tecnologías}
-\label{sec:colision}
-
-Todas las tarjetas definen sus modelos con los mismos nombres, \texttt{nmos} y \texttt{pmos}. Si incluye dos archivos en la misma simulación, el segundo sobrescribe al primero \textbf{sin emitir error}, y usted comparará dos veces la misma tecnología sin darse cuenta. Es el error más frecuente de este laboratorio.
-
-La solución es renombrar los modelos antes de comparar. Edite una copia del archivo y cambie la primera línea de cada modelo:
-
-\begin{lstlisting}
-.model  nmos  nmos  level = 54     ->   .model nmos_45hp nmos level = 54
-.model  pmos  pmos  level = 54     ->   .model pmos_45hp pmos level = 54
-\end{lstlisting}
-
-\noindent o, desde una terminal:
-
-\begin{lstlisting}[language={}]
-sed -E 's/^\.model[[:space:]]+nmos/.model nmos_45hp/;
-        s/^\.model[[:space:]]+pmos/.model pmos_45hp/' 45nm_HP.pm > 45nm_HP_ren.lib
-\end{lstlisting}
-
-\subsection{Nota de compatibilidad}
-
-Las tarjetas declaran \texttt{level = 54} (BSIM4). Si su versión de LTspice reporta un nivel desconocido, reemplace por \texttt{level = 14}, que es el identificador interno de BSIM4 en LTspice. Es normal que el registro de errores liste parámetros ignorados; mientras la simulación converja, esos avisos no invalidan los resultados.
+Para los análisis de caracterización y contraste entre procesos, se implementaron librerías con renombramiento de modelos (\texttt{45nm\_HP\_ren.lib} y \texttt{45nm\_LP\_ren.lib}) asignando identificadores unívocos (\texttt{nmos\_45hp}, \texttt{pmos\_45hp}, \texttt{nmos\_45lp}, \texttt{pmos\_45lp}), mitigando la sobreescritura silenciosa de modelos en directivas \lstinline|.include|. A lo largo del informe se adopta un ancho de referencia $W_n = 4L$ como transistor unitario y longitudes de canal nominales fijadas por cada nodo tecnológico.
 
 %==============================================================================
 \section{Actividad 1 --- Inversor CMOS: VTC y márgenes de ruido}
@@ -416,8 +349,6 @@ $\bm{\beta}$ & $\bm{V_M}$ (V) & $\bm{V_{IL}}$ (V) & $\bm{V_{IH}}$ (V) & $\bm{NM_
 \par\noindent\textbf{Rpta:} Crece sustancialmente la potencia de cortocircuito ($I_{cc}\,V_{DD}$). Al aumentar el tiempo de subida de 5~ps a 100~ps, la señal de entrada permanece durante un intervalo temporal 20 veces mayor en la ventana de conducción simultánea ($V_{Tn} < V_{in} < V_{DD} - |V_{Tp}|$), donde ambos transistores conducen corriente directa entre $V_{DD}$ y tierra.
 \end{listapreg}
 \end{preguntas}
-
-\newpage
 
 %==============================================================================
 \section{Actividad 3 --- NAND2 y NOR2}
@@ -558,52 +489,20 @@ Y = \overline{(A \cdot B) + C}
 \end{preguntas}
 
 %==============================================================================
-\section{Entregables}
+\section{Conclusiones}
 %==============================================================================
 
-Informe en PDF, máximo 12 páginas, con:
+\begin{enumerate}[leftmargin=1.6em,itemsep=0.4em]
+  \item \textbf{Saturación de velocidad y centrado de la VTC:} En tecnologías nanométricas sub-65~nm como 45~nm HP, la saturación de velocidad domina la conducción en saturación, aproximando la relación de corrientes a la razón de velocidades límite ($v_{sat,p}/v_{sat,n} \approx 0.88$) en vez de la razón clásica de movilidades ($\mu_n/\mu_p = 2.70$). Como resultado, un factor $\beta = 2.50$ logra centrar la conmutación en $V_M = 0.4989\text{~V} \approx V_{DD}/2$, equilibrando los márgenes de ruido ($NM_L = 0.392\text{~V}$, $NM_H = 0.396\text{~V}$).
+  
+  \item \textbf{Caracterización del retardo y escalamiento:} El ajuste lineal del retardo de propagación frente a la carga ($t_p = 1.846\,C_L + 2.708\text{~ps}$) demostró que la pendiente cuantifica la resistencia efectiva de canal ($0.69\,R_{eq}$), mientras que la ordenada al origen modela el retardo intrínseco descargado derivado de las capacitancias parásitas de unión y solapamiento. Al comparar de 90~nm a 22~nm, la contracción geométrica compensa ampliamente la reducción de $V_{DD}$ (de 1.2~V a 0.8~V).
 
-\begin{enumerate}[leftmargin=1.6em,itemsep=0.3em]
-  \item Portada, integrantes y declaración de autoría.
-  \item Pre-lab resuelto: deducción de la ecuación~\eqref{eq:vm} y esquemas.
-  \item Tablas 1.1, 1.2, 2.1, 3.1 y 5.1 completas.
-  \item Gráficas: familia de VTC, $t_p$ contra $C_L$, transitorio de verificación funcional de la Actividad~4 y oscilación del anillo.
-  \item Respuestas a las \thepreg{} preguntas, cada una en un máximo de cinco líneas.
-  \item Anexo con los netlists finales en texto plano, no capturas de pantalla.
-  \item Archivos \texttt{.asc} / \texttt{.cir} en un ZIP separado.
+  \item \textbf{Superioridad del esfuerzo lógico en NAND2 frente a NOR2:} La compuerta NAND2 ofreció menor retardo ($t_p = 8.13\text{~ps}$ vs. $11.91\text{~ps}$) y menor área total de silicio ($\sum W = 1440\text{~nm}$ vs. $1800\text{~nm}$) frente a NOR2. La conexión en serie de transistores NMOS aprovecha la mayor movilidad de electrones; por el contrario, colocar PMOS en serie en compuertas NOR castiga fuertemente el área y la capacitancia parásita, haciendo inviable su uso para abanicos de entrada elevados ($N \ge 4$).
+
+  \item \textbf{Eficiencia de la lógica compleja integrada AOI:} La síntesis de la compuerta $Y = \overline{(A \cdot B) + C}$ requirió únicamente 6 transistores y una única etapa inversora, frente a los 12 transistores y 3 retardos acumulados de una implementación con celdas elementales en cascada, reduciendo a la mitad el área y mejorando sustancialmente la velocidad de respuesta.
+
+  \item \textbf{Compromiso fundamental velocidad-potencia (HP vs. LP):} En el oscilador de anillo de 5 etapas se verificó el trade-off crucial en nodos avanzados: el proceso 45~nm HP proporciona una frecuencia de conmutación $3.5\times$ superior ($21.94\text{~GHz}$ vs. $6.25\text{~GHz}$), pero incurre en una penalización de más de $200\times$ en corriente de fuga estática ($3.13\text{~nA}$ vs. $15.3\text{~pA}$). Este comportamiento sustenta la selección del proceso LP para aplicaciones móviles de bajo consumo donde el tiempo en modo \emph{standby} domina el ciclo de vida de la batería.
 \end{enumerate}
-
-\begin{nota}
-\textbf{Entrega: 11 de setiembre a la medianoche} \\
-\textbf{Consultas:} \href{mailto:Ladanaquei@unmsm.edu.pe}{Ladanaquei@unmsm.edu.pe}
-\end{nota}
-
-%==============================================================================
-\section{Rúbrica de evaluación}
-%==============================================================================
-
-\begin{table}[htbp]
-\centering\small
-\caption{Rúbrica sobre 20 puntos.}
-\begin{tabularx}{\textwidth}{@{}Xc@{}}
-\toprule
-\textbf{Criterio} & \textbf{Puntos} \\
-\midrule
-Pre-lab completo y correcto & 2 \\
-Actividad 1: extracción de VTC y márgenes de ruido & 3 \\
-Actividad 2: caracterización de retardo y escalamiento & 3 \\
-Actividad 3: dimensionamiento y análisis del patrón de entrada & 3 \\
-Actividad 4: síntesis y verificación funcional & 3 \\
-Actividad 5: potencia y comparación HP/LP & 3 \\
-Calidad del informe: gráficas rotuladas, unidades, discusión & 2 \\
-Reproducibilidad: netlists ejecutables sin corrección & 1 \\
-\midrule
-\textbf{Total} & \textbf{20} \\
-\bottomrule
-\end{tabularx}
-\end{table}
-
-\noindent\textbf{Descuentos.} $-2$ puntos si las gráficas carecen de ejes rotulados con unidades; $-3$ puntos si se comparan tecnologías sin renombrar los modelos (sección~\ref{sec:colision}), pues los resultados serían inválidos.
 
 %==============================================================================
 \appendix
@@ -778,38 +677,5 @@ X5 n5 n1 vdd INV
 .meas tran Iavg AVG I(V1)
 .end
 \end{lstlisting}
-
-%==============================================================================
-\section{Problemas frecuentes}
-%==============================================================================
-
-\begin{table}[htbp]
-\centering\small
-\caption{Diagnóstico rápido de fallas en LTspice.}
-\begin{tabularx}{\textwidth}{@{}p{4.3cm}XX@{}}
-\toprule
-\textbf{Síntoma} & \textbf{Causa probable} & \textbf{Solución} \\
-\midrule
-\texttt{Unknown model}, o el transistor aparece sin parámetros
-& El archivo \texttt{.pm} no está en la carpeta del esquemático, o el nombre del modelo está mal escrito
-& Verifique la ruta del \texttt{.include} y que el nombre sea exactamente \texttt{nmos} / \texttt{pmos} \\
-Dos tecnologías dan resultados idénticos
-& Colisión de nombres de modelo
-& Renombre los modelos (sección~\ref{sec:colision}) \\
-El oscilador de anillo no arranca
-& Todos los nodos quedaron en el punto metaestable
-& Agregue \texttt{.ic V(n1)=0} \\
-\texttt{Timestep too small}
-& Paso de simulación grueso o carga nula
-& Reduzca el paso máximo del \texttt{.tran} y verifique que exista \texttt{C1} en la salida \\
-Corriente de fuga con signo negativo
-& Convención de LTspice para fuentes de tensión
-& Use el valor absoluto: la corriente entra por el terminal positivo \\
-Retardos absurdos (ns en lugar de ps)
-& Se omitieron los sufijos de unidad
-& Revise que \texttt{W} y \texttt{L} lleven sufijo \texttt{n} \\
-\bottomrule
-\end{tabularx}
-\end{table}
 
 \end{document}
