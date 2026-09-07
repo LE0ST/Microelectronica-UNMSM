@@ -7,6 +7,7 @@ Repositorio de prácticas de laboratorio, simulaciones SPICE e informes técnico
   * **Leonardo Sait Yactayo Tolentino** (23190214)
   * **Marco Antonio Arcila Santander** (23190140)
 * **Semestre:** 2026-II
+* **Horario:** Lunes 18:00 – 20:00
 
 ---
 
@@ -23,6 +24,10 @@ MicroNano/
 │   ├── Teoria_y_Lecturas/                      # Diapositivas y lecturas (Thick/Thin Films)
 │   ├── Guia_Oficial_LD1/                       # Guía en PDF y plantillas vírgenes
 │   └── Material_Adicional_Semestre/            # Referencias de laboratorios avanzados
+│
+├── Semana_03/                                  # Modelamiento CMOS y Lógica Estática
+│   ├── Teoria_y_Lecturas/                      # Diapositivas (Modelamiento, Lógica Estática) y papers
+│   └── Ejercicios/                             # Guía de ejercicios CMOS y resolución manuscrita
 │
 └── LD1_Arcila_Yactayo/                         # LABORATORIO DIRIGIDO N.° 1 (Oficial)
     ├── informe_latex/                          # Código fuente LaTeX y figuras para el reporte
