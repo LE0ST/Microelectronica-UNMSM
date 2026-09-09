@@ -331,15 +331,15 @@ $\bm{\beta}$ & $\bm{V_M}$ (V) & $\bm{V_{IL}}$ (V) & $\bm{V_{IH}}$ (V) & $\bm{NM_
 
 \begin{table}[htbp]
 \centering\small
-\caption{Resultados 2.1 --- Retardo frente al nodo tecnológico ($\beta = 2.5$).}
+\caption{Resultados 2.1 --- Retardo frente al nodo tecnológico ($\beta = 2.5$, $C_L = 2$~fF).}
 \label{tab:res21}
 \begin{tabularx}{\textwidth}{@{}lc*{5}{>{\centering\arraybackslash}X}@{}}
 \toprule
 \textbf{Nodo} & $\bm{V_{DD}}$ (V) & $\bm{t_{pHL}}$ (ps) & $\bm{t_{pLH}}$ (ps) & $\bm{t_p}$ (ps) & $\bm{t_r}$ (ps) & $\bm{t_f}$ (ps) \\
 \midrule
-90 nm     & 1.2 & 7.865 & 6.864 & 7.365 & 10.798 & 9.617 \\
-45 nm HP  & 1.0 & 7.881 & 4.931 & 6.406 & 7.676  & 11.821 \\
-22 nm HP  & 0.8 & 10.731 & 6.582 & 8.656 & 13.672 & 19.686 \\
+90 nm     & 1.2 & 7.863 & 6.859 & 7.361 & 10.785 & 9.593 \\
+45 nm HP  & 1.0 & 7.881 & 4.929 & 6.405 & 7.686  & 11.814 \\
+22 nm HP  & 0.8 & 10.731 & 6.566 & 8.649 & 13.657 & 19.680 \\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -374,7 +374,7 @@ $\bm{\beta}$ & $\bm{V_M}$ (V) & $\bm{V_{IL}}$ (V) & $\bm{V_{IH}}$ (V) & $\bm{NM_
 
 \subsection*{Procedimiento}
 \begin{enumerate}[leftmargin=1.6em,itemsep=0.35em]
-  \item Implemente la NAND2 (Anexo~\ref{sec:a3}) y la NOR2 con el criterio de \textbf{resistencia equivalente igual a la del inversor de referencia}: en la rama serie los transistores duplican su ancho; en la rama paralela conservan el ancho del inversor.
+  \item Implemente la NAND2 (Anexo~\ref{sec:a3}) y la NOR2 con el criterio de \textbf{resistencia equivalente igual a la del inversor de referencia} ($\beta = 2.5$): en la rama serie los transistores duplican su ancho; en la rama paralela conservan el ancho del inversor.
   \item Verifique la tabla de verdad de cada compuerta.
   \item Mida $t_{pHL}$ de la NAND2 en dos escenarios: (a) conmuta la entrada \textbf{interna} (la conectada al transistor cercano a tierra) con la otra fija en \texttt{1}; (b) conmuta la entrada \textbf{externa} con la otra fija en \texttt{1}.
   \item Mida $t_{pLH}$ de la NOR2 con las dos entradas conmutando simultáneamente y con solo una conmutando.
@@ -383,17 +383,17 @@ $\bm{\beta}$ & $\bm{V_M}$ (V) & $\bm{V_{IL}}$ (V) & $\bm{V_{IH}}$ (V) & $\bm{NM_
 
 \begin{table}[htbp]
 \centering\small
-\caption{Resultados 3.1 --- Comparación de compuertas ($C_L = 2$~fF, $45$~nm HP).}
+\caption{Resultados 3.1 --- Comparación de compuertas con dimensionamiento $\beta = 2.5$ ($C_L = 2$~fF, $45$~nm HP).}
 \label{tab:res31}
 \begin{tabularx}{\textwidth}{@{}l*{6}{>{\centering\arraybackslash}X}@{}}
 \toprule
 \textbf{Compuerta} & $\bm{W_n}$/trans. & $\bm{W_p}$/trans. & $\bm{\sum W}$ & $\bm{t_{pHL}}$ (ps) & $\bm{t_{pLH}}$ (ps) & $\bm{t_p}$ (ps) \\
 \midrule
-Inversor (ref.)     & 180~nm & 360~nm & 540~nm  & 7.88  & 4.93 & 6.41 \\
-NAND2 (conm. ext.)  & 360~nm & 360~nm & 1440~nm & 8.60  & 7.67 & 8.13 \\
-NAND2 (conm. int.)  & 360~nm & 360~nm & 1440~nm & 9.79  & 8.86 & 9.33 \\
-NOR2 (ambas conm.)  & 180~nm & 720~nm & 1800~nm & 6.66  & 9.77 & 8.21 \\
-NOR2 (una conm.)    & 180~nm & 720~nm & 1800~nm & 13.86 & 9.96 & 11.91 \\
+Inversor (ref.)     & 180~nm & 450~nm & 630~nm  & 7.881 & 4.929 & 6.405 \\
+NAND2 (conm. ext.)  & 360~nm & 450~nm & 1620~nm & 9.021 & 6.799 & 7.910 \\
+NAND2 (conm. int.)  & 360~nm & 450~nm & 1620~nm & 10.221 & 7.235 & 8.728 \\
+NOR2 (ambas conm.)  & 180~nm & 900~nm & 2160~nm & 10.764 & 6.915 & 8.840 \\
+NOR2 (una conm.)    & 180~nm & 900~nm & 2160~nm & 14.929 & 8.795 & 11.862 \\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -402,13 +402,13 @@ NOR2 (una conm.)    & 180~nm & 720~nm & 1800~nm & 13.86 & 9.96 & 11.91 \\
 \begin{preguntas}[Preguntas de la Actividad 3]
 \begin{listapreg}
 \preg{Los dos escenarios del paso 3 dan retardos distintos. Explique el papel de la capacitancia del nodo intermedio y del efecto de cuerpo del transistor superior.}
-\par\noindent\textbf{Rpta:} Al conmutar la entrada externa (MN1), el nodo intermedio $n_x$ ya estaba descargado a tierra por MN2; solo se evacúa la carga de $C_L$ ($t_{pHL}=8.60$~ps). Al conmutar la entrada interna (MN2), $n_x$ estaba cargado previamente a $V_{DD}-V_{Tn}$ y debe descargarse a través de MN2 junto con $C_L$. Además, el transistor superior MN1 sufre tensión fuente-sustrato positiva ($V_{SB}>0$), lo que incrementa su voltaje umbral por efecto de cuerpo y degrada el retardo ($t_{pHL}=9.79$~ps).
+\par\noindent\textbf{Rpta:} Al conmutar la entrada externa (MN1), el nodo intermedio $n_x$ ya estaba descargado a tierra por MN2; solo se evacúa la carga de $C_L$ ($t_{pHL}=9.021$~ps). Al conmutar la entrada interna (MN2), $n_x$ estaba cargado previamente a $V_{DD}-V_{Tn}$ y debe descargarse a través de MN2 junto con $C_L$. Además, el transistor superior MN1 sufre tensión fuente-sustrato positiva ($V_{SB}>0$), lo que incrementa su voltaje umbral por efecto de cuerpo y degrada el retardo ($t_{pHL}=10.221$~ps).
 
 \preg{El esfuerzo lógico de la NAND2 es $4/3$ y el de la NOR2 es $5/3$. Verifique cualitativamente esa jerarquía con sus mediciones y explique por qué la industria construye bibliotecas dominadas por NAND.}
-\par\noindent\textbf{Rpta:} Las mediciones confirman que la NAND2 es más rápida ($t_p = 8.13$~ps vs $11.91$~ps en el caso típico de una entrada) y más compacta ($\sum W = 1440$~nm vs $1800$~nm). La industria basa sus librerías en NAND porque coloca en serie los transistores NMOS (con mayor movilidad de electrones), requiriendo duplicar un $W_n$ pequeño; la NOR2 coloca en serie los PMOS (con menor movilidad de huecos), forzando transistores PMOS muy anchos que penalizan gravemente el área y la capacitancia de compuerta de entrada.
+\par\noindent\textbf{Rpta:} Las mediciones confirman que la NAND2 es más rápida ($t_p = 7.910$~ps vs $11.862$~ps en el caso típico de una entrada) y más compacta ($\sum W = 1620$~nm vs $2160$~nm). La industria basa sus librerías en NAND porque coloca en serie los transistores NMOS (con mayor movilidad de electrones), requiriendo duplicar un $W_n$ pequeño; la NOR2 coloca en serie los PMOS (con menor movilidad de huecos), forzando transistores PMOS muy anchos ($W_p = 900$~nm) que penalizan gravemente el área y la capacitancia de compuerta de entrada.
 
 \preg{¿Qué le ocurriría al retardo de una NOR de cuatro entradas dimensionada con este mismo criterio? Estime el $W_p$ requerido y comente su viabilidad.}
-\par\noindent\textbf{Rpta:} Una NOR4 requeriría 4 PMOS en serie, exigiendo $W_p = 4 \times (\beta W_n) = 4 \times 360\text{~nm} = 1440$~nm por transistor ($\sum W_p = 5.76\text{~\textmu m}$). El retardo crecería cuadráticamente con el número de entradas ($\propto N^2$) por la acumulación de resistencias de canal y capacidades de difusión de los 3 nodos intermedios en serie, haciendo la compuerta NOR4 inviable en celdas estándar de alta velocidad.
+\par\noindent\textbf{Rpta:} Una NOR4 requeriría 4 PMOS en serie, exigiendo $W_p = 4 \times (\beta W_n) = 4 \times 450\text{~nm} = 1800$~nm por transistor ($\sum W_p = 7.20\text{~\textmu m}$). El retardo crecería cuadráticamente con el número de entradas ($\propto N^2$) por la acumulación de resistencias de canal y capacidades de difusión de los 3 nodos intermedios en serie, haciendo la compuerta NOR4 inviable en celdas estándar de alta velocidad.
 
 \preg{Si el sustrato del NMOS superior de la NAND2 se conectara a su fuente en lugar de a tierra, ¿qué cambiaría en el retardo? ¿Es esto físicamente realizable en un proceso \emph{bulk}?}
 \par\noindent\textbf{Rpta:} Al conectar sustrato a fuente ($V_{SB}=0$) se eliminaría el efecto de cuerpo, manteniendo $V_{Tn}$ en su valor nominal mínimo y reduciendo el retardo $t_{pHL}$. No es físicamente realizable en un proceso estándar CMOS sobre sustrato p \emph{bulk} común, ya que todos los NMOS comparten el mismo silicio masivo fijado a tierra; requeriría una tecnología de pozo triple (\emph{triple-well}) o silicio sobre aislante (SOI) con islas dieléctricas aisladas.
@@ -529,7 +529,7 @@ Se verificó el barrido de las ocho combinaciones de entrada en 8~ns (Figura~\re
   
   \item \textbf{Caracterización del retardo y escalamiento:} El ajuste lineal del retardo de propagación frente a la carga ($t_p = 1.846\,C_L + 2.708\text{~ps}$) demostró que la pendiente cuantifica la resistencia efectiva de canal ($0.69\,R_{eq}$), mientras que la ordenada al origen modela el retardo intrínseco descargado derivado de las capacitancias parásitas de unión y solapamiento. Al comparar de 90~nm a 22~nm, la contracción geométrica compensa ampliamente la reducción de $V_{DD}$ (de 1.2~V a 0.8~V).
 
-  \item \textbf{Superioridad del esfuerzo lógico en NAND2 frente a NOR2:} La compuerta NAND2 ofreció menor retardo ($t_p = 8.13\text{~ps}$ vs. $11.91\text{~ps}$) y menor área total de silicio ($\sum W = 1440\text{~nm}$ vs. $1800\text{~nm}$) frente a NOR2. La conexión en serie de transistores NMOS aprovecha la mayor movilidad de electrones; por el contrario, colocar PMOS en serie en compuertas NOR castiga fuertemente el área y la capacitancia parásita, haciendo inviable su uso para abanicos de entrada elevados ($N \ge 4$).
+  \item \textbf{Superioridad del esfuerzo lógico en NAND2 frente a NOR2:} La compuerta NAND2 ofreció menor retardo ($t_p = 7.910\text{~ps}$ frente a $11.862\text{~ps}$) y menor área total de silicio ($\sum W = 1620\text{~nm}$ frente a $2160\text{~nm}$) respecto a NOR2. La conexión en serie de transistores NMOS aprovecha la mayor movilidad de electrones; por el contrario, colocar PMOS en serie en compuertas NOR castiga fuertemente el área y la capacitancia parásita, haciendo inviable su uso para abanicos de entrada elevados ($N \ge 4$).
 
   \item \textbf{Eficiencia de la lógica compleja integrada AOI:} La síntesis de la compuerta $Y = \overline{(A \cdot B) + C}$ requirió únicamente 6 transistores y una única etapa inversora, frente a los 12 transistores y 3 retardos acumulados de una implementación con celdas elementales en cascada, reduciendo a la mitad el área y mejorando sustancialmente la velocidad de respuesta.
 
