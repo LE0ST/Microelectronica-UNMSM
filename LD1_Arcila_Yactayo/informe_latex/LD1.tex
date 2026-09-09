@@ -217,6 +217,14 @@ despejando $V_M$, se obtiene directamente la ecuación~\eqref{eq:vm}. Dado que $
 r = \frac{C_{ox}\,W_p\,v_{sat,p}}{C_{ox}\,W_n\,v_{sat,n}} = \frac{v_{sat,p}\,W_p}{v_{sat,n}\,W_n}
 \end{equation}
 
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.28\textwidth,height=3.6cm,keepaspectratio]{figuras/fig_esquema_inversor.png}
+\caption{Esquema circuital del inversor CMOS básico con dimensionamiento $W_n=4L$ y $W_p=\beta W_n$.}
+\label{fig:esquema_inv}
+\end{figure}
+\FloatBarrier
+
 \paragraph{Retardo de propagación.}
 \begin{equation}
 t_p = \tfrac{1}{2}\left(t_{pHL}+t_{pLH}\right),
@@ -416,17 +424,31 @@ Diseñe, dimensione y verifique la compuerta que implementa
 Y = \overline{(A \cdot B) + C}
 \end{equation}
 
-\subsection*{Procedimiento}
-\begin{enumerate}[leftmargin=1.6em,itemsep=0.35em]
-  \item Dibuje la PDN a partir de la expresión (serie $\leftrightarrow$ AND, paralelo $\leftrightarrow$ OR) y obtenga la PUN como grafo dual.
-  \item Dimensione cada rama para igualar la resistencia equivalente del inversor de referencia. Justifique cada ancho por escrito: en la PDN, la rama en serie $A-B$ usa $W_{nA} = W_{nB} = 2W_n = 360$~nm y la rama paralela $C$ usa $W_{nC} = W_n = 180$~nm. En la PUN dual, la rama en paralelo $A \parallel B$ está en serie con $C$, requiriendo $W_{pA} = W_{pB} = 2W_p = 720$~nm y $W_{pC} = 2W_p = 720$~nm.
-  \item Verifique las ocho combinaciones de entrada usando el estímulo binario del Anexo~\ref{sec:a4} ($C$ con período $T$, $B$ con $2T$, $A$ con $4T$).
-  \item Identifique en la simulación la combinación de entrada que produce el peor caso de $t_{pHL}$ (conducción exclusiva por la rama serie $A-B$) y la que produce el peor caso de $t_{pLH}$ (conducción por un solo PMOS de la rama paralela en serie con $C$).
-\end{enumerate}
+\subsection*{Síntesis topológica y dimensionamiento}
+Se sintetiza la función inversora $Y = \overline{(A \cdot B) + C}$ mediante lógica CMOS estática con criterio de resistencia equivalente del inversor ($R_{eq,n} = R_n$, $R_{eq,p} = R_p$ con $W_n=180$~nm, $\beta=2$):
+\begin{itemize}[leftmargin=1.6em,itemsep=0.2em]
+  \item \textbf{Red Pull-Down (PDN):} A partir de la expresión no complementada $F = (A \cdot B) + C$, la operación AND se implementa con transistores NMOS en serie ($MN_A, MN_B$), colocados en paralelo con $MN_C$ (operación OR). La rama serie duplica su resistencia equivalente ($2R_n$), requiriendo anchos duplicados $W_{nA} = W_{nB} = 2W_n = 360$~nm. La rama paralela conduce individualmente a tierra, manteniendo $W_{nC} = W_n = 180$~nm.
+  \item \textbf{Red Pull-Up (PUN) dual:} Por dualidad topológica planar, la rama serie de la PDN se convierte en ramas paralelas ($MP_A \parallel MP_B$), las cuales se conectan en serie con $MP_C$. En el peor caso de conducción, solo conduce un PMOS de la rama paralela en serie con $C$ ($R_{PUN} = R_p' + R_p' = 2R_p'$); para igualar $R_{PUN} = R_p$, cada PMOS debe duplicar su ancho: $W_{pA} = W_{pB} = W_{pC} = 2W_p = 720$~nm.
+\end{itemize}
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=0.72\textwidth,height=4.5cm,keepaspectratio]{figuras/fig3_transitorio_compleja.png}
+\includegraphics[width=0.72\textwidth,height=3.8cm,keepaspectratio]{figuras/fig_esquema_compleja.png}
+\caption{Diseño de la compuerta compleja $Y = \overline{(A \cdot B) + C}$: (a) Grafos de conducción duales; (b) Esquema circuital CMOS con anchos asignados ($W_n=180$~nm, $\beta=2$).}
+\label{fig:esquema_compleja}
+\end{figure}
+\FloatBarrier
+
+\subsection*{Verificación funcional y casos críticos de retardo}
+Se verificó el barrido de las ocho combinaciones de entrada en 8~ns (Figura~\ref{fig:compleja}):
+\begin{itemize}[leftmargin=1.6em,itemsep=0.2em]
+  \item \textbf{Peor caso de descarga ($t_{pHL}$):} Transición hacia $ABC = 110$ ($t_{pHL} = 10.42$~ps), donde la corriente fluye exclusivamente por la rama serie $MN_A - MN_B$ a través del nodo intermedio $n_{ab}$. El mejor caso ocurre en $ABC = 111$ ($t_{pHL} = 5.86$~ps) al descargar por ambas ramas en paralelo.
+  \item \textbf{Peor caso de carga ($t_{pLH}$):} Transición donde conduce un único PMOS de la rama paralela en serie con $C$ ($ABC = 010$ o $100$, $t_{pLH} = 11.18$~ps). El mejor caso ocurre en $ABC = 000$ ($t_{pLH} = 8.74$~ps) con $MP_A$ y $MP_B$ conduciendo simultáneamente.
+\end{itemize}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.70\textwidth,height=4.0cm,keepaspectratio]{figuras/fig3_transitorio_compleja.png}
 \caption{Verificación funcional transitoria de la compuerta compleja $Y = \overline{(A \cdot B) + C}$ ante el barrido sincronizado de las 8 combinaciones binarias ($000$ a $111$) en una ventana de 8~ns.}
 \label{fig:compleja}
 \end{figure}
