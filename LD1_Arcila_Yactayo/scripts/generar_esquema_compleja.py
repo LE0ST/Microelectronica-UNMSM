@@ -1,4 +1,4 @@
-﻿import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 import os
 
@@ -80,13 +80,18 @@ ax2.plot([2.08, 2.08], [4.8, 4.9], color='#1E2761', lw=1.5)
 
 # Nodo intermedio pmid
 ax2.scatter([2.08], [3.95], color='#1E2761', s=25, zorder=5)
-ax2.plot([1.2, 3.0], [3.95, 3.95], color='#1E2761', lw=1.5)
+ax2.plot([1.18, 2.98], [3.95, 3.95], color='#1E2761', lw=1.5)
 
 # PMOS A y B en paralelo
 draw_pmos(ax2, 1.0, 3.4, '$A$', '$2W_p=720$n')
 draw_pmos(ax2, 2.8, 3.4, '$B$', '$2W_p=720$n')
 ax2.plot([1.18, 1.18], [3.8, 3.95], color='#1E2761', lw=1.5)
 ax2.plot([2.98, 2.98], [3.8, 3.95], color='#1E2761', lw=1.5)
+
+# --- 1. CONEXIÓN INFERIOR PMOS HACIA EL NODO Y ---
+# Conectar drenadores de PMOS A y B (desde y=3.0 hasta y=2.85)
+ax2.plot([1.18, 1.18], [3.0, 2.85], color='#1E2761', lw=1.5)
+ax2.plot([2.98, 2.98], [3.0, 2.85], color='#1E2761', lw=1.5)
 
 # Salida Y (unión de PMOS y NMOS)
 ax2.plot([1.18, 2.98], [2.85, 2.85], color='#1E2761', lw=1.5)
@@ -97,17 +102,22 @@ ax2.plot([2.08, 3.9], [2.85, 2.85], color='#1E2761', lw=2)
 ax2.scatter([3.9], [2.85], color='#1E2761', s=30, zorder=5)
 ax2.text(4.0, 2.85, '$Y = \\overline{(A \\cdot B) + C}$', ha='left', va='center', fontsize=9.5, fontweight='bold', color='#1E2761')
 
-# Cap Cload a x = 3.65
+# --- 3. MEJORA DEL SÍMBOLO DE TIERRA EN C_L ---
 ax2.plot([3.65, 3.65], [2.85, 2.5], color='#1E2761', lw=1.2)
 ax2.plot([3.45, 3.85], [2.5, 2.5], color='#1E2761', lw=1.5)
 ax2.plot([3.45, 3.85], [2.4, 2.4], color='#1E2761', lw=1.5)
 ax2.plot([3.65, 3.65], [2.4, 2.2], color='#1E2761', lw=1.2)
-ax2.plot([3.5, 3.8], [2.2, 2.2], color='#1E2761', lw=1.5)
+# Tres barras decrecientes para GND de CL
+ax2.plot([3.50, 3.80], [2.2, 2.2], color='#1E2761', lw=1.5)
+ax2.plot([3.56, 3.74], [2.14, 2.14], color='#1E2761', lw=1.3)
+ax2.plot([3.62, 3.68], [2.08, 2.08], color='#1E2761', lw=1.1)
 ax2.text(3.9, 2.45, '$C_L=2\\text{ fF}$', ha='left', va='center', fontsize=7.5, color='#1E2761')
 
-# Conexión hacia PDN
+# --- 2. CORRECCIÓN DEL RIEL SUPERIOR DE LA PDN ---
+# Conexión vertical hacia la PDN
 ax2.plot([2.08, 2.08], [2.85, 2.7], color='#1E2761', lw=1.5)
-ax2.plot([1.18, 2.98], [2.7, 2.7], color='#1E2761', lw=1.5)
+# El riel debe terminar exactamente en el NMOS A (x=2.68), no en 2.98
+ax2.plot([1.18, 2.68], [2.7, 2.7], color='#1E2761', lw=1.5)
 
 # PDN: NMOS C a la izquierda
 draw_nmos(ax2, 1.0, 1.8, '$C$', '$W=W_n=180$n')
