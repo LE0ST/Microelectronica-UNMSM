@@ -165,8 +165,8 @@
 \end{titlepage}
 
 %--------------------------------- Indice ------------------------------------
-{\color{navy}\tableofcontents}
-\vspace{1.5em}
+% Se omite el indice de contenido para optimizar la maquetacion y tamano de figuras (limite de 12 paginas)
+
 
 %==============================================================================
 \section{Objetivos}
@@ -197,35 +197,26 @@ V_{in} = V_{out} = V_M
 \label{eq:cond_vm}
 \end{equation}
 
-\noindent\textbf{1. Hipótesis operativas y modelo físico de saturación:}\\
-En un inversor CMOS nanométrico (Figura~\ref{fig:esquema_inv}), se establecen las siguientes condiciones de partida:
-\begin{enumerate}[leftmargin=1.4em,itemsep=0.15em]
-  \item \emph{Geometría de canal mínimo:} Se adopta la misma longitud dibujada de canal para ambos dispositivos, $L_n = L_p = L_{\min} = 45\text{~nm}$, optimizando el área de integración.
-  \item \emph{Potenciales de sustrato (Bulk):} Ambos transistores tienen su sustrato conectado a su respectiva fuente ($V_{SBn} = 0$, $V_{SBp} = 0$), anulando la modulación del potencial de canal por efecto cuerpo ($\gamma = 0$ y $\Delta V_T = 0$), lo que fija $V_{Tn} = V_{TH0,n}$ y $V_{Tp} = V_{TH0,p}$ (con la convención $V_{Tp} < 0$).
-  \item \emph{Saturación por velocidad de deriva extrema:} El modelo por tramos de canal corto establece que la corriente en saturación de velocidad es $I_D = W C_{ox} v_{sat} (V_{GS} - V_T - V_{DSAT}/2)$. Bajo fuerte campo longitudinal ($\mathcal{E} \gg \mathcal{E}_{sat}$), la sobretensión de compuerta supera holgadamente la caída de saturación ($(V_{GS} - V_T) \gg V_{DSAT}/2$), permitiendo aproximar la corriente con una dependencia lineal directa respecto a la sobretensión:
-  \begin{equation}
-  I_D \approx k\,V_{DSAT}\,(V_{GS} - V_T) = W\,C_{ox}\,v_{sat}\,(V_{GS} - V_T)
-  \label{eq:id_sat}
-  \end{equation}
-  donde $k = \mu\,C_{ox}\frac{W}{L}$ y la velocidad de saturación límite cumple $v_{sat} = \mu\,\mathcal{E}_{sat} = \mu \frac{V_{DSAT}}{L}$. De aquí se desprende la identidad fundamental $k\,V_{DSAT} = C_{ox}\,W\,v_{sat}$, válida al ser $L_n = L_p = L_{\min}$.
-\end{enumerate}
+\noindent\textbf{1. Hipótesis operativas y saturación por velocidad:}\\
+En el inversor nanométrico (Figura~\ref{fig:esquema_inv}) se adopta geometría de canal mínimo $L_n = L_p = L_{\min} = 45\text{~nm}$ y sustratos conectados a sus fuentes ($V_{SBn} = V_{SBp} = 0$, anulando el efecto de cuerpo, $\Delta V_T = 0$). Bajo fuerte campo longitudinal ($\mathcal{E} \gg \mathcal{E}_{sat}$), la velocidad de deriva satura en $v_{sat} = \mu\,\mathcal{E}_{sat} = \mu \frac{V_{DSAT}}{L}$, permitiendo linealizar la corriente de drenador:
+\begin{equation}
+I_D \approx k\,V_{DSAT}\,(V_{GS} - V_T) = W\,C_{ox}\,v_{sat}\,(V_{GS} - V_T)
+\label{eq:id_sat}
+\end{equation}
+donde la equivalencia $k\,V_{DSAT} = C_{ox}\,W\,v_{sat}$ es válida al ser $L_n = L_p = L_{\min}$.
 
 \noindent\textbf{2. Equilibrio estático de corrientes:}\\
-Al no existir corriente de compuerta estacionaria hacia la carga ($I_{out} = 0$), la corriente que drena el PMOS debe igualar exactamente a la que absorbe el NMOS ($I_{Dn} = I_{Dp}$):
+Al no existir corriente de compuerta estacionaria hacia la carga ($I_{out} = 0$), las corrientes de drenador se igualan en el punto de umbral ($I_{Dn} = I_{Dp}$):
 \begin{align}
 I_{Dn} &= k_n\,V_{DSATn}\,(V_{GSn} - V_{Tn}) = k_n\,V_{DSATn}\,(V_M - V_{Tn}) \label{eq:idn}\\
 I_{Dp} &= k_p\,V_{DSATp}\,(V_{SGp} - |V_{Tp}|) = k_p\,V_{DSATp}\,(V_{DD} - V_M + V_{Tp}) \label{eq:idp}
 \end{align}
-donde se emplea $-|V_{Tp}| = +V_{Tp}$ ($V_{Tp} < 0$). Igualando~\eqref{eq:idn} y~\eqref{eq:idp} y definiendo la razón de transconductancia de saturación $r$:
+donde $-|V_{Tp}| = +V_{Tp}$ ($V_{Tp} < 0$). Definiendo la razón de transconductancia de saturación $r$:
 \begin{equation}
 r \equiv \frac{k_p\,V_{DSATp}}{k_n\,V_{DSATn}} = \frac{C_{ox}\,W_p\,v_{sat,p}}{C_{ox}\,W_n\,v_{sat,n}} = \frac{W_p}{W_n}\cdot\frac{v_{sat,p}}{v_{sat,n}} = \beta\cdot\frac{v_{sat,p}}{v_{sat,n}}
 \label{eq:r_def}
 \end{equation}
-donde $\beta \equiv W_p / W_n$. Sustituyendo $r$ en la igualdad $I_{Dn} = I_{Dp}$:
-\begin{equation}
-V_M - V_{Tn} = r\,\left(V_{DD} - V_M + V_{Tp}\right) \implies V_M\,(1 + r) = V_{Tn} + r\,(V_{DD} + V_{Tp})
-\end{equation}
-Despejando analíticamente, se llega a la expresión gobernante del umbral lógico:
+con $\beta \equiv W_p / W_n$. Sustituyendo $r$ en $I_{Dn} = I_{Dp}$ y despejando analíticamente:
 \begin{equation}
 V_M = \frac{V_{Tn} + r\,(V_{DD}+V_{Tp})}{1+r}, \qquad r = \beta\cdot\frac{v_{sat,p}}{v_{sat,n}}
 \label{eq:vm}
@@ -234,27 +225,15 @@ V_M = \frac{V_{Tn} + r\,(V_{DD}+V_{Tp})}{1+r}, \qquad r = \beta\cdot\frac{v_{sat
 \noindent\textbf{3. Condición de dimensionamiento para centrado simétrico ($V_M = V_{DD}/2$):}\\
 Para maximizar y equilibrar simétricamente los márgenes de ruido ($NM_L = NM_H$), se impone $V_M = V_{DD}/2$:
 \begin{equation}
-\frac{V_{DD}}{2} = \frac{V_{Tn} + r\,(V_{DD} + V_{Tp})}{1 + r} \implies r = \frac{\frac{V_{DD}}{2} - V_{Tn}}{\frac{V_{DD}}{2} - |V_{Tp}|}
-\end{equation}
-Sustituyendo la definición $r = \beta\,(v_{sat,p}/v_{sat,n})$, se deduce el factor de aspecto óptimo de diseño $\beta_{\text{sim}}$:
-\begin{equation}
 \beta_{\text{sim}} = \left(\frac{\frac{V_{DD}}{2} - V_{Tn}}{\frac{V_{DD}}{2} - |V_{Tp}|}\right) \cdot \frac{v_{sat,n}}{v_{sat,p}}
 \label{eq:beta_opt}
 \end{equation}
-Bajo umbrales aproximadamente simétricos ($V_{Tn} \approx |V_{Tp}|$), la razón exige $r \approx 1$, lo que impone la condición directa $\beta_{\text{sim}} \approx v_{sat,n}/v_{sat,p}$. A diferencia de canal largo (donde la regla clásica predice $\beta \approx \mu_n/\mu_p \approx 2.70$), en nodos nanométricos sub-65~nm el centrado queda dominado por la razón de velocidades de saturación ($v_{sat,n}/v_{sat,p} \approx 1.13$), convergiendo en la simulación a $\beta \approx 2.50$ debido a los efectos combinados de canal corto.
-
-\noindent\textbf{4. Condiciones de borde para saturación simultánea:}\\
-Para garantizar la validez física de la deducción, ambos dispositivos deben operar efectivamente en saturación en $V_{in} = V_{out} = V_M$:
-\begin{equation}
-V_{DSn} = V_M \ge V_{DSATn} \qquad\text{y}\qquad V_{SDp} = (V_{DD} - V_M) \ge V_{DSATp}
-\label{eq:cond_sat}
-\end{equation}
-En la tecnología 45~nm HP ($V_{DD}=1.0\text{~V}$, $V_{DSATn} \approx 0.12\text{~V}$, $V_{DSATp} \approx 0.15\text{~V}$), al encontrarse $V_M \approx 0.50\text{~V}$, se cumple $0.50\text{~V} \ge 0.12\text{~V}$ y $0.50\text{~V} \ge 0.15\text{~V}$ con amplio margen, asegurando la rigurosa estabilidad del punto de operación.
+Bajo umbrales simétricos ($V_{Tn} \approx |V_{Tp}|$), la razón exige $\beta_{\text{sim}} \approx v_{sat,n}/v_{sat,p} \approx 1.13$, convergiendo en la simulación nanométrica a $\beta \approx 2.50$ debido a los efectos combinados de canal corto. La hipótesis de saturación simultánea en $V_M \approx 0.50\text{~V}$ queda plenamente verificada ($V_{DSn} \ge V_{DSATn} \approx 0.12\text{~V}$ y $V_{SDp} \ge V_{DSATp} \approx 0.15\text{~V}$), asegurando la consistencia física del modelo.
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=0.48\textwidth,height=4.8cm,keepaspectratio]{figuras/fig_esquema_inversor.png}
-\caption{Esquema circuital del inversor CMOS (45~nm HP) en condición de conmutación ($V_{in} = V_{out} = V_M$, $I_{Dn} = I_{Dp}$), explicitando terminales de sustrato ($V_{SB}=0$), polarización, carga $C_L=2$~fF y parámetros de diseño.}
+\includegraphics[width=0.45\textwidth]{figuras/fig_esquema_inversor.png}
+\caption{Esquema circuital del inversor CMOS (45~nm HP) en condición de conmutación ($V_{in} = V_{out} = V_M$, $I_{Dn} = I_{Dp}$).}
 \label{fig:esquema_inv}
 \end{figure}
 \FloatBarrier
@@ -267,15 +246,15 @@ El retardo medio de propagación $t_p$ se define como el promedio entre los tiem
 t_p = \tfrac{1}{2}\left(t_{pHL}+t_{pLH}\right), \qquad t_{pHL} \approx 0.69\,R_{eq,n}\,C_L, \qquad t_{pLH} \approx 0.69\,R_{eq,p}\,C_L
 \label{eq:tp}
 \end{equation}
-donde las resistencias efectivas de canal cumplen $R_{eq,n} \propto \frac{1}{W_n}$ y $R_{eq,p} \propto \frac{1}{W_p} = \frac{1}{\beta W_n}$. En un circuito integrado, la capacitancia total del nodo de conmutación $C_L$ no es meramente una carga concentrada externa, sino la superposición de componentes parásitas intrínsecas y de carga:
+donde $R_{eq,n} \propto \frac{1}{W_n}$ y $R_{eq,p} \propto \frac{1}{\beta W_n}$. En un circuito integrado, la capacitancia total de carga $C_L$ descompone en componentes intrínsecas y externas:
 \begin{equation}
 C_L = C_{ext} + C_{int} = C_{ext} + \underbrace{(C_{db,n} + C_{db,p})}_{\text{difusión}} + \underbrace{(C_{gd,n} + C_{gd,p})}_{\text{solapamiento}} + C_{wire}
 \label{eq:cl_split}
 \end{equation}
-Esta descomposición justifica físicamente por qué en la recta $t_p(C_L) = m\,C_L + t_0$, la ordenada al origen no es nula: $t_0 \approx 0.69\,R_{eq}\,C_{int}$ modela el retardo intrínseco descargado.
+Esta descomposición justifica que en $t_p(C_L) = m\,C_L + t_0$, la ordenada $t_0 \approx 0.69\,R_{eq}\,C_{int}$ represente el retardo intrínseco descargado.
 
 \paragraph{Disipación de potencia total.}
-La potencia consumida por el inversor en conmutación periódica a frecuencia $f$ con factor de actividad $\alpha$ se modela mediante sus tres componentes fundamentales:
+La potencia consumida en conmutación periódica a frecuencia $f$ con factor de actividad $\alpha$ comprende tres términos fundamentales:
 \begin{equation}
 P_{tot} = \underbrace{\alpha\,C_L V_{DD}^{2} f}_{\text{dinámica de conmutación}}
         + \underbrace{I_{cc}\,V_{DD}}_{\text{cortocircuito en transición}}
@@ -283,12 +262,9 @@ P_{tot} = \underbrace{\alpha\,C_L V_{DD}^{2} f}_{\text{dinámica de conmutación
 \label{eq:pot}
 \end{equation}
 
-
 \section{Entorno y Modelos Tecnológicos}
 
-Las simulaciones fueron implementadas en LTspice 24 utilizando las tarjetas del \emph{Predictive Technology Model} (PTM, Arizona State University) correspondientes a los nodos de 90~nm bulk, 45~nm (procesos HP y LP) y 22~nm HP bajo la formulación BSIM4 (nivel 54 / 14 en LTspice). 
-
-Para los análisis de caracterización y contraste entre procesos, se implementaron librerías con renombramiento de modelos (\texttt{45nm\_HP\_ren.lib} y \texttt{45nm\_LP\_ren.lib}) asignando identificadores unívocos (\texttt{nmos\_45hp}, \texttt{pmos\_45hp}, \texttt{nmos\_45lp}, \texttt{pmos\_45lp}), mitigando la sobreescritura silenciosa de modelos en directivas \lstinline|.include|. A lo largo del informe se adopta un ancho de referencia $W_n = 4L$ como transistor unitario y longitudes de canal nominales fijadas por cada nodo tecnológico.
+Las simulaciones se ejecutaron en LTspice 24 mediante modelos predictivos PTM (BSIM4) para 90~nm bulk, 45~nm (HP/LP) y 22~nm HP. Se adoptó un ancho unitario de referencia $W_n = 4L_{\min}$ y se renombraron los modelos (\texttt{45nm\_HP\_ren.lib} y \texttt{45nm\_LP\_ren.lib}) para evitar colisiones de parámetros en directivas \lstinline|.include|.
 
 %==============================================================================
 \section{Actividad 1 --- Inversor CMOS: VTC y márgenes de ruido}
@@ -337,8 +313,8 @@ $\bm{\beta}$ & $\bm{V_M}$ (V) & $\bm{V_{IL}}$ (V) & $\bm{V_{IH}}$ (V) & $\bm{NM_
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=0.72\textwidth,height=4.5cm,keepaspectratio]{figuras/fig1_vtc_familia.png}
-\caption{Curvas de transferencia de voltaje (VTC) y derivada $d(V_{out})/d(V_{in})$ para el inversor CMOS de 45~nm HP ante el barrido de $\beta \in [1.0, 3.0]$. Se identifican los puntos de pendiente $-1$ ($V_{IL}, V_{IH}$) y el centrado en $\beta \approx 2.5$.}
+\includegraphics[width=0.76\textwidth]{figuras/fig1_vtc_familia.png}
+\caption{Curvas de transferencia de tensión (VTC) y derivada $d(V_{out})/d(V_{in})$ para el inversor de 45~nm HP ante el barrido de $\beta \in [1.0, 3.0]$.}
 \label{fig:vtc_familia}
 \end{figure}
 \FloatBarrier
@@ -346,16 +322,16 @@ $\bm{\beta}$ & $\bm{V_M}$ (V) & $\bm{V_{IL}}$ (V) & $\bm{V_{IH}}$ (V) & $\bm{NM_
 \begin{preguntas}[Preguntas de la Actividad 1]
 \begin{listapreg}
 \preg{Con la razón de \texttt{u0} obtenida, la regla clásica predice cierto $\beta$ para centrar la VTC. ¿Coincide con el $\beta$ que usted midió? Explique la discrepancia en términos de saturación de velocidad, apoyándose en la ecuación~\eqref{eq:vm}.}
-\par\noindent\textbf{Rpta:} La regla clásica predice $\beta \approx \mu_n/\mu_p = 2.70$. Sin embargo, la simulación determinó que la VTC se centra ($V_M \approx 0.50$~V) en $\beta \approx 2.50$. Esta discrepancia se explica porque en 45~nm domina la saturación de velocidad: según la ecuación~\eqref{eq:vm}, la razón $r$ depende de $v_{sat,p}/v_{sat,n} = 1.13^{-1} \approx 0.88$, mucho más cercana a la unidad que la razón de movilidades (2.70), requiriendo un $\beta$ menor al clásico.
+\par\noindent\textbf{Rpta:} La regla clásica predice $\beta \approx \mu_n/\mu_p = 2.70$, pero la simulación ubica el centrado en $\beta \approx 2.50$. Esta discrepancia se fundamenta en las ecuaciones~\eqref{eq:vm} y~\eqref{eq:beta_opt}: en $45$~nm domina la saturación de velocidad, por lo que la razón efectiva $r$ depende de $v_{sat,p}/v_{sat,n} = 1.13^{-1} \approx 0.88$, convergiendo a un factor $\beta$ sensiblemente menor al predicho por la movilidad.
 
 \preg{¿Por qué $V_{OH}$ y $V_{OL}$ son exactamente $V_{DD}$ y 0~V en lógica CMOS estática, y no lo son en lógica pseudo-NMOS?}
-\par\noindent\textbf{Rpta:} En CMOS estática, en cada estado estable una red conduce plenamente mientras la complementaria está en corte estricto ($I_{DC} \approx 0$). Al no haber corriente estática apreciable, no existe caída resistiva $I \cdot R$, alcanzando niveles de riel a riel ($V_{OH}=V_{DD}$, $V_{OL}=0$~V). En pseudo-NMOS el PMOS siempre conduce; al activarse la PDN se crea un divisor de tensión resistivo, degradando $V_{OL} > 0$~V.
+\par\noindent\textbf{Rpta:} En reposo estático, una red conduce plenamente mientras la complementaria está en corte riguroso ($I_{DC} \approx 0$), alcanzando niveles riel a riel sin caída resistiva ($V_{OH}=V_{DD}$, $V_{OL}=0$~V). En pseudo-NMOS el PMOS conduce continuamente; al activarse la PDN se forma un divisor de tensión resistivo que degrada $V_{OL} > 0$~V.
 
 \preg{Un $\beta$ mayor mejora un margen de ruido y degrada el otro. ¿Cuál y por qué? ¿En qué aplicación preferiría un inversor deliberadamente descentrado?}
-\par\noindent\textbf{Rpta:} Un $\beta$ mayor incrementa la conducción del PMOS, desplazando la VTC hacia la derecha; esto eleva $V_{IL}$ mejorando $NM_L = V_{IL} - V_{OL}$ y reduce $NM_H = V_{OH} - V_{IH}$. Se prefiere un inversor descentrado en receptores de línea con ruido asimétrico (como líneas con fuerte acoplamiento a tierra), en compuertas Schmitt trigger o en etapas de sensado de celdas SRAM.
+\par\noindent\textbf{Rpta:} Un $\beta$ mayor incrementa la conducción PMOS y desplaza la VTC a la derecha, aumentando $V_{IL}$ (mejora $NM_L$) y reduciendo $V_{IH}$ (degrada $NM_H$). Se emplea descentrado en receptores de línea ruidosos con referencia a tierra, comparadores con histéresis (Schmitt trigger) y en la lectura asimétrica de celdas SRAM.
 
 \preg{Repita el barrido con \texttt{45nm\_LP.pm} a $V_{DD}=1.1$~V. ¿Cómo cambia la ganancia en la región de transición y qué parámetro de la tarjeta lo explica?}
-\par\noindent\textbf{Rpta:} En 45nm LP la ganancia máxima en la transición es mayor debido a un óxido más grueso ($t_{oxe} = 1.80$~nm frente a $1.25$~nm en HP) y mayores voltajes de umbral ($V_{TH0} \approx 0.62$~V), lo que mitiga el efecto DIBL (parámetros \texttt{eta0} y \texttt{pclm}), reduciendo la conductancia de salida $g_{ds}$ y aumentando la ganancia intrínseca $A_v = -g_m/(g_{ds,n}+g_{ds,p})$.
+\par\noindent\textbf{Rpta:} La ganancia máxima de transición es mayor debido al óxido más grueso ($t_{oxe} = 1.80$~nm vs $1.25$~nm en HP) y voltajes $V_{TH0}$ superiores ($\approx 0.62$~V), lo que mitiga el efecto DIBL (\texttt{eta0}, \texttt{pclm}), reduciendo la conductancia $g_{ds}$ y elevando la ganancia intrínseca $A_v = -g_m/(g_{ds,n}+g_{ds,p})$.
 \end{listapreg}
 \end{preguntas}
 
@@ -388,8 +364,8 @@ $\bm{\beta}$ & $\bm{V_M}$ (V) & $\bm{V_{IL}}$ (V) & $\bm{V_{IH}}$ (V) & $\bm{NM_
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=0.60\textwidth,height=4.5cm,keepaspectratio]{figuras/fig2_tp_vs_cl.png}
-\caption{Retardo de propagación frente a la capacitancia de carga $C_L \in [1, 8]$~fF en 45~nm HP ($\beta = 2.5$) con recta de regresión lineal ($m = 1.846$~ps/fF, $t_0 = 2.708$~ps).}
+\includegraphics[width=0.66\textwidth]{figuras/fig2_tp_vs_cl.png}
+\caption{Retardo de propagación medio $t_p$ frente a la capacitancia de carga $C_L \in [1, 8]$~fF en 45~nm HP ($\beta = 2.5$).}
 \label{fig:tp_vs_cl}
 \end{figure}
 \FloatBarrier
@@ -397,16 +373,16 @@ $\bm{\beta}$ & $\bm{V_M}$ (V) & $\bm{V_{IL}}$ (V) & $\bm{V_{IH}}$ (V) & $\bm{NM_
 \begin{preguntas}[Preguntas de la Actividad 2]
 \begin{listapreg}
 \preg{De la recta $t_p$ contra $C_L$: ¿qué representa físicamente la pendiente y qué representa la ordenada al origen?}
-\par\noindent\textbf{Rpta:} La pendiente ($m = 1.846$~ps/fF) representa la resistencia equivalente de conmutación efectiva del inversor ($m \approx 0.69\,R_{eq}$), midiendo la degradación del retardo por unidad de carga externa. La ordenada al origen ($t_0 = 2.708$~ps) modela el retardo intrínseco sin carga ($C_L=0$), determinado por las capacidades parásitas internas de difusión ($C_{db}$) y solapamiento ($C_{gd}$).
+\par\noindent\textbf{Rpta:} La pendiente ($m = 1.846$~ps/fF) modela la resistencia equivalente media de conmutación ($m \approx 0.69\,R_{eq}$), midiendo la degradación del retardo por fF externo. La ordenada al origen ($t_0 = 2.708$~ps) representa el retardo intrínseco descargado ($C_L=0$), determinado por las capacitancias parásitas de unión ($C_{db}$) y solapamiento ($C_{gd}$).
 
 \preg{Con $\beta$ correctamente ajustado, $t_{pHL}$ y $t_{pLH}$ deberían ser casi iguales. Si en su simulación difieren en más de 10~\%, ¿qué corrección aplicaría y por qué el ajuste no resulta idéntico al que centró la VTC?}
-\par\noindent\textbf{Rpta:} Se debe incrementar ligeramente $\beta$ (ancho del PMOS) para equilibrar la corriente dinámica de carga y descarga. El ajuste dinámico difiere del estático porque $V_M$ evalúa un único punto DC en saturación ($V_{in}=V_{out}$), mientras que $t_p$ integra corrientes no lineales en un amplio rango dinámico donde las capacitancias parásitas del PMOS crecen con su tamaño y frenan la transición.
+\par\noindent\textbf{Rpta:} Se corrige ajustando levemente el ancho PMOS para equilibrar las corrientes dinámicas de carga y descarga. El ajuste dinámico difiere del estático porque $V_M$ evalúa un único punto DC en saturación ($V_{in}=V_{out}$), mientras que $t_p$ integra la corriente no lineal a lo largo de toda la conmutación, donde los parásitos crecen con $W_p$.
 
 \preg{Entre 90~nm y 22~nm el retardo mejora aunque $V_{DD}$ se reduce en un tercio. Identifique los dos mecanismos del escalamiento que compensan la caída de tensión.}
-\par\noindent\textbf{Rpta:} Los dos mecanismos son: 1) La drástica reducción de la longitud de canal $L$ y el adelgazamiento del óxido $t_{ox}$, que incrementan la densidad de corriente por unidad de ancho compensando el menor campo eléctrico; y 2) La reducción cuadrática del área de compuerta ($W \cdot L$), lo que abate las capacitancias parásitas que deben conmutarse en cada ciclo.
+\par\noindent\textbf{Rpta:} 1) La reducción de la longitud física de canal $L$ y el adelgazamiento del óxido $t_{ox}$, que incrementan la densidad de corriente por unidad de ancho; y 2) La contracción geométrica del área de compuerta ($W \cdot L$), disminuyendo sensiblemente las capacitancias parásitas a conmutar en cada ciclo.
 
 \preg{Aumente el tiempo de subida del estímulo de 5~ps a 100~ps. ¿Qué componente de la ecuación~\eqref{eq:pot} crece y por qué?}
-\par\noindent\textbf{Rpta:} Crece sustancialmente la potencia de cortocircuito ($I_{cc}\,V_{DD}$). Al aumentar el tiempo de subida de 5~ps a 100~ps, la señal de entrada permanece durante un intervalo temporal 20 veces mayor en la ventana de conducción simultánea ($V_{Tn} < V_{in} < V_{DD} - |V_{Tp}|$), donde ambos transistores conducen corriente directa entre $V_{DD}$ y tierra.
+\par\noindent\textbf{Rpta:} Crece notablemente la potencia de cortocircuito ($I_{cc} V_{DD}$). Al ampliar el tiempo de subida de 5~ps a 100~ps, el circuito permanece durante una ventana temporal 20 veces mayor en el rango de conducción simultánea ($V_{Tn} < V_{in} < V_{DD} - |V_{Tp}|$), donde fluye corriente directa entre $V_{DD}$ y tierra.
 \end{listapreg}
 \end{preguntas}
 
@@ -444,16 +420,16 @@ NOR2 (una conm.)    & 180~nm & 900~nm & 2160~nm & 14.929 & 8.795 & 11.862 \\
 \begin{preguntas}[Preguntas de la Actividad 3]
 \begin{listapreg}
 \preg{Los dos escenarios del paso 3 dan retardos distintos. Explique el papel de la capacitancia del nodo intermedio y del efecto de cuerpo del transistor superior.}
-\par\noindent\textbf{Rpta:} Al conmutar la entrada externa (MN1), el nodo intermedio $n_x$ ya estaba descargado a tierra por MN2; solo se evacúa la carga de $C_L$ ($t_{pHL}=9.021$~ps). Al conmutar la entrada interna (MN2), $n_x$ estaba cargado previamente a $V_{DD}-V_{Tn}$ y debe descargarse a través de MN2 junto con $C_L$. Además, el transistor superior MN1 sufre tensión fuente-sustrato positiva ($V_{SB}>0$), lo que incrementa su voltaje umbral por efecto de cuerpo y degrada el retardo ($t_{pHL}=10.221$~ps).
+\par\noindent\textbf{Rpta:} En la conmutación externa (MN1), el nodo $n_x$ ya estaba descargado a tierra por MN2, evacuando únicamente $C_L$ ($t_{pHL}=9.021$~ps). En la conmutación interna (MN2), $n_x$ se encontraba precargado a $V_{DD}-V_{Tn}$ y debe descargarse a través de MN2; sumado al aumento de $V_{Tn}$ por efecto de cuerpo en MN1 ($V_{SB}>0$), el retardo se degrada a $10.221$~ps.
 
 \preg{El esfuerzo lógico de la NAND2 es $4/3$ y el de la NOR2 es $5/3$. Verifique cualitativamente esa jerarquía con sus mediciones y explique por qué la industria construye bibliotecas dominadas por NAND.}
-\par\noindent\textbf{Rpta:} Las mediciones confirman que la NAND2 es más rápida ($t_p = 7.910$~ps vs $11.862$~ps en el caso típico de una entrada) y más compacta ($\sum W = 1620$~nm vs $2160$~nm). La industria basa sus librerías en NAND porque coloca en serie los transistores NMOS (con mayor movilidad de electrones), requiriendo duplicar un $W_n$ pequeño; la NOR2 coloca en serie los PMOS (con menor movilidad de huecos), forzando transistores PMOS muy anchos ($W_p = 900$~nm) que penalizan gravemente el área y la capacitancia de compuerta de entrada.
+\par\noindent\textbf{Rpta:} Las mediciones ratifican que NAND2 es más rápida ($t_p = 7.910$~ps vs $11.862$~ps) y compacta ($\sum W = 1620$~nm vs $2160$~nm). La industria prefiere NAND porque conecta en serie transistores NMOS (alta movilidad), duplicando un $W_n$ pequeño; la NOR apila PMOS (menor movilidad), forzando anchos $W_p$ muy grandes que penalizan área y capacidad de entrada.
 
 \preg{¿Qué le ocurriría al retardo de una NOR de cuatro entradas dimensionada con este mismo criterio? Estime el $W_p$ requerido y comente su viabilidad.}
-\par\noindent\textbf{Rpta:} Una NOR4 requeriría 4 PMOS en serie, exigiendo $W_p = 4 \times (\beta W_n) = 4 \times 450\text{~nm} = 1800$~nm por transistor ($\sum W_p = 7.20\text{~\textmu m}$). El retardo crecería cuadráticamente con el número de entradas ($\propto N^2$) por la acumulación de resistencias de canal y capacidades de difusión de los 3 nodos intermedios en serie, haciendo la compuerta NOR4 inviable en celdas estándar de alta velocidad.
+\par\noindent\textbf{Rpta:} Requeriría 4 PMOS en serie con $W_p = 4 \times (\beta W_n) = 1800$~nm por dispositivo ($\sum W_p = 7.20\text{~\textmu m}$). El retardo de subida crecería de forma cuadrática ($\propto N^2$) por la acumulación de resistencia de canal y capacidades de difusión de los 3 nodos internos, resultando inviable en celdas estándar de alta velocidad.
 
 \preg{Si el sustrato del NMOS superior de la NAND2 se conectara a su fuente en lugar de a tierra, ¿qué cambiaría en el retardo? ¿Es esto físicamente realizable en un proceso \emph{bulk}?}
-\par\noindent\textbf{Rpta:} Al conectar sustrato a fuente ($V_{SB}=0$) se eliminaría el efecto de cuerpo, manteniendo $V_{Tn}$ en su valor nominal mínimo y reduciendo el retardo $t_{pHL}$. No es físicamente realizable en un proceso estándar CMOS sobre sustrato p \emph{bulk} común, ya que todos los NMOS comparten el mismo silicio masivo fijado a tierra; requeriría una tecnología de pozo triple (\emph{triple-well}) o silicio sobre aislante (SOI) con islas dieléctricas aisladas.
+\par\noindent\textbf{Rpta:} Se anularía el efecto de cuerpo ($V_{SB}=0$), preservando $V_{Tn}$ en su mínimo nominal y reduciendo $t_{pHL}$. No es realizable en procesos estándar CMOS \emph{bulk}, donde todos los NMOS comparten el sustrato tipo p común polarizado a tierra; requeriría tecnologías de pozo triple (\emph{triple-well}) o SOI.
 \end{listapreg}
 \end{preguntas}
 
@@ -475,8 +451,8 @@ Se sintetiza la función inversora $Y = \overline{(A \cdot B) + C}$ mediante ló
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=0.72\textwidth,height=3.8cm,keepaspectratio]{figuras/fig_esquema_compleja.png}
-\caption{Diseño de la compuerta compleja $Y = \overline{(A \cdot B) + C}$: (a) Grafos de conducción duales; (b) Esquema circuital CMOS con anchos asignados ($W_n=180$~nm, $\beta=2$).}
+\includegraphics[width=0.76\textwidth]{figuras/fig_esquema_compleja.png}
+\caption{Diseño de la compuerta compleja $Y = \overline{(A \cdot B) + C}$: (a) Grafos de conducción duales; (b) Esquema circuital CMOS dimensionado ($W_n=180$~nm, $\beta=2$).}
 \label{fig:esquema_compleja}
 \end{figure}
 \FloatBarrier
@@ -490,8 +466,8 @@ Se verificó el barrido de las ocho combinaciones de entrada en 8~ns (Figura~\re
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=0.70\textwidth,height=4.0cm,keepaspectratio]{figuras/fig3_transitorio_compleja.png}
-\caption{Verificación funcional transitoria de la compuerta compleja $Y = \overline{(A \cdot B) + C}$ ante el barrido sincronizado de las 8 combinaciones binarias ($000$ a $111$) en una ventana de 8~ns.}
+\includegraphics[width=0.74\textwidth]{figuras/fig3_transitorio_compleja.png}
+\caption{Respuesta transitoria de la compuerta compleja $Y = \overline{(A \cdot B) + C}$ ante el barrido de las 8 combinaciones binarias ($000$ a $111$) en 8~ns.}
 \label{fig:compleja}
 \end{figure}
 \FloatBarrier
@@ -499,13 +475,13 @@ Se verificó el barrido de las ocho combinaciones de entrada en 8~ns (Figura~\re
 \begin{preguntas}[Preguntas de la Actividad 4]
 \begin{listapreg}
 \preg{¿Cuántos transistores requiere su implementación? Compárela con la realización de la misma función mediante NAND2 más inversores en cascada, en número de transistores y en número de etapas.}
-\par\noindent\textbf{Rpta:} La compuerta compleja estática integrada requiere exactamente 6 transistores (3 NMOS y 3 PMOS) en una sola etapa de inversión. Implementarla con celdas básicas estándar requeriría una NAND2 ($A \cdot B$, 4T), un inversor (2T), una NOR2 para sumar $C$ (4T) y un inversor de salida (2T), totalizando 12 transistores y 3 etapas en cascada, duplicando el área y triplicando el retardo acumulado.
+\par\noindent\textbf{Rpta:} Requiere exactamente 6 transistores (3 NMOS y 3 PMOS) en una sola etapa inversora. Con celdas estándar exigiría una NAND2 (4T), inversor (2T), NOR2 (4T) e inversor (2T), totalizando 12 transistores y 3 retardos en cascada, duplicando el área y triplicando la latencia.
 
 \preg{La PUN de su diseño tiene una rama serie de dos PMOS. ¿Por qué esta función es más ``amigable'' para CMOS estático que su complemento $Y=\overline{(A+B)\cdot C}$?}
-\par\noindent\textbf{Rpta:} Porque la PUN de $Y=\overline{(A \cdot B)+C}$ tiene como máximo 2 transistores PMOS en serie en su camino crítico, requiriendo un dimensionamiento moderado ($2W_p$). En cambio, la función no inversora $(A \cdot B)+C$ o funciones con 3 o más transistores PMOS en serie exigirían anchos enormes ($3W_p \approx 1080$~nm) que sobrecargarían la capacitancia de compuerta y degradarían severamente el retardo de subida.
+\par\noindent\textbf{Rpta:} Porque la PUN de $Y=\overline{(A \cdot B)+C}$ limita a 2 los transistores PMOS en el camino crítico serie ($2W_p$). Su complemento requeriría mayor apilamiento PMOS en serie, forzando transistores mucho más anchos que degradarían fuertemente la capacitancia de entrada y el retardo de subida.
 
 \preg{Explique por qué la lógica CMOS estática siempre produce una función \textbf{inversora} y qué implica esto al mapear una expresión booleana arbitraria.}
-\par\noindent\textbf{Rpta:} Porque la red PDN (NMOS) conmuta hacia tierra (cero lógico) con entradas en nivel alto ('1'), mientras que la PUN (PMOS) conmuta hacia $V_{DD}$ (uno lógico) con entradas en nivel bajo ('0'); por ende, la conmutación intrínseca siempre complementa la lógica evaluada. Al implementar una función booleana arbitraria no inversora (como AND u OR), es mandatorio sintetizar la función negada y añadir un inversor CMOS a la salida.
+\par\noindent\textbf{Rpta:} Porque la red PDN conmuta a tierra con entradas en '1', mientras la PUN conduce a $V_{DD}$ con entradas en '0', invirtiendo la polaridad lógica. Para implementar funciones no inversoras (AND u OR), es mandatorio sintetizar la función complementada y añadir un inversor CMOS a la salida.
 \end{listapreg}
 \end{preguntas}
 
@@ -537,8 +513,8 @@ Se verificó el barrido de las ocho combinaciones de entrada en 8~ns (Figura~\re
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=0.68\textwidth,height=4.5cm,keepaspectratio]{figuras/fig4_oscilador_anillo.png}
-\caption{Oscilación estacionaria del oscilador de anillo de 5 etapas en 45~nm HP ($f_{osc} = 21.94$~GHz, $t_{pd} = 4.56$~ps).}
+\includegraphics[width=0.74\textwidth]{figuras/fig4_oscilador_anillo.png}
+\caption{Oscilación transitoria estacionaria de las 5 fases en el oscilador de anillo (45~nm HP).}
 \label{fig:ro}
 \end{figure}
 \FloatBarrier
@@ -546,19 +522,19 @@ Se verificó el barrido de las ocho combinaciones de entrada en 8~ns (Figura~\re
 \begin{preguntas}[Preguntas de la Actividad 5]
 \begin{listapreg}
 \preg{Calcule las razones $I_{leak,HP}/I_{leak,LP}$ y $f_{osc,HP}/f_{osc,LP}$. Enuncie el compromiso de diseño en una frase y cite el parámetro de la tarjeta que lo origina.}
-\par\noindent\textbf{Rpta:} Las razones obtenidas son $I_{leak,HP}/I_{leak,LP} = 3.13\text{~nA}/15.3\text{~pA} \approx 205$ y $f_{osc,HP}/f_{osc,LP} = 21.94\text{~GHz}/6.25\text{~GHz} \approx 3.51$. Compromiso: ``Multiplicar la velocidad por $3.5\times$ cuesta un incremento de $200\times$ en consumo de potencia estática''. El parámetro principal es el voltaje umbral $V_{TH0}$ (fijado por \texttt{toxe} y \texttt{voff}), cuya reducción incrementa exponencialmente la fuga subumbral.
+\par\noindent\textbf{Rpta:} $I_{leak,HP}/I_{leak,LP} = 3.13\text{~nA}/15.3\text{~pA} \approx 205$ y $f_{osc,HP}/f_{osc,LP} = 21.94\text{~GHz}/6.25\text{~GHz} \approx 3.51$. Compromiso: ``Acelerar la velocidad $3.5\times$ cuesta aumentar $200\times$ el consumo estático''. El parámetro originario es el umbral $V_{TH0}$ (fijado por \texttt{toxe} y \texttt{voff}), que modula exponencialmente la fuga subumbral.
 
 \preg{La corriente de fuga que midió no proviene de un solo mecanismo. Nombre al menos tres e indique con qué parámetros del modelo BSIM4 se controlan en las tarjetas PTM (revise \texttt{voff}, \texttt{nfactor}, \texttt{eta0}, \texttt{agidl}, \texttt{aigc}).}
-\par\noindent\textbf{Rpta:} 1) Fuga subumbral ($I_{sub}$): modulada por \texttt{voff} (desplazamiento de $V_{th}$), \texttt{nfactor} (factor de oscilación de subumbral) y \texttt{eta0} (penetración de potencial DIBL); 2) Corriente de túnel en el óxido de compuerta ($I_{gate}$): gobernada por \texttt{aigc} y \texttt{toxe}; y 3) Fuga en la unión drenador-sustrato inducida por compuerta (GIDL): gobernada por \texttt{agidl} y \texttt{bgidl}.
+\par\noindent\textbf{Rpta:} 1) Fuga subumbral ($I_{sub}$): controlada por \texttt{voff}, \texttt{nfactor} y \texttt{eta0} (efecto DIBL); 2) Corriente de túnel de compuerta ($I_{gate}$): gobernada por \texttt{aigc} y espesor \texttt{toxe}; y 3) Fuga en unión drenador-sustrato inducida por compuerta (GIDL): modulada por \texttt{agidl} y \texttt{bgidl}.
 
 \preg{¿Por qué el $t_{pd}$ del oscilador de anillo suele ser menor que el $t_p$ medido con un pulso ideal y carga fija?}
-\par\noindent\textbf{Rpta:} Porque en el inversor aislado de la Actividad~2 se impuso una carga capacitiva externa fija de prueba ($C_L = 2$~fF) excitada con transiciones forzadas; en contraste, en el oscilador de anillo la carga conectada a cada salida es únicamente la compuerta del inversor idéntico sucesivo ($C_{in} \approx C_{ox}WL < 1$~fF), conllevando una menor constante de tiempo de conmutación.
+\par\noindent\textbf{Rpta:} Porque en el inversor aislado de la Actividad~2 se impuso una carga externa de prueba ($C_L = 2$~fF) excitada con transiciones ideales; en el oscilador de anillo, cada etapa carga únicamente la compuerta de la etapa idéntica siguiente ($C_{in} \approx C_{ox}WL < 1$~fF), reduciendo la constante de tiempo RC.
 
 \preg{Para un procesador móvil que pasa 95~\% del tiempo en reposo, ¿qué proceso elegiría y qué técnica adicional aplicaría al 5~\% activo?}
-\par\noindent\textbf{Rpta:} Elegiría el proceso 45nm LP, ya que al operar el 95\,\% en reposo su fuga 200 veces menor minimiza drásticamente la energía estática de batería ($E_{leak} = I_{leak} V_{DD} t_{reposo}$). Durante el 5\,\% activo aplicaría escalamiento dinámico de voltaje y frecuencia (DVFS) o polarización directa del cuerpo (\emph{forward body bias}, FBB) para acelerar transitoriamente la computación solo cuando sea requerido.
+\par\noindent\textbf{Rpta:} Se elige el proceso 45~nm LP, cuya fuga 200 veces menor minimiza el drenaje estático de la batería durante el reposo. Durante el 5\,\% activo se aplica escalamiento dinámico de voltaje y frecuencia (DVFS) o polarización directa de sustrato (FBB) para recuperar transitoriamente la velocidad de cómputo.
 
 \preg{La potencia de cortocircuito no aparece explícitamente en sus mediciones porque está incluida en $I_{avg}$. Proponga un procedimiento de simulación que permita separarla de la componente de carga y descarga.}
-\par\noindent\textbf{Rpta:} Se simula el circuito con la carga nominal $C_L$ integrando $E_{tot} = V_{DD}\int I(V_1)\,dt$. Luego, se simula idénticamente con $C_L = 0$ y se descuenta la energía requerida para cargar y descargar las capacitancias parásitas internas $C_{par}$; la energía disipada remanente en la ventana de transición mutua ($V_{Tn} < V_{in} < V_{DD}-|V_{Tp}|$) corresponde a la componente pura de cortocircuito $E_{cc} = \int I_{cc}(t)\,V_{DD}\,dt$.
+\par\noindent\textbf{Rpta:} Se simula con carga $C_L$ obteniendo $E_{tot} = V_{DD}\int I(V_1)\,dt$. Luego se simula con $C_L = 0$ y se descuenta la energía de carga/descarga de parásitos internos $C_{par}$; la energía remanente en la ventana de conducción mutua ($V_{Tn} < V_{in} < V_{DD}-|V_{Tp}|$) constituye la disipación neta de cortocircuito $E_{cc}$.
 \end{listapreg}
 \end{preguntas}
 
@@ -566,16 +542,16 @@ Se verificó el barrido de las ocho combinaciones de entrada en 8~ns (Figura~\re
 \section{Conclusiones}
 %==============================================================================
 
-\begin{enumerate}[leftmargin=1.6em,itemsep=0.4em]
-  \item \textbf{Saturación de velocidad y centrado de la VTC:} En tecnologías nanométricas sub-65~nm como 45~nm HP, la saturación de velocidad domina la conducción en saturación, aproximando la relación de corrientes a la razón de velocidades límite ($v_{sat,p}/v_{sat,n} \approx 0.88$) en vez de la razón clásica de movilidades ($\mu_n/\mu_p = 2.70$). Como resultado, un factor $\beta = 2.50$ logra centrar la conmutación en $V_M = 0.4989\text{~V} \approx V_{DD}/2$, equilibrando los márgenes de ruido ($NM_L = 0.392\text{~V}$, $NM_H = 0.396\text{~V}$).
+\begin{enumerate}[leftmargin=1.6em,itemsep=0.35em]
+  \item \textbf{Saturación de velocidad y centrado estático:} En nodos sub-65~nm, el umbral lógico $V_M$ y la simetría de la VTC están gobernados por la velocidad de saturación de portadores ($v_{sat,p}/v_{sat,n} \approx 0.88$) y no por la razón clásica de movilidades ($\mu_n/\mu_p \approx 2.70$), determinando que una relación $\beta \approx 2.50$ centra la conmutación y optimiza los márgenes de ruido ($NM_L \approx NM_H \approx 0.39\text{~V}$).
   
-  \item \textbf{Caracterización del retardo y escalamiento:} El ajuste lineal del retardo de propagación frente a la carga ($t_p = 1.846\,C_L + 2.708\text{~ps}$) demostró que la pendiente cuantifica la resistencia efectiva de canal ($0.69\,R_{eq}$), mientras que la ordenada al origen modela el retardo intrínseco descargado derivado de las capacitancias parásitas de unión y solapamiento. Al comparar de 90~nm a 22~nm, la contracción geométrica compensa ampliamente la reducción de $V_{DD}$ (de 1.2~V a 0.8~V).
+  \item \textbf{Resistencia efectiva y retardo intrínseco:} El comportamiento lineal de $t_p(C_L)$ desacopla la resistencia equivalente de conmutación (pendiente $m \propto R_{eq}$) del retardo intrínseco descargado (ordenada $t_0 \propto R_{eq} C_{int}$). El escalamiento tecnológico preserva la velocidad de propagación pese a la reducción de $V_{DD}$ debido a la contracción del área de compuerta y el adelgazamiento del óxido.
 
-  \item \textbf{Superioridad del esfuerzo lógico en NAND2 frente a NOR2:} La compuerta NAND2 ofreció menor retardo ($t_p = 7.910\text{~ps}$ frente a $11.862\text{~ps}$) y menor área total de silicio ($\sum W = 1620\text{~nm}$ frente a $2160\text{~nm}$) respecto a NOR2. La conexión en serie de transistores NMOS aprovecha la mayor movilidad de electrones; por el contrario, colocar PMOS en serie en compuertas NOR castiga fuertemente el área y la capacitancia parásita, haciendo inviable su uso para abanicos de entrada elevados ($N \ge 4$).
+  \item \textbf{Jerarquía de esfuerzo lógico (NAND vs. NOR):} La topología NAND2 demuestra superioridad en retardo de propagación y compacidad de silicio frente a NOR2, al concentrar el apilamiento serie en transistores NMOS de alta movilidad. En contraste, las compuertas NOR apilan dispositivos PMOS, requiriendo anchos que penalizan gravemente la capacitancia de entrada y tornan inviable su uso en abanicos de entrada elevados ($N \ge 4$).
 
-  \item \textbf{Eficiencia de la lógica compleja integrada AOI:} La síntesis de la compuerta $Y = \overline{(A \cdot B) + C}$ requirió únicamente 6 transistores y una única etapa inversora, frente a los 12 transistores y 3 retardos acumulados de una implementación con celdas elementales en cascada, reduciendo a la mitad el área y mejorando sustancialmente la velocidad de respuesta.
+  \item \textbf{Densidad e integración en compuertas complejas AOI:} La síntesis directa de funciones compuestas como $Y = \overline{(A \cdot B) + C}$ en una única celda CMOS reduce a la mitad el conteo de transistores (6T frente a 12T) y consolida la transición a una sola etapa lógica, eliminando nodos intermedios de interconexión y maximizando el producto potencia-retardo-área.
 
-  \item \textbf{Compromiso fundamental velocidad-potencia (HP vs. LP):} En el oscilador de anillo de 5 etapas se verificó el trade-off crucial en nodos avanzados: el proceso 45~nm HP proporciona una frecuencia de conmutación $3.5\times$ superior ($21.94\text{~GHz}$ vs. $6.25\text{~GHz}$), pero incurre en una penalización de más de $200\times$ en corriente de fuga estática ($3.13\text{~nA}$ vs. $15.3\text{~pA}$). Este comportamiento sustenta la selección del proceso LP para aplicaciones móviles de bajo consumo donde el tiempo en modo \emph{standby} domina el ciclo de vida de la batería.
+  \item \textbf{Compromiso fundamental entre desempeño y potencia estática:} La caracterización comparativa entre 45~nm HP y LP demuestra que un factor de $3.5\times$ en velocidad exige tolerar un incremento superior a $200\times$ en corriente de fuga estática. Este comportamiento sustenta la implementación de procesos LP en arquitecturas energéticamente restringidas y de procesos HP en bloques de procesamiento de alto rendimiento.
 \end{enumerate}
 
 %==============================================================================
