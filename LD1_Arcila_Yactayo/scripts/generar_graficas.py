@@ -30,8 +30,8 @@ os.makedirs(output_dir, exist_ok=True)
 def read_raw_lines(path):
     with open(path, 'rb') as f:
         raw_bytes = f.read()
-    if len(raw_bytes) > 2 and raw_bytes[1] == 0:
-        return raw_bytes.decode('utf-16le').splitlines(True)
+    if b'\x00' in raw_bytes[:100]:
+        return raw_bytes.decode('utf-16le', errors='ignore').splitlines(True)
     return raw_bytes.decode('utf-8', errors='ignore').splitlines(True)
 
 # -------------------------------------------------------------
@@ -203,16 +203,22 @@ axs[3].set_ylim(-0.1, 1.15)
 axs[3].set_xlabel('Tiempo, $t$ [ns]')
 axs[3].grid(True)
 
-# Anotaciones de estados
-estados = ["000", "001", "010", "011", "100", "101", "110", "111"]
-y_esperados = [1, 0, 1, 0, 1, 0, 0, 0]
+# Anotaciones de estados y separadores verticales sincronizados
+estados = ["111", "110", "101", "100", "011", "010", "001", "000"]
+y_esperados = [0, 0, 0, 1, 0, 1, 0, 1]
+
+for ax in axs:
+    for t_div in range(1, 8):
+        ax.axvline(t_div, color='gray', linestyle=':', alpha=0.6, linewidth=1.0)
+
 for idx, (est, y_esp) in enumerate(zip(estados, y_esperados)):
     t_center = idx + 0.5
-    axs[3].text(t_center, 0.5, f'{est}\n$Y={y_esp}$', ha='center', va='center',
-                fontsize=8, bbox=dict(boxstyle='square,pad=0.2', facecolor='white', alpha=0.8))
+    axs[3].text(t_center, 0.5, f'$ABC={est}$\n$Y={y_esp}$', ha='center', va='center',
+                fontsize=8, fontweight='bold',
+                bbox=dict(boxstyle='round,pad=0.25', facecolor='#F4F6FB', edgecolor='#1E2761', alpha=0.9))
 
 plt.xlim(0, 8.0)
-plt.savefig(os.path.join(output_dir, "fig3_transitorio_compleja.png"))
+plt.savefig(os.path.join(output_dir, "fig3_transitorio_compleja.png"), bbox_inches='tight')
 plt.close()
 
 # -------------------------------------------------------------

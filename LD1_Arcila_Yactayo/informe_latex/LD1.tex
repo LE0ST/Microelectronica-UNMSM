@@ -458,16 +458,17 @@ Se sintetiza la función inversora $Y = \overline{(A \cdot B) + C}$ mediante ló
 \FloatBarrier
 
 \subsection*{Verificación funcional y casos críticos de retardo}
-Se verificó el barrido de las ocho combinaciones de entrada en 8~ns (Figura~\ref{fig:compleja}):
+La Figura~\ref{fig:compleja} presenta el barrido de las ocho combinaciones de entrada en 8~ns ($111$ a $000$) según el Anexo~\ref{sec:a4}, verificando rigurosamente la tabla de verdad ($Y=1$ únicamente para $100$, $010$ y $000$):
 \begin{itemize}[leftmargin=1.6em,itemsep=0.2em]
-  \item \textbf{Peor caso de descarga ($t_{pHL}$):} Transición hacia $ABC = 110$ ($t_{pHL} = 10.42$~ps), donde la corriente fluye exclusivamente por la rama serie $MN_A - MN_B$ a través del nodo intermedio $n_{ab}$. El mejor caso ocurre en $ABC = 111$ ($t_{pHL} = 5.86$~ps) al descargar por ambas ramas en paralelo.
-  \item \textbf{Peor caso de carga ($t_{pLH}$):} Transición donde conduce un único PMOS de la rama paralela en serie con $C$ ($ABC = 010$ o $100$, $t_{pLH} = 11.18$~ps). El mejor caso ocurre en $ABC = 000$ ($t_{pLH} = 8.74$~ps) con $MP_A$ y $MP_B$ conduciendo simultáneamente.
+  \item \textbf{Peor caso de carga ($t_{pLH}$):} Se mide directamente en la conmutación de $t = 3\text{~ns}$ ($101 \to 100$, $t_{pLH} = 9.27$~ps) y $t = 5\text{~ns}$ ($011 \to 010$, $t_{pLH} = 7.84$~ps), donde la corriente fluye por el camino más resistivo de la PUN ($MP_C$ en serie con un solo PMOS en paralelo). El mejor caso ocurre en $t = 7\text{~ns}$ ($001 \to 000$, $t_{pLH} = 6.47$~ps) al conducir ambas ramas PMOS en paralelo.
+  \item \textbf{Análisis crítico de descarga ($t_{pHL}$):} El peor caso teórico ocurre al descargar exclusivamente por la rama serie $MN_A - MN_B$ ($ABC = 110$). Sin embargo, en el barrido continuo del Anexo~\ref{sec:a4}, el estado $110$ es precedido por $111$, por lo que la salida ya se encontraba en 0~V y no existe transición de bajada en esa ventana. Las caídas observadas en el barrido ($t = 4\text{~ns}$ y $t = 6\text{~ns}$) descargan por el transistor rápido $MN_C$ ($t_{pHL} = 6.92$~ps y $10.43$~ps).
+  \item \textbf{Medición dedicada del peor caso $t_{pHL}$:} Excitando un escalón hacia $110$ desde un estado alto previo ($010 \to 110$ o $100 \to 110$), la descarga fluye exclusivamente por la rama serie, obteniéndose $t_{pHL} = 13.19$~ps para la entrada externa ($A$) y $t_{pHL} = 14.39$~ps para la interna ($B$, penalizada por la precarga del nodo intermedio $n_{ab}$ y efecto cuerpo en $MN_A$).
 \end{itemize}
 
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.74\textwidth]{figuras/fig3_transitorio_compleja.png}
-\caption{Respuesta transitoria de la compuerta compleja $Y = \overline{(A \cdot B) + C}$ ante el barrido de las 8 combinaciones binarias ($000$ a $111$) en 8~ns.}
+\caption{Respuesta transitoria de la compuerta compleja $Y = \overline{(A \cdot B) + C}$ ante el barrido de las 8 combinaciones binarias ($111$ a $000$) en 8~ns.}
 \label{fig:compleja}
 \end{figure}
 \FloatBarrier
