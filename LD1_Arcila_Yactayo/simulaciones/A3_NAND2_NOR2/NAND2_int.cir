@@ -3,7 +3,7 @@
 .param VDDv = 1.0
 .param Lmin = 45n
 .param Wn = 4*Lmin
-.param beta = 2
+.param beta = 2.5 ; beta optimo del inversor de referencia
 
 V1 vdd 0 {VDDv}
 VA a 0 {VDDv}

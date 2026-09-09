@@ -443,7 +443,7 @@ Y = \overline{(A \cdot B) + C}
 \end{equation}
 
 \subsection*{Síntesis topológica y dimensionamiento}
-Se sintetiza la función inversora $Y = \overline{(A \cdot B) + C}$ mediante lógica CMOS estática con criterio de resistencia equivalente del inversor ($R_{eq,n} = R_n$, $R_{eq,p} = R_p$ con $W_n=180$~nm, $\beta=2$):
+Se sintetiza la función inversora $Y = \overline{(A \cdot B) + C}$ mediante lógica CMOS estática. Conforme a la especificación de la netlist de referencia (Anexo~\ref{sec:a4}), se adopta el dimensionamiento basado en una razón entera $\beta = 2$ ($W_n = 180$~nm, $W_p = 360$~nm como referencia base), simplificando las razones geométricas en celdas multinivel y preservando el criterio de resistencia equivalente de conmutación ($R_{eq,n} = R_n$, $R_{eq,p} = R_p$):
 \begin{itemize}[leftmargin=1.6em,itemsep=0.2em]
   \item \textbf{Red Pull-Down (PDN):} A partir de la expresión no complementada $F = (A \cdot B) + C$, la operación AND se implementa con transistores NMOS en serie ($MN_A, MN_B$), colocados en paralelo con $MN_C$ (operación OR). La rama serie duplica su resistencia equivalente ($2R_n$), requiriendo anchos duplicados $W_{nA} = W_{nB} = 2W_n = 360$~nm. La rama paralela conduce individualmente a tierra, manteniendo $W_{nC} = W_n = 180$~nm.
   \item \textbf{Red Pull-Up (PUN) dual:} Por dualidad topológica planar, la rama serie de la PDN se convierte en ramas paralelas ($MP_A \parallel MP_B$), las cuales se conectan en serie con $MP_C$. En el peor caso de conducción, solo conduce un PMOS de la rama paralela en serie con $C$ ($R_{PUN} = R_p' + R_p' = 2R_p'$); para igualar $R_{PUN} = R_p$, cada PMOS debe duplicar su ancho: $W_{pA} = W_{pB} = W_{pC} = 2W_p = 720$~nm.
@@ -573,7 +573,7 @@ Guarde cada bloque como archivo \texttt{.cir} y ejecútelo con \texttt{File $\ri
 .param VDDv = 1.0
 .param Lmin = 45n
 .param Wn   = 4*Lmin
-.param beta = 2
+.param beta = 2       ; Valor base de barrido (.step 1 a 3)
 
 V1  vdd 0 {VDDv}
 VIN in  0 0
@@ -605,7 +605,7 @@ Para el punto de fuga de la Actividad~5, reemplace las directivas de análisis p
 .param VDDv  = 1.0
 .param Lmin  = 45n
 .param Wn    = 4*Lmin
-.param beta  = 2.5
+.param beta  = 2.5    ; beta optimo de referencia (Actividad 1)
 .param Cload = 2f
 
 V1  vdd 0 {VDDv}
@@ -638,7 +638,7 @@ C1  out 0 {Cload}
 .param VDDv = 1.0
 .param Lmin = 45n
 .param Wn   = 4*Lmin
-.param beta = 2
+.param beta = 2.5    ; beta optimo del inversor de referencia
 
 V1 vdd 0 {VDDv}
 VA a 0 PULSE(0 {VDDv} 200p 10p 10p 1n 2n)
@@ -668,7 +668,7 @@ C1 out 0 2f
 .param VDDv = 1.0
 .param Lmin = 45n
 .param Wn   = 4*Lmin
-.param beta = 2
+.param beta = 2      ; Razon entera para compuerta compleja
 
 V1 vdd 0 {VDDv}
 
@@ -703,7 +703,7 @@ C1 out 0 2f
 .param VDDv = 1.0
 .param Lmin = 45n
 .param Wn   = 4*Lmin
-.param beta = 2
+.param beta = 2.5    ; Inversores calibrados de Actividad 1 y 2
 .param N    = 5
 
 .subckt INV in out vdd
