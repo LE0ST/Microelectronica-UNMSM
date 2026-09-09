@@ -16,6 +16,13 @@ Repositorio de prácticas de laboratorio, simulaciones SPICE e informes técnico
 ```
 MicroNano/
 │
+├── AGENTS.md                                   # Context Engineering y reglas operativas para agentes IA (Antigravity)
+├── CLAUDE.md                                   # Guía de interoperabilidad para Claude Code
+│
+├── _docs/                                      # Documentación viva del proyecto
+│   ├── process.md                              # Protocolo de simulación, post-procesamiento y QA
+│   └── plan.md                                 # Hoja de ruta del curso y seguimiento de entregables
+│
 ├── Semana_01/                                  # Introducción e Inversor CMOS básico
 │   ├── Teoria/                                 # Diapositivas y material introductorio
 │   └── Practica_Inversor_NOT/                  # Esquemáticos y netlist inicial
