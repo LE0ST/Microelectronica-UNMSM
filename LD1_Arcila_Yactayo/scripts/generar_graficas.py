@@ -27,12 +27,20 @@ os.makedirs(output_dir, exist_ok=True)
 
 # -------------------------------------------------------------
 # FIGURA 1: Familia de curvas VTC (Actividad 1)
+def read_raw_lines(path):
+    with open(path, 'rb') as f:
+        raw_bytes = f.read()
+    if len(raw_bytes) > 2 and raw_bytes[1] == 0:
+        return raw_bytes.decode('utf-16le').splitlines(True)
+    return raw_bytes.decode('utf-8', errors='ignore').splitlines(True)
+
+# -------------------------------------------------------------
+# FIGURA 1: Familia VTC (Actividad 1)
 # -------------------------------------------------------------
 print("Generando Figura 1: Familia VTC...")
 vtc_raw = r"G:\Proyectos\MicroNano\LD1_Arcila_Yactayo\simulaciones\A1_Inversor_VTC\A1_VTC.raw"
 
-with open(vtc_raw, 'r', encoding='utf-8', errors='ignore') as f:
-    lines = f.readlines()
+lines = read_raw_lines(vtc_raw)
 
 val_idx = 0
 for idx, line in enumerate(lines):
@@ -124,7 +132,7 @@ plt.plot(cload_fF, tplh_ps, '^--', color='#2ca02c', alpha=0.7, markersize=5, lab
 
 plt.xlabel('Capacitancia de Carga, $C_L$ [fF]')
 plt.ylabel('Retardo de Propagación, $t_p$ [ps]')
-plt.title('Retardo de Propagación frente a la Carga $C_L$\n($45$ nm HP, $W_n = 180$ nm, $\\beta = 2$)', fontweight='bold')
+plt.title('Retardo de Propagación frente a la Carga $C_L$\n($45$ nm HP, $W_n = 180$ nm, $\\beta = 2.5$)', fontweight='bold')
 plt.grid(True)
 plt.xlim(0.5, 8.5)
 plt.ylim(2.5, 23.5)
@@ -141,9 +149,7 @@ plt.close()
 # -------------------------------------------------------------
 print("Generando Figura 3: Verificación Compuerta Compleja...")
 cg_raw = r"G:\Proyectos\MicroNano\LD1_Arcila_Yactayo\simulaciones\A4_Compuerta_Compleja\A4_ComplexGate.raw"
-
-with open(cg_raw, 'r', encoding='utf-8', errors='ignore') as f:
-    cg_lines = f.readlines()
+cg_lines = read_raw_lines(cg_raw)
 
 val_idx = 0
 for idx, line in enumerate(cg_lines):
@@ -214,9 +220,7 @@ plt.close()
 # -------------------------------------------------------------
 print("Generando Figura 4: Oscilador de Anillo...")
 ro_raw = r"G:\Proyectos\MicroNano\LD1_Arcila_Yactayo\simulaciones\A5_Potencia_y_RO\A5_RO_HP.raw"
-
-with open(ro_raw, 'r', encoding='utf-8', errors='ignore') as f:
-    ro_lines = f.readlines()
+ro_lines = read_raw_lines(ro_raw)
 
 val_idx = 0
 for idx, line in enumerate(ro_lines):

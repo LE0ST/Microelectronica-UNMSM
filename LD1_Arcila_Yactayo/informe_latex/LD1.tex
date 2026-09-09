@@ -323,7 +323,7 @@ $\bm{\beta}$ & $\bm{V_M}$ (V) & $\bm{V_{IL}}$ (V) & $\bm{V_{IH}}$ (V) & $\bm{NM_
 
 \subsection*{Procedimiento}
 \begin{enumerate}[leftmargin=1.6em,itemsep=0.35em]
-  \item Use el netlist del Anexo~\ref{sec:a2}, con el $\beta$ óptimo de la Actividad~1.
+  \item Use el netlist del Anexo~\ref{sec:a2}, configurado con el $\beta$ óptimo de la Actividad~1 ($\beta = 2.5$, $W_p = 450$~nm, que centró la VTC en $V_M \approx 0.50$~V).
   \item Mida $t_{pHL}$, $t_{pLH}$, $t_r$ y $t_f$ con las directivas \lstinline|.meas| provistas.
   \item Barra la carga con \lstinline|.step param Cload 1f 8f 1f| y grafique $t_p$ contra $C_L$. Ajuste una recta y determine su pendiente y su ordenada al origen.
   \item Repita la medición para 90~nm, 45~nm HP y 22~nm HP, escalando $V_{DD}$ y $L$ según la Tabla~\ref{tab:ptm} y manteniendo $W_n=4L$ y $C_L=2$~fF.
@@ -331,7 +331,7 @@ $\bm{\beta}$ & $\bm{V_M}$ (V) & $\bm{V_{IL}}$ (V) & $\bm{V_{IH}}$ (V) & $\bm{NM_
 
 \begin{table}[htbp]
 \centering\small
-\caption{Resultados 2.1 --- Retardo frente al nodo tecnológico.}
+\caption{Resultados 2.1 --- Retardo frente al nodo tecnológico ($\beta = 2.5$).}
 \label{tab:res21}
 \begin{tabularx}{\textwidth}{@{}lc*{5}{>{\centering\arraybackslash}X}@{}}
 \toprule
@@ -347,7 +347,7 @@ $\bm{\beta}$ & $\bm{V_M}$ (V) & $\bm{V_{IL}}$ (V) & $\bm{V_{IH}}$ (V) & $\bm{NM_
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.60\textwidth,height=4.5cm,keepaspectratio]{figuras/fig2_tp_vs_cl.png}
-\caption{Retardo de propagación frente a la capacitancia de carga $C_L \in [1, 8]$~fF en 45~nm HP con recta de regresión lineal ($m = 1.846$~ps/fF, $t_0 = 2.708$~ps).}
+\caption{Retardo de propagación frente a la capacitancia de carga $C_L \in [1, 8]$~fF en 45~nm HP ($\beta = 2.5$) con recta de regresión lineal ($m = 1.846$~ps/fF, $t_0 = 2.708$~ps).}
 \label{fig:tp_vs_cl}
 \end{figure}
 \FloatBarrier
@@ -586,7 +586,7 @@ Para el punto de fuga de la Actividad~5, reemplace las directivas de análisis p
 .param VDDv  = 1.0
 .param Lmin  = 45n
 .param Wn    = 4*Lmin
-.param beta  = 2
+.param beta  = 2.5
 .param Cload = 2f
 
 V1  vdd 0 {VDDv}
