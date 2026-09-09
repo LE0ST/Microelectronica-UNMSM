@@ -184,60 +184,102 @@ Al terminar la sesión el estudiante será capaz de:
 \end{enumerate}
 
 %==============================================================================
-\section{Fundamento resumido}
+\section{Fundamento resumido y Pre-lab}
 %==============================================================================
 
-La lógica CMOS estática implementa una función $Y = \overline{F(A,B,\dots)}$ mediante dos redes complementarias: una red \emph{pull-down} (PDN) de NMOS que conduce cuando $F=1$, y una red \emph{pull-up} (PUN) de PMOS, grafo dual de la anterior. Como en régimen estático solo una de las dos redes conduce, en el modelo ideal no existe camino DC entre $V_{DD}$ y tierra: la potencia estática nace únicamente de las corrientes de fuga.
+La lógica CMOS estática implementa una función lógica $Y = \overline{F(A,B,\dots)}$ mediante dos redes complementarias: una red \emph{pull-down} (PDN) de transistores NMOS que conduce hacia tierra cuando $F=1$, y una red \emph{pull-up} (PUN) de transistores PMOS, grafo dual de la anterior, que conmuta hacia $V_{DD}$ cuando $F=0$. En régimen estático solo una de las dos redes conduce plenamente, de modo que en el modelo ideal no existe camino DC entre $V_{DD}$ y tierra ($I_{DC} \approx 0$).
 
-Tres relaciones gobiernan el trabajo de hoy.
+\subsection*{Deducción analítica del punto de conmutación $V_M$ (Pre-lab)}
 
-\paragraph{Punto de conmutación.} Igualando las corrientes de ambos transistores en $V_{in}=V_{out}=V_M$, con los dispositivos en saturación de velocidad:
-
+El punto de conmutación o umbral lógico $V_M$ se define como el punto de la característica de transferencia de tensión (VTC) donde el voltaje de salida iguala al voltaje de entrada:
 \begin{equation}
-V_M = \frac{V_{Tn} + r\,(V_{DD}+V_{Tp})}{1+r},
-\qquad
-r = \frac{k_p\,V_{DSATp}}{k_n\,V_{DSATn}} \simeq \frac{v_{sat,p}\,W_p}{v_{sat,n}\,W_n}
+V_{in} = V_{out} = V_M
+\label{eq:cond_vm}
+\end{equation}
+
+\noindent\textbf{1. Hipótesis operativas y modelo físico de saturación:}\\
+En un inversor CMOS nanométrico (Figura~\ref{fig:esquema_inv}), se establecen las siguientes condiciones de partida:
+\begin{enumerate}[leftmargin=1.4em,itemsep=0.15em]
+  \item \emph{Geometría de canal mínimo:} Se adopta la misma longitud dibujada de canal para ambos dispositivos, $L_n = L_p = L_{\min} = 45\text{~nm}$, optimizando el área de integración.
+  \item \emph{Potenciales de sustrato (Bulk):} Ambos transistores tienen su sustrato conectado a su respectiva fuente ($V_{SBn} = 0$, $V_{SBp} = 0$), anulando la modulación del potencial de canal por efecto cuerpo ($\gamma = 0$ y $\Delta V_T = 0$), lo que fija $V_{Tn} = V_{TH0,n}$ y $V_{Tp} = V_{TH0,p}$ (con la convención $V_{Tp} < 0$).
+  \item \emph{Saturación por velocidad de deriva extrema:} El modelo por tramos de canal corto establece que la corriente en saturación de velocidad es $I_D = W C_{ox} v_{sat} (V_{GS} - V_T - V_{DSAT}/2)$. Bajo fuerte campo longitudinal ($\mathcal{E} \gg \mathcal{E}_{sat}$), la sobretensión de compuerta supera holgadamente la caída de saturación ($(V_{GS} - V_T) \gg V_{DSAT}/2$), permitiendo aproximar la corriente con una dependencia lineal directa respecto a la sobretensión:
+  \begin{equation}
+  I_D \approx k\,V_{DSAT}\,(V_{GS} - V_T) = W\,C_{ox}\,v_{sat}\,(V_{GS} - V_T)
+  \label{eq:id_sat}
+  \end{equation}
+  donde $k = \mu\,C_{ox}\frac{W}{L}$ y la velocidad de saturación límite cumple $v_{sat} = \mu\,\mathcal{E}_{sat} = \mu \frac{V_{DSAT}}{L}$. De aquí se desprende la identidad fundamental $k\,V_{DSAT} = C_{ox}\,W\,v_{sat}$, válida al ser $L_n = L_p = L_{\min}$.
+\end{enumerate}
+
+\noindent\textbf{2. Equilibrio estático de corrientes:}\\
+Al no existir corriente de compuerta estacionaria hacia la carga ($I_{out} = 0$), la corriente que drena el PMOS debe igualar exactamente a la que absorbe el NMOS ($I_{Dn} = I_{Dp}$):
+\begin{align}
+I_{Dn} &= k_n\,V_{DSATn}\,(V_{GSn} - V_{Tn}) = k_n\,V_{DSATn}\,(V_M - V_{Tn}) \label{eq:idn}\\
+I_{Dp} &= k_p\,V_{DSATp}\,(V_{SGp} - |V_{Tp}|) = k_p\,V_{DSATp}\,(V_{DD} - V_M + V_{Tp}) \label{eq:idp}
+\end{align}
+donde se emplea $-|V_{Tp}| = +V_{Tp}$ ($V_{Tp} < 0$). Igualando~\eqref{eq:idn} y~\eqref{eq:idp} y definiendo la razón de transconductancia de saturación $r$:
+\begin{equation}
+r \equiv \frac{k_p\,V_{DSATp}}{k_n\,V_{DSATn}} = \frac{C_{ox}\,W_p\,v_{sat,p}}{C_{ox}\,W_n\,v_{sat,n}} = \frac{W_p}{W_n}\cdot\frac{v_{sat,p}}{v_{sat,n}} = \beta\cdot\frac{v_{sat,p}}{v_{sat,n}}
+\label{eq:r_def}
+\end{equation}
+donde $\beta \equiv W_p / W_n$. Sustituyendo $r$ en la igualdad $I_{Dn} = I_{Dp}$:
+\begin{equation}
+V_M - V_{Tn} = r\,\left(V_{DD} - V_M + V_{Tp}\right) \implies V_M\,(1 + r) = V_{Tn} + r\,(V_{DD} + V_{Tp})
+\end{equation}
+Despejando analíticamente, se llega a la expresión gobernante del umbral lógico:
+\begin{equation}
+V_M = \frac{V_{Tn} + r\,(V_{DD}+V_{Tp})}{1+r}, \qquad r = \beta\cdot\frac{v_{sat,p}}{v_{sat,n}}
 \label{eq:vm}
 \end{equation}
 
-\noindent donde $V_{Tp}<0$. En tecnologías de canal largo la razón $r$ se aproxima por $\mu_p W_p / \mu_n W_n$; por debajo de los 65~nm la saturación de velocidad domina y la razón de movilidades deja de ser el criterio correcto. Este contraste es el eje de la Actividad~1.
+\noindent\textbf{3. Condición de dimensionamiento para centrado simétrico ($V_M = V_{DD}/2$):}\\
+Para maximizar y equilibrar simétricamente los márgenes de ruido ($NM_L = NM_H$), se impone $V_M = V_{DD}/2$:
+\begin{equation}
+\frac{V_{DD}}{2} = \frac{V_{Tn} + r\,(V_{DD} + V_{Tp})}{1 + r} \implies r = \frac{\frac{V_{DD}}{2} - V_{Tn}}{\frac{V_{DD}}{2} - |V_{Tp}|}
+\end{equation}
+Sustituyendo la definición $r = \beta\,(v_{sat,p}/v_{sat,n})$, se deduce el factor de aspecto óptimo de diseño $\beta_{\text{sim}}$:
+\begin{equation}
+\beta_{\text{sim}} = \left(\frac{\frac{V_{DD}}{2} - V_{Tn}}{\frac{V_{DD}}{2} - |V_{Tp}|}\right) \cdot \frac{v_{sat,n}}{v_{sat,p}}
+\label{eq:beta_opt}
+\end{equation}
+Bajo umbrales aproximadamente simétricos ($V_{Tn} \approx |V_{Tp}|$), la razón exige $r \approx 1$, lo que impone la condición directa $\beta_{\text{sim}} \approx v_{sat,n}/v_{sat,p}$. A diferencia de canal largo (donde la regla clásica predice $\beta \approx \mu_n/\mu_p \approx 2.70$), en nodos nanométricos sub-65~nm el centrado queda dominado por la razón de velocidades de saturación ($v_{sat,n}/v_{sat,p} \approx 1.13$), convergiendo en la simulación a $\beta \approx 2.50$ debido a los efectos combinados de canal corto.
 
-\paragraph{Deducción analítica de la ecuación~\eqref{eq:vm} (Pre-lab).}
-En el punto de conmutación estático se cumple $V_{in} = V_{out} = V_M$. Para tecnologías submicrométricas, ambos transistores se encuentran en fuerte saturación de velocidad. Las corrientes de drenador se modelan como:
-\begin{align}
-I_{Dn} &= k_n\,V_{DSATn}\,(V_{GSn} - V_{Tn}) = k_n\,V_{DSATn}\,(V_M - V_{Tn}) \\
-I_{Dp} &= k_p\,V_{DSATp}\,(V_{SGp} - |V_{Tp}|) = k_p\,V_{DSATp}\,(V_{DD} - V_M + V_{Tp})
-\end{align}
-donde se emplea la convención $V_{Tp} < 0$, de modo que $-|V_{Tp}| = +V_{Tp}$. Igualando $I_{Dn} = I_{Dp}$ y definiendo la razón de transconductancia de saturación $r = \frac{k_p\,V_{DSATp}}{k_n\,V_{DSATn}}$:
+\noindent\textbf{4. Condiciones de borde para saturación simultánea:}\\
+Para garantizar la validez física de la deducción, ambos dispositivos deben operar efectivamente en saturación en $V_{in} = V_{out} = V_M$:
 \begin{equation}
-V_M - V_{Tn} = r\,(V_{DD} - V_M + V_{Tp}) \implies V_M\,(1 + r) = V_{Tn} + r\,(V_{DD} + V_{Tp})
+V_{DSn} = V_M \ge V_{DSATn} \qquad\text{y}\qquad V_{SDp} = (V_{DD} - V_M) \ge V_{DSATp}
+\label{eq:cond_sat}
 \end{equation}
-despejando $V_M$, se obtiene directamente la ecuación~\eqref{eq:vm}. Dado que $k = \mu\,C_{ox}\frac{W}{L}$ y la velocidad de saturación cumple $v_{sat} = \mu\,\mathcal{E}_{sat} = \mu\frac{V_{DSAT}}{L}$, se tiene $k\,V_{DSAT} = C_{ox}\,W\,v_{sat}$, de donde se deduce:
-\begin{equation}
-r = \frac{C_{ox}\,W_p\,v_{sat,p}}{C_{ox}\,W_n\,v_{sat,n}} = \frac{v_{sat,p}\,W_p}{v_{sat,n}\,W_n}
-\end{equation}
+En la tecnología 45~nm HP ($V_{DD}=1.0\text{~V}$, $V_{DSATn} \approx 0.12\text{~V}$, $V_{DSATp} \approx 0.15\text{~V}$), al encontrarse $V_M \approx 0.50\text{~V}$, se cumple $0.50\text{~V} \ge 0.12\text{~V}$ y $0.50\text{~V} \ge 0.15\text{~V}$ con amplio margen, asegurando la rigurosa estabilidad del punto de operación.
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=0.28\textwidth,height=3.6cm,keepaspectratio]{figuras/fig_esquema_inversor.png}
-\caption{Esquema circuital del inversor CMOS básico con dimensionamiento $W_n=4L$ y $W_p=\beta W_n$.}
+\includegraphics[width=0.48\textwidth,height=4.8cm,keepaspectratio]{figuras/fig_esquema_inversor.png}
+\caption{Esquema circuital del inversor CMOS (45~nm HP) en condición de conmutación ($V_{in} = V_{out} = V_M$, $I_{Dn} = I_{Dp}$), explicitando terminales de sustrato ($V_{SB}=0$), polarización, carga $C_L=2$~fF y parámetros de diseño.}
 \label{fig:esquema_inv}
 \end{figure}
 \FloatBarrier
 
-\paragraph{Retardo de propagación.}
+\subsection*{Dinámica de retardo y componentes de potencia}
+
+\paragraph{Retardo de propagación y descomposición capacitiva.}
+El retardo medio de propagación $t_p$ se define como el promedio entre los tiempos de respuesta de subida y bajada:
 \begin{equation}
-t_p = \tfrac{1}{2}\left(t_{pHL}+t_{pLH}\right),
-\qquad
-t_{pHL} \approx 0.69\,R_{eq,n}\,C_L
+t_p = \tfrac{1}{2}\left(t_{pHL}+t_{pLH}\right), \qquad t_{pHL} \approx 0.69\,R_{eq,n}\,C_L, \qquad t_{pLH} \approx 0.69\,R_{eq,p}\,C_L
 \label{eq:tp}
 \end{equation}
-
-\paragraph{Potencia.}
+donde las resistencias efectivas de canal cumplen $R_{eq,n} \propto \frac{1}{W_n}$ y $R_{eq,p} \propto \frac{1}{W_p} = \frac{1}{\beta W_n}$. En un circuito integrado, la capacitancia total del nodo de conmutación $C_L$ no es meramente una carga concentrada externa, sino la superposición de componentes parásitas intrínsecas y de carga:
 \begin{equation}
-P_{tot} = \underbrace{\alpha\,C_L V_{DD}^{2} f}_{\text{dinámica}}
-        + \underbrace{I_{cc}\,V_{DD}}_{\text{cortocircuito}}
-        + \underbrace{I_{leak}\,V_{DD}}_{\text{fuga}}
+C_L = C_{ext} + C_{int} = C_{ext} + \underbrace{(C_{db,n} + C_{db,p})}_{\text{difusión}} + \underbrace{(C_{gd,n} + C_{gd,p})}_{\text{solapamiento}} + C_{wire}
+\label{eq:cl_split}
+\end{equation}
+Esta descomposición justifica físicamente por qué en la recta $t_p(C_L) = m\,C_L + t_0$, la ordenada al origen no es nula: $t_0 \approx 0.69\,R_{eq}\,C_{int}$ modela el retardo intrínseco descargado.
+
+\paragraph{Disipación de potencia total.}
+La potencia consumida por el inversor en conmutación periódica a frecuencia $f$ con factor de actividad $\alpha$ se modela mediante sus tres componentes fundamentales:
+\begin{equation}
+P_{tot} = \underbrace{\alpha\,C_L V_{DD}^{2} f}_{\text{dinámica de conmutación}}
+        + \underbrace{I_{cc}\,V_{DD}}_{\text{cortocircuito en transición}}
+        + \underbrace{I_{leak}\,V_{DD}}_{\text{fuga estática}}
 \label{eq:pot}
 \end{equation}
 
