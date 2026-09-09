@@ -15,7 +15,7 @@ ax1.set_title('(a) Grafos de conducción duales', fontsize=10, fontweight='bold'
 
 ax1.text(1.5, 4.9, '$V_{DD}$', ha='center', va='center', fontsize=10, fontweight='bold', color='#1E2761')
 ax1.plot([1.5, 1.5], [4.7, 3.8], color='#F96167', lw=2)
-ax1.text(1.3, 4.25, '$C$', ha='right', va='center', fontsize=9, fontweight='bold', color='#F96167')
+ax1.text(1.35, 4.25, '$C$', ha='right', va='center', fontsize=9, fontweight='bold', color='#F96167')
 ax1.scatter([1.5], [3.8], color='#1E2761', s=35, zorder=5)
 
 ax1.plot([1.5, 0.8, 0.8, 1.5], [3.8, 3.8, 2.7, 2.7], color='#F96167', lw=2)
@@ -39,10 +39,11 @@ ax1.text(2.4, 0.95, '$B$', ha='left', va='center', fontsize=9, fontweight='bold'
 ax1.scatter([1.5], [0.4], color='#1E2761', s=35, zorder=5)
 ax1.text(1.5, 0.15, 'GND', ha='center', va='center', fontsize=10, fontweight='bold', color='#1E2761')
 
-ax1.text(1.5, 4.45, 'PUN: $C$ serie $(A \\parallel B)$', fontsize=8, color='#F96167', ha='center',
-         bbox=dict(boxstyle='round,pad=0.2', facecolor='#F4F6FB', edgecolor='#F96167', lw=0.8))
-ax1.text(1.5, 0.65, 'PDN: $(A \\text{ serie } B) \\parallel C$', fontsize=8, color='#1f77b4', ha='center',
-         bbox=dict(boxstyle='round,pad=0.2', facecolor='#F4F6FB', edgecolor='#1f77b4', lw=0.8))
+# Cajas explicativas desplazadas a la izquierda para despejar aristas del grafo
+ax1.text(-0.1, 4.65, 'PUN: $C$ serie $(A \\parallel B)$', fontsize=8, color='#F96167', ha='left', va='center',
+         bbox=dict(boxstyle='round,pad=0.25', facecolor='#F4F6FB', edgecolor='#F96167', lw=0.8))
+ax1.text(-0.1, 0.65, 'PDN: $(A \\text{ serie } B) \\parallel C$', fontsize=8, color='#1f77b4', ha='left', va='center',
+         bbox=dict(boxstyle='round,pad=0.25', facecolor='#F4F6FB', edgecolor='#1f77b4', lw=0.8))
 
 # Panel 2: Esquema
 ax2.set_xlim(-0.5, 5.0)
@@ -77,6 +78,7 @@ ax2.text(2.1, 5.08, '$V_{DD} = 1.0\\text{ V}$', ha='center', va='bottom', fontsi
 # PMOS C (arriba)
 draw_pmos(ax2, 1.9, 4.4, '$C$', '$W=2W_p=720$n')
 ax2.plot([2.08, 2.08], [4.8, 4.9], color='#1E2761', lw=1.5)
+ax2.plot([2.08, 2.08], [4.0, 3.95], color='#1E2761', lw=1.5)
 
 # Nodo intermedio pmid
 ax2.scatter([2.08], [3.95], color='#1E2761', s=25, zorder=5)
