@@ -6,8 +6,8 @@
 \usepackage{lmodern}
 
 
-\usepackage[a4paper,top=2.4cm,bottom=2.4cm,left=2.3cm,right=2.3cm,
-            headheight=24pt,footskip=1.1cm]{geometry}
+\usepackage[a4paper,top=2.0cm,bottom=2.0cm,left=1.9cm,right=1.9cm,
+            headheight=14pt,footskip=0.9cm]{geometry}
 
 \usepackage{amsmath,amssymb}
 \usepackage{bm}
@@ -24,6 +24,16 @@
 \usepackage[most]{tcolorbox}
 \usepackage{hyperref}
 \usepackage[section]{placeins}
+\usepackage{multicol}
+
+% Optimización de colocación de flotantes para evitar páginas vacías
+\renewcommand{\topfraction}{0.90}
+\renewcommand{\bottomfraction}{0.90}
+\renewcommand{\textfraction}{0.10}
+\renewcommand{\floatpagefraction}{0.75}
+\setlength{\floatsep}{6pt plus 2pt minus 2pt}
+\setlength{\textfloatsep}{8pt plus 2pt minus 3pt}
+\setlength{\intextsep}{6pt plus 2pt minus 2pt}
 
 \definecolor{navy}{HTML}{1E2761}
 \definecolor{coral}{HTML}{F96167}
@@ -57,7 +67,8 @@
   [\vspace{-0.6em}{\color{coral}\rule{\textwidth}{1.2pt}}]
 \titleformat{\subsection}
   {\normalfont\large\bfseries\color{navy}}{\thesubsection}{0.6em}{}
-\titlespacing*{\section}{0pt}{1.6em}{0.9em}
+\titlespacing*{\section}{0pt}{1.0em}{0.4em}
+\titlespacing*{\subsection}{0pt}{0.7em}{0.3em}
 
 %------------------------- Estilo para codigo SPICE --------------------------
 \lstdefinelanguage{SPICE}{
@@ -72,50 +83,50 @@
 }
 \lstdefinestyle{spice}{
   language=SPICE,
-  basicstyle=\ttfamily\small,
+  basicstyle=\ttfamily\scriptsize,
   keywordstyle=\color{navy}\bfseries,
   commentstyle=\color{coral!85!black}\itshape,
   backgroundcolor=\color{grisclaro},
   frame=leftline,
-  framerule=2pt,
+  framerule=1.5pt,
   rulecolor=\color{iceblue},
-  framesep=8pt,
-  xleftmargin=10pt,
+  framesep=4pt,
+  xleftmargin=6pt,
   breaklines=true,
   showstringspaces=false,
   columns=fullflexible,
-  aboveskip=1em,
-  belowskip=1em,
+  aboveskip=0.4em,
+  belowskip=0.4em,
 }
 \lstset{style=spice}
 
 %------------------------------- Cajas ---------------------------------------
 \newtcolorbox{aviso}[1][]{
   enhanced, breakable, colback=coral!8, colframe=coral,
-  boxrule=0pt, leftrule=3.5pt, arc=2pt, left=8pt, right=8pt, top=6pt, bottom=6pt,
+  boxrule=0pt, leftrule=3.5pt, arc=2pt, left=6pt, right=6pt, top=4pt, bottom=4pt,
   fonttitle=\bfseries\color{white}, #1}
 
 \newtcolorbox{nota}[1][]{
   enhanced, breakable, colback=iceblue!35, colframe=navy,
-  boxrule=0pt, leftrule=3.5pt, arc=2pt, left=8pt, right=8pt, top=6pt, bottom=6pt,
+  boxrule=0pt, leftrule=3.5pt, arc=2pt, left=6pt, right=6pt, top=4pt, bottom=4pt,
   #1}
 
 \newtcolorbox{preguntas}[1][]{
   enhanced, breakable, colback=white, colframe=navy,
-  boxrule=1pt, arc=3pt, left=8pt, right=8pt, top=6pt, bottom=6pt,
+  boxrule=0.8pt, arc=2pt, left=6pt, right=6pt, top=4pt, bottom=4pt,
   title={\bfseries #1}, coltitle=white, colbacktitle=navy}
 
 %------------------------- Contador de preguntas -----------------------------
 \newcounter{preg}
 \newcommand{\preg}[1]{\refstepcounter{preg}\item[\textbf{\color{coral}P\thepreg.}] #1}
 \newenvironment{listapreg}{\begin{list}{}{%
-  \setlength{\leftmargin}{2.4em}\setlength{\labelwidth}{2.0em}%
-  \setlength{\itemsep}{0.5em}\setlength{\parsep}{0pt}}}{\end{list}}
+  \setlength{\leftmargin}{1.8em}\setlength{\labelwidth}{1.6em}%
+  \setlength{\itemsep}{0.25em}\setlength{\parsep}{0pt}}}{\end{list}}
 
 %------------------------------ Utilidades -----------------------------------
 \newcommand{\vacio}{\rule[-1.4ex]{0pt}{4.2ex}}
-\renewcommand{\arraystretch}{1.35}
-\setlength{\tabcolsep}{5pt}
+\renewcommand{\arraystretch}{1.12}
+\setlength{\tabcolsep}{4pt}
 
 %==============================================================================
 \begin{document}
@@ -155,7 +166,7 @@
 
 %--------------------------------- Indice ------------------------------------
 {\color{navy}\tableofcontents}
-\newpage
+\vspace{1.5em}
 
 %==============================================================================
 \section{Objetivos}
@@ -259,14 +270,6 @@ $\bm{\beta}$ & $\bm{V_M}$ (V) & $\bm{V_{IL}}$ (V) & $\bm{V_{IH}}$ (V) & $\bm{NM_
 \end{tabularx}
 \end{table}
 
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=0.90\textwidth]{figuras/fig1_vtc_familia.png}
-\caption{Curvas de transferencia de voltaje (VTC) y derivada $d(V_{out})/d(V_{in})$ para el inversor CMOS de 45~nm HP ante el barrido de $\beta \in [1.0, 3.0]$. Se identifican los puntos de pendiente $-1$ ($V_{IL}, V_{IH}$) y el centrado en $\beta \approx 2.5$.}
-\label{fig:vtc_familia}
-\end{figure}
-\FloatBarrier
-
 \begin{table}[htbp]
 \centering\small
 \caption{Resultados 1.2 --- Parámetros extraídos de \texttt{45nm\_HP.pm}.}
@@ -282,7 +285,14 @@ $\bm{\beta}$ & $\bm{V_M}$ (V) & $\bm{V_{IL}}$ (V) & $\bm{V_{IH}}$ (V) & $\bm{NM_
 \end{tabularx}
 \end{table}
 
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.72\textwidth,height=4.5cm,keepaspectratio]{figuras/fig1_vtc_familia.png}
+\caption{Curvas de transferencia de voltaje (VTC) y derivada $d(V_{out})/d(V_{in})$ para el inversor CMOS de 45~nm HP ante el barrido de $\beta \in [1.0, 3.0]$. Se identifican los puntos de pendiente $-1$ ($V_{IL}, V_{IH}$) y el centrado en $\beta \approx 2.5$.}
+\label{fig:vtc_familia}
+\end{figure}
 \FloatBarrier
+
 \begin{preguntas}[Preguntas de la Actividad 1]
 \begin{listapreg}
 \preg{Con la razón de \texttt{u0} obtenida, la regla clásica predice cierto $\beta$ para centrar la VTC. ¿Coincide con el $\beta$ que usted midió? Explique la discrepancia en términos de saturación de velocidad, apoyándose en la ecuación~\eqref{eq:vm}.}
@@ -328,7 +338,7 @@ $\bm{\beta}$ & $\bm{V_M}$ (V) & $\bm{V_{IL}}$ (V) & $\bm{V_{IH}}$ (V) & $\bm{NM_
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=0.72\textwidth]{figuras/fig2_tp_vs_cl.png}
+\includegraphics[width=0.60\textwidth,height=4.5cm,keepaspectratio]{figuras/fig2_tp_vs_cl.png}
 \caption{Retardo de propagación frente a la capacitancia de carga $C_L \in [1, 8]$~fF en 45~nm HP con recta de regresión lineal ($m = 1.846$~ps/fF, $t_0 = 2.708$~ps).}
 \label{fig:tp_vs_cl}
 \end{figure}
@@ -416,7 +426,7 @@ Y = \overline{(A \cdot B) + C}
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=0.88\textwidth]{figuras/fig3_transitorio_compleja.png}
+\includegraphics[width=0.72\textwidth,height=4.5cm,keepaspectratio]{figuras/fig3_transitorio_compleja.png}
 \caption{Verificación funcional transitoria de la compuerta compleja $Y = \overline{(A \cdot B) + C}$ ante el barrido sincronizado de las 8 combinaciones binarias ($000$ a $111$) en una ventana de 8~ns.}
 \label{fig:compleja}
 \end{figure}
@@ -463,7 +473,7 @@ Y = \overline{(A \cdot B) + C}
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=0.85\textwidth]{figuras/fig4_oscilador_anillo.png}
+\includegraphics[width=0.68\textwidth,height=4.5cm,keepaspectratio]{figuras/fig4_oscilador_anillo.png}
 \caption{Oscilación estacionaria del oscilador de anillo de 5 etapas en 45~nm HP ($f_{osc} = 21.94$~GHz, $t_{pd} = 4.56$~ps).}
 \label{fig:ro}
 \end{figure}
@@ -511,6 +521,7 @@ Y = \overline{(A \cdot B) + C}
 
 Guarde cada bloque como archivo \texttt{.cir} y ejecútelo con \texttt{File $\rightarrow$ Open} en LTspice, o replique el circuito en esquemático.
 
+\begin{multicols}{2}
 \subsection{Curva de transferencia del inversor}
 \label{sec:a1}
 
@@ -535,7 +546,7 @@ MP out in vdd vdd pmos L={Lmin} W={beta*Wn}
 .end
 \end{lstlisting}
 
-Para el punto de fuga de la Actividad~5, reemplace las dos últimas directivas de análisis por:
+Para el punto de fuga de la Actividad~5, reemplace las directivas de análisis por:
 
 \begin{lstlisting}
 .dc VIN 0 {VDDv} {VDDv}
@@ -592,10 +603,10 @@ V1 vdd 0 {VDDv}
 VA a 0 PULSE(0 {VDDv} 200p 10p 10p 1n 2n)
 VB b 0 {VDDv}
 
-* --- PDN: NMOS en serie, ancho duplicado ---
-MN1 out a nx  0   nmos L={Lmin} W={2*Wn}    ; entrada externa
-MN2 nx  b 0   0   nmos L={Lmin} W={2*Wn}    ; entrada interna
-* --- PUN: PMOS en paralelo, ancho del inversor ---
+* --- PDN: NMOS serie ---
+MN1 out a nx  0   nmos L={Lmin} W={2*Wn}
+MN2 nx  b 0   0   nmos L={Lmin} W={2*Wn}
+* --- PUN: PMOS paralelo ---
 MP1 out a vdd vdd pmos L={Lmin} W={beta*Wn}
 MP2 out b vdd vdd pmos L={Lmin} W={beta*Wn}
 
@@ -606,9 +617,7 @@ C1 out 0 2f
 .end
 \end{lstlisting}
 
-Para el escenario de entrada interna, intercambie los estímulos (\lstinline|VA a 0 {VDDv}| y aplique el pulso a \texttt{b}), ajustando el disparo de \lstinline|.meas|. Para la NOR2, invierta la topología: NMOS en paralelo con ancho \lstinline|{Wn}| y PMOS en serie con ancho \lstinline|{2*beta*Wn}|.
-
-\subsection{Compuerta compleja: verificación funcional}
+\subsection{Compuerta compleja AOI}
 \label{sec:a4}
 
 \begin{lstlisting}
@@ -627,12 +636,12 @@ VA a 0 PULSE(0 {VDDv} 0 10p 10p 4n 8n)
 VB b 0 PULSE(0 {VDDv} 0 10p 10p 2n 4n)
 VC c 0 PULSE(0 {VDDv} 0 10p 10p 1n 2n)
 
-* PDN: (A*B) en serie, en paralelo con C
+* PDN: (A*B) serie, paralelo C
 MN_A out a nx 0 nmos L={Lmin} W={2*Wn}
 MN_B nx  b 0  0 nmos L={Lmin} W={2*Wn}
 MN_C out c 0  0 nmos L={Lmin} W={Wn}
 
-* PUN: (A || B) en paralelo, en serie con C
+* PUN: (A || B) paralelo, serie C
 MP_A ny  a vdd vdd pmos L={Lmin} W={2*beta*Wn}
 MP_B ny  b vdd vdd pmos L={Lmin} W={2*beta*Wn}
 MP_C out c ny  vdd pmos L={Lmin} W={2*beta*Wn}
@@ -643,7 +652,7 @@ C1 out 0 2f
 .end
 \end{lstlisting}
 
-\subsection{Oscilador de anillo de cinco etapas}
+\subsection{Oscilador de anillo de 5 etapas}
 \label{sec:a5}
 
 \begin{lstlisting}
@@ -677,5 +686,6 @@ X5 n5 n1 vdd INV
 .meas tran Iavg AVG I(V1)
 .end
 \end{lstlisting}
+\end{multicols}
 
 \end{document}
