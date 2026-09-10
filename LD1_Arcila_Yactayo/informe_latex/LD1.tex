@@ -350,8 +350,8 @@ $\bm{\beta}$ & $\bm{V_M}$ (V) & $\bm{V_{IL}}$ (V) & $\bm{V_{IH}}$ (V) & $\bm{NM_
 \begin{enumerate}[leftmargin=1.6em,itemsep=0.35em]
   \item Use el netlist del Anexo~\ref{sec:a2}, configurado con el $\beta$ óptimo de la Actividad~1 ($\beta = 2.5$, $W_p = 450$~nm, que centró la VTC en $V_M \approx 0.50$~V).
   \item Mida $t_{pHL}$, $t_{pLH}$, $t_r$ y $t_f$ con las directivas \lstinline|.meas| provistas.
-  \item Barra la carga con \lstinline|.step param Cload 1f 8f 1f| y grafique $t_p$ contra $C_L$. Ajuste una recta y determine su pendiente y su ordenada al origen.
-  \item Repita la medición para 90~nm, 45~nm HP y 22~nm HP, escalando $V_{DD}$ y $L$ según la Tabla~\ref{tab:ptm} y manteniendo $W_n=4L$ y $C_L=2$~fF.
+  \item Barra la carga con \lstinline|.step param Cload 1f 8f 1f| y grafique $t_p$ contra $C_L$. Ajuste una recta y determine su pendiente y su ordenada al origen (Figura~\ref{fig:tp_vs_cl}).
+  \item Repita la medición para 90~nm, 45~nm HP y 22~nm HP, escalando $V_{DD}$ y $L$ según la Tabla~\ref{tab:ptm} y manteniendo $W_n=4L$ y $C_L=2$~fF (Tabla~\ref{tab:res21} y Figura~\ref{fig:comparativa_nodos}).
 \end{enumerate}
 
 \begin{table}[htbp]
@@ -371,9 +371,19 @@ $\bm{\beta}$ & $\bm{V_M}$ (V) & $\bm{V_{IL}}$ (V) & $\bm{V_{IH}}$ (V) & $\bm{NM_
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=0.66\textwidth]{figuras/fig2_tp_vs_cl.png}
-\caption{Retardo de propagación medio $t_p$ frente a la capacitancia de carga $C_L \in [1, 8]$~fF en 45~nm HP ($\beta = 2.5$).}
-\label{fig:tp_vs_cl}
+\begin{minipage}[t]{0.42\textwidth}
+  \centering
+  \includegraphics[width=\textwidth]{figuras/fig2_tp_vs_cl.png}
+  \caption{Ajuste lineal de retardo medio $t_p(C_L)$ en 45~nm HP ($\beta = 2.5$): $m = 1.846$~ps/fF, $t_0 = 2.708$~ps.}
+  \label{fig:tp_vs_cl}
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.55\textwidth}
+  \centering
+  \includegraphics[width=\textwidth]{figuras/fig2_comparativa_nodos.png}
+  \caption{Respuesta transitoria en 3 nodos ($C_L = 2$~fF): \textcolor{red}{\textbf{Rojo}} (22~nm HP, $V_{DD}=0.8$~V, $t_p=8.65$~ps), \textcolor{blue}{\textbf{Azul}} (45~nm HP, $V_{DD}=1.0$~V, $t_p=6.41$~ps) y \textcolor{green!60!black}{\textbf{Verde}} (90~nm bulk, $V_{DD}=1.2$~V, $t_p=7.36$~ps).}
+  \label{fig:comparativa_nodos}
+\end{minipage}
 \end{figure}
 \FloatBarrier
 

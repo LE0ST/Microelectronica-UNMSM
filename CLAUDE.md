@@ -20,6 +20,7 @@ This file defines the project instructions and environment configuration for Cla
   ```powershell
   python LD1_Arcila_Yactayo\scripts\generar_esquema_inversor.py
   python LD1_Arcila_Yactayo\scripts\generar_esquema_compleja.py
+  python LD1_Arcila_Yactayo\scripts\generar_comparativa_nodos.py
   python LD1_Arcila_Yactayo\scripts\generar_fig3.py
   ```
 * **Verify LaTeX environment balance:**

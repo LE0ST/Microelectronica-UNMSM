@@ -71,6 +71,7 @@ Todos los scripts emplean `matplotlib` y guardan automáticamente en `LD1_Arcila
 * **Regenerar figuras analíticas de simulación (Fig 1, Fig 2, Fig 3, Fig 4):**
   ```powershell
   python LD1_Arcila_Yactayo\scripts\generar_fig2.py
+  python LD1_Arcila_Yactayo\scripts\generar_comparativa_nodos.py
   python LD1_Arcila_Yactayo\scripts\generar_fig3.py
   python LD1_Arcila_Yactayo\scripts\generar_graficas.py
   ```

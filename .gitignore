@@ -9,6 +9,8 @@
 *.fft
 *.plt
 *.log
+*.log.raw
+*.db
 *.net.bak
 *.asc.bak
 
