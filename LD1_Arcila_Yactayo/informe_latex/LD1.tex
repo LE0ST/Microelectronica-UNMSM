@@ -273,9 +273,9 @@ Las simulaciones se ejecutaron en LTspice 24 mediante modelos predictivos PTM (B
 \subsection*{Procedimiento}
 \begin{enumerate}[leftmargin=1.6em,itemsep=0.35em]
   \item Arme el circuito del Anexo~\ref{sec:a1} con la tarjeta de 45~nm HP, $V_{DD}=1.0$~V, $L=45$~nm, $W_n=180$~nm.
-  \item Ejecute el barrido DC con \lstinline|.step param beta 1 3 0.5| y grafique la familia de curvas $V_{out}(V_{in})$.
-  \item Registre $V_M$ para cada valor de $\beta$ mediante la directiva \lstinline|.meas|. Los resultados se leen en el archivo de registro (\texttt{Ctrl+L}).
-  \item Para el caso de $\beta$ que hace $V_M \approx V_{DD}/2$: grafique la derivada \lstinline|d(V(out))| en el visor de formas de onda y ubique con cursores los dos puntos donde la pendiente vale $-1$. Esos son $V_{IL}$ y $V_{IH}$.
+  \item Ejecute el barrido DC con \lstinline|.step param beta 1 3 0.5| y grafique la familia de curvas $V_{out}(V_{in})$ (Figura~\ref{fig:vtc_familia}).
+  \item Registre $V_M$ para cada valor de $\beta$ mediante la directiva \lstinline|.meas|. Los resultados se presentan en la Tabla~\ref{tab:res11}.
+  \item Para el caso de $\beta$ que hace $V_M \approx V_{DD}/2$: grafique la derivada \lstinline|d(V(out))| en el visor de formas de onda y ubique con cursores los dos puntos donde la pendiente vale $-1$. Esos son $V_{IL}$ y $V_{IH}$, capturados directamente en LTspice (Figura~\ref{fig:vtc_cursores}).
   \item Calcule $NM_H = V_{OH}-V_{IH}$ y $NM_L = V_{IL}-V_{OL}$.
 \end{enumerate}
 
@@ -313,9 +313,16 @@ $\bm{\beta}$ & $\bm{V_M}$ (V) & $\bm{V_{IL}}$ (V) & $\bm{V_{IH}}$ (V) & $\bm{NM_
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=0.76\textwidth]{figuras/fig1_vtc_familia.png}
+\includegraphics[width=0.70\textwidth]{figuras/fig1_vtc_familia.png}
 \caption{Curvas de transferencia de tensión (VTC) y derivada $d(V_{out})/d(V_{in})$ para el inversor de 45~nm HP ante el barrido de $\beta \in [1.0, 3.0]$.}
 \label{fig:vtc_familia}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.64\textwidth]{figuras/fig1_cursores_ltspice.png}
+\caption{Medición directa en LTspice de los voltajes críticos $V_{IL}$ y $V_{IH}$ para el caso óptimo $\beta = 2.5$ ($V_M \approx 0.50$~V) mediante cursores situados en los puntos de ganancia unitaria $d(V_{out})/d(V_{in}) = -1$.}
+\label{fig:vtc_cursores}
 \end{figure}
 \FloatBarrier
 
