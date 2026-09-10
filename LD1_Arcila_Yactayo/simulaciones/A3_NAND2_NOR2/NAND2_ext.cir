@@ -18,4 +18,5 @@ C1 out 0 2f
 .tran 0 4n 0 0.5p
 .meas tran tpHL TRIG V(a) VAL={VDDv/2} RISE=1 TARG V(out) VAL={VDDv/2} FALL=1
 .meas tran tpLH TRIG V(a) VAL={VDDv/2} FALL=1 TARG V(out) VAL={VDDv/2} RISE=1
+.meas tran tp PARAM (tpHL+tpLH)/2
 .end

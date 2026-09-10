@@ -424,11 +424,11 @@ $\bm{\beta}$ & $\bm{V_M}$ (V) & $\bm{V_{IL}}$ (V) & $\bm{V_{IH}}$ (V) & $\bm{NM_
 \toprule
 \textbf{Compuerta} & $\bm{W_n}$/trans. & $\bm{W_p}$/trans. & $\bm{\sum W}$ & $\bm{t_{pHL}}$ (ps) & $\bm{t_{pLH}}$ (ps) & $\bm{t_p}$ (ps) \\
 \midrule
-Inversor (ref.)     & 180~nm & 450~nm & 630~nm  & 7.881 & 4.929 & 6.405 \\
-NAND2 (conm. ext.)  & 360~nm & 450~nm & 1620~nm & 9.021 & 6.799 & 7.910 \\
-NAND2 (conm. int.)  & 360~nm & 450~nm & 1620~nm & 10.221 & 7.235 & 8.728 \\
-NOR2 (ambas conm.)  & 180~nm & 900~nm & 2160~nm & 10.764 & 6.915 & 8.840 \\
-NOR2 (una conm.)    & 180~nm & 900~nm & 2160~nm & 14.929 & 8.795 & 11.862 \\
+Inversor (ref.)     & 180~nm & 450~nm & 630~nm  & 7.881  & 4.929 & 6.405 \\
+NAND2 (conm. ext.)  & 360~nm & 450~nm & 1620~nm & 9.021  & 6.799 & 7.910 \\
+NAND2 (conm. int.)  & 360~nm & 450~nm & 1620~nm & 10.221 & 7.724 & 8.972 \\
+NOR2 (una conm., B) & 180~nm & 900~nm & 2160~nm & 10.764 & 6.915 & 8.840 \\
+NOR2 (ambas conm.)  & 180~nm & 900~nm & 2160~nm & 6.768  & 8.569 & 7.669 \\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -440,7 +440,7 @@ NOR2 (una conm.)    & 180~nm & 900~nm & 2160~nm & 14.929 & 8.795 & 11.862 \\
 \par\noindent\textbf{Rpta:} En la conmutación externa (MN1), el nodo $n_x$ ya estaba descargado a tierra por MN2, evacuando únicamente $C_L$ ($t_{pHL}=9.021$~ps). En la conmutación interna (MN2), $n_x$ se encontraba precargado a $V_{DD}-V_{Tn}$ y debe descargarse a través de MN2; sumado al aumento de $V_{Tn}$ por efecto de cuerpo en MN1 ($V_{SB}>0$), el retardo se degrada a $10.221$~ps.
 
 \preg{El esfuerzo lógico de la NAND2 es $4/3$ y el de la NOR2 es $5/3$. Verifique cualitativamente esa jerarquía con sus mediciones y explique por qué la industria construye bibliotecas dominadas por NAND.}
-\par\noindent\textbf{Rpta:} Las mediciones ratifican que NAND2 es más rápida ($t_p = 7.910$~ps vs $11.862$~ps) y compacta ($\sum W = 1620$~nm vs $2160$~nm). La industria prefiere NAND porque conecta en serie transistores NMOS (alta movilidad), duplicando un $W_n$ pequeño; la NOR apila PMOS (menor movilidad), forzando anchos $W_p$ muy grandes que penalizan área y capacidad de entrada.
+\par\noindent\textbf{Rpta:} Las mediciones ratifican que NAND2 es más rápida en el peor caso individual ($t_p = 7.910$~ps vs $8.840$~ps) y considerablemente más compacta ($\sum W = 1620$~nm vs $2160$~nm, un $25\,\%$ menos de silicio). La industria prefiere NAND porque conecta en serie transistores NMOS (alta movilidad de electrones), duplicando un ancho pequeño ($W_n = 360$~nm); en contraste, la NOR apila PMOS (menor movilidad de huecos), forzando anchos masivos ($W_p = 900$~nm) que penalizan severamente el área de layout y la capacitancia parásita de entrada.
 
 \preg{¿Qué le ocurriría al retardo de una NOR de cuatro entradas dimensionada con este mismo criterio? Estime el $W_p$ requerido y comente su viabilidad.}
 \par\noindent\textbf{Rpta:} Requeriría 4 PMOS en serie con $W_p = 4 \times (\beta W_n) = 1800$~nm por dispositivo ($\sum W_p = 7.20\text{~\textmu m}$). El retardo de subida crecería de forma cuadrática ($\propto N^2$) por la acumulación de resistencia de canal y capacidades de difusión de los 3 nodos internos, resultando inviable en celdas estándar de alta velocidad.
@@ -672,6 +672,8 @@ C1 out 0 2f
 
 .tran 0 4n 0 0.5p
 .meas tran tpHL TRIG V(a) VAL={VDDv/2} RISE=1 TARG V(out) VAL={VDDv/2} FALL=1
+.meas tran tpLH TRIG V(a) VAL={VDDv/2} FALL=1 TARG V(out) VAL={VDDv/2} RISE=1
+.meas tran tp   PARAM (tpHL+tpLH)/2
 .end
 \end{lstlisting}
 
