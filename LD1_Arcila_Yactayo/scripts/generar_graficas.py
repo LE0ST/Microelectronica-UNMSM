@@ -151,11 +151,26 @@ print("Generando Figura 3: Verificación Compuerta Compleja...")
 cg_raw = r"G:\Proyectos\MicroNano\LD1_Arcila_Yactayo\simulaciones\A4_Compuerta_Compleja\A4_ComplexGate.raw"
 cg_lines = read_raw_lines(cg_raw)
 
+n_vars = 0
+var_map = {}
+in_vars = False
 val_idx = 0
+
 for idx, line in enumerate(cg_lines):
-    if line.startswith("Values:"):
+    if line.startswith('No. Variables:'):
+        n_vars = int(line.split(':')[1].strip())
+    elif line.startswith('Variables:'):
+        in_vars = True
+    elif line.startswith('Values:'):
+        in_vars = False
         val_idx = idx + 1
         break
+    elif in_vars:
+        parts = line.strip().split()
+        if len(parts) >= 2 and parts[0].isdigit():
+            v_idx = int(parts[0])
+            v_name = parts[1].lower()
+            var_map[v_name] = v_idx
 
 cg_data = cg_lines[val_idx:]
 t_list, va_list, vb_list, vc_list, vout_list = [], [], [], [], []
@@ -165,17 +180,17 @@ while i < len(cg_data):
     parts = cg_data[i].split()
     if len(parts) >= 2:
         t_val = float(parts[1])
-        va_val = float(cg_data[i+1].split()[0])
-        vb_val = float(cg_data[i+2].split()[0])
-        vc_val = float(cg_data[i+3].split()[0])
-        vout_val = float(cg_data[i+4].split()[0])
+        va_val = float(cg_data[i + var_map['v(a)']].split()[0])
+        vb_val = float(cg_data[i + var_map['v(b)']].split()[0])
+        vc_val = float(cg_data[i + var_map['v(c)']].split()[0])
+        vout_val = float(cg_data[i + var_map['v(out)']].split()[0])
         
         t_list.append(t_val * 1e9) # ns
         va_list.append(va_val)
         vb_list.append(vb_val)
         vc_list.append(vc_val)
         vout_list.append(vout_val)
-        i += 7
+        i += n_vars
     else:
         i += 1
 
