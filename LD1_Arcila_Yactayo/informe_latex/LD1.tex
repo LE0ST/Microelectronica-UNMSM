@@ -25,6 +25,7 @@
 \usepackage{hyperref}
 \usepackage[section]{placeins}
 \usepackage{multicol}
+\usepackage{needspace}
 
 % Optimización de colocación de flotantes para evitar páginas vacías
 \renewcommand{\topfraction}{0.90}
@@ -83,20 +84,20 @@
 }
 \lstdefinestyle{spice}{
   language=SPICE,
-  basicstyle=\fontsize{6.5pt}{7.5pt}\selectfont\ttfamily,
+  basicstyle=\fontsize{6.0pt}{7.0pt}\selectfont\ttfamily,
   keywordstyle=\color{navy}\bfseries,
   commentstyle=\color{coral!85!black}\itshape,
   backgroundcolor=\color{grisclaro},
   frame=leftline,
-  framerule=1.2pt,
+  framerule=1.0pt,
   rulecolor=\color{iceblue},
-  framesep=3pt,
-  xleftmargin=4pt,
+  framesep=2.5pt,
+  xleftmargin=3pt,
   breaklines=true,
   showstringspaces=false,
   columns=fullflexible,
-  aboveskip=0.2em,
-  belowskip=0.2em,
+  aboveskip=0.15em,
+  belowskip=0.15em,
 }
 \lstset{style=spice}
 
@@ -313,24 +314,26 @@ $\bm{\beta}$ & $\bm{V_M}$ (V) & $\bm{V_{IL}}$ (V) & $\bm{V_{IH}}$ (V) & $\bm{NM_
 \end{tabularx}
 \end{table}
 
-\begin{figure}[htbp]
+\begin{figure}[!htbp]
 \centering
 \vspace{-1mm}
-\includegraphics[width=0.62\textwidth]{figuras/fig1_vtc_familia.png}
+\includegraphics[width=0.58\textwidth]{figuras/fig1_vtc_familia.png}
 \vspace{-2mm}
 \caption{Curvas de transferencia de tensión (VTC) y derivada $d(V_{out})/d(V_{in})$ para el inversor de 45~nm HP ante el barrido de $\beta \in [1.0, 3.0]$.}
 \label{fig:vtc_familia}
 \end{figure}
 
-\begin{figure}[htbp]
+\begin{figure}[!htbp]
 \centering
 \vspace{-1mm}
-\includegraphics[width=0.72\linewidth]{figuras/fig1_cursores_ltspice.png}
+\includegraphics[width=0.68\linewidth]{figuras/fig1_cursores_ltspice.png}
 \vspace{-2mm}
 \caption{Medición directa en LTspice de los voltajes críticos $V_{IL}$ y $V_{IH}$ mediante cursores para cada $\beta$ simulado.}
 \label{fig:vtc_cursores}
 \end{figure}
 
+\FloatBarrier
+\needspace{6\baselineskip}
 \begin{preguntas}[Preguntas de la Actividad 1]
 \begin{listapreg}
 \preg{Con la razón de \texttt{u0} obtenida, la regla clásica predice cierto $\beta$ para centrar la VTC. ¿Coincide con el $\beta$ que usted midió? Explique la discrepancia en términos de saturación de velocidad, apoyándose en la ecuación~\eqref{eq:vm}.}
@@ -374,23 +377,25 @@ $\bm{\beta}$ & $\bm{V_M}$ (V) & $\bm{V_{IL}}$ (V) & $\bm{V_{IH}}$ (V) & $\bm{NM_
 \end{tabularx}
 \end{table}
 
-\begin{figure}[htbp]
+\begin{figure}[!htbp]
 \centering
-\begin{minipage}[t]{0.42\textwidth}
+\begin{minipage}[t]{0.43\textwidth}
   \centering
   \includegraphics[width=\textwidth]{figuras/fig2_tp_vs_cl.png}
   \caption{Ajuste lineal de retardo medio $t_p(C_L)$ en 45~nm HP ($\beta = 2.5$): $m = 1.846$~ps/fF, $t_0 = 2.708$~ps.}
   \label{fig:tp_vs_cl}
 \end{minipage}
 \hfill
-\begin{minipage}[t]{0.55\textwidth}
+\begin{minipage}[t]{0.54\textwidth}
   \centering
   \includegraphics[width=\textwidth]{figuras/fig2_comparativa_nodos.png}
-  \caption{Respuesta transitoria en 3 nodos ($C_L = 2$~fF): \textcolor{red}{\textbf{Rojo}} (22~nm HP, $V_{DD}=0.8$~V, $t_p=8.65$~ps), \textcolor{blue}{\textbf{Azul}} (45~nm HP, $V_{DD}=1.0$~V, $t_p=6.41$~ps) y \textcolor{green!60!black}{\textbf{Verde}} (90~nm bulk, $V_{DD}=1.2$~V, $t_p=7.36$~ps).}
+  \caption{Respuesta transitoria en 3 nodos ($C_L = 2$~fF): \textcolor{red}{\textbf{Rojo}} (22~nm HP, $t_p=8.65$~ps), \textcolor{blue}{\textbf{Azul}} (45~nm HP, $t_p=6.41$~ps) y \textcolor{green!60!black}{\textbf{Verde}} (90~nm bulk, $t_p=7.36$~ps).}
   \label{fig:comparativa_nodos}
 \end{minipage}
 \end{figure}
 
+\FloatBarrier
+\needspace{6\baselineskip}
 \begin{preguntas}[Preguntas de la Actividad 2]
 \begin{listapreg}
 \preg{De la recta $t_p$ contra $C_L$: ¿qué representa físicamente la pendiente y qué representa la ordenada al origen?}
@@ -414,7 +419,7 @@ $\bm{\beta}$ & $\bm{V_M}$ (V) & $\bm{V_{IL}}$ (V) & $\bm{V_{IH}}$ (V) & $\bm{NM_
 
 \subsection*{Procedimiento}
 \begin{enumerate}[leftmargin=1.6em,itemsep=0.35em]
-  \item Implemente la NAND2 (Anexo~\ref{sec:a3}) y la NOR2 con el criterio de \textbf{resistencia equivalente igual a la del inversor de referencia} ($\beta = 2.5$): en la rama serie los transistores duplican su ancho; en la rama paralela conservan el ancho del inversor.
+  \item Implemente la NAND2 (Anexo~\ref{sec:a3}) y la NOR2 (Anexo~\ref{sec:a3_nor}) con el criterio de \textbf{resistencia equivalente igual a la del inversor de referencia} ($\beta = 2.5$): en la rama serie los transistores duplican su ancho; en la rama paralela conservan el ancho del inversor.
   \item Verifique la tabla de verdad de cada compuerta.
   \item Mida $t_{pHL}$ de la NAND2 en dos escenarios: (a) conmuta la entrada \textbf{interna} (la conectada al transistor cercano a tierra) con la otra fija en \texttt{1}; (b) conmuta la entrada \textbf{externa} con la otra fija en \texttt{1}.
   \item Mida $t_{pLH}$ de la NOR2 con las dos entradas conmutando simultáneamente y con solo una conmutando.
@@ -438,6 +443,8 @@ NOR2 (ambas conm.)  & 180~nm & 900~nm & 2160~nm & 6.768  & 8.569 & 7.669 \\
 \end{tabularx}
 \end{table}
 
+\FloatBarrier
+\needspace{6\baselineskip}
 \begin{preguntas}[Preguntas de la Actividad 3]
 \begin{listapreg}
 \preg{Los dos escenarios del paso 3 dan retardos distintos. Explique el papel de la capacitancia del nodo intermedio y del efecto de cuerpo del transistor superior.}
@@ -454,6 +461,7 @@ NOR2 (ambas conm.)  & 180~nm & 900~nm & 2160~nm & 6.768  & 8.569 & 7.669 \\
 \end{listapreg}
 \end{preguntas}
 
+\clearpage
 %==============================================================================
 \section{Actividad 4 --- Síntesis de una compuerta compleja}
 %==============================================================================
@@ -470,10 +478,10 @@ Se sintetiza la función inversora $Y = \overline{(A \cdot B) + C}$ mediante ló
   \item \textbf{Red Pull-Up (PUN) dual:} Por dualidad topológica planar, la rama serie de la PDN se convierte en ramas paralelas ($MP_A \parallel MP_B$), las cuales se conectan en serie con $MP_C$. En el peor caso de conducción, solo conduce un PMOS de la rama paralela en serie con $C$ ($R_{PUN} = R_p' + R_p' = 2R_p'$); para igualar $R_{PUN} = R_p$, cada PMOS debe duplicar su ancho: $W_{pA} = W_{pB} = W_{pC} = 2W_p = 720$~nm.
 \end{itemize}
 
-\begin{figure}[htbp]
+\begin{figure}[!htbp]
 \centering
 \vspace{-1mm}
-\includegraphics[width=0.66\textwidth]{figuras/fig_esquema_compleja.png}
+\includegraphics[width=0.62\textwidth]{figuras/fig_esquema_compleja.png}
 \vspace{-2mm}
 \caption{Diseño de la compuerta compleja $Y = \overline{(A \cdot B) + C}$: (a) Grafos de conducción duales; (b) Esquema circuital CMOS dimensionado ($W_n=180$~nm, $\beta=2$).}
 \label{fig:esquema_compleja}
@@ -487,15 +495,17 @@ La Figura~\ref{fig:compleja} presenta el barrido de las ocho combinaciones de en
   \item \textbf{Medición dedicada del peor caso $t_{pHL}$:} Excitando un escalón hacia $110$ desde un estado alto previo ($010 \to 110$ o $100 \to 110$), la descarga fluye exclusivamente por la rama serie, obteniéndose $t_{pHL} = 13.19$~ps para la entrada externa ($A$) y $t_{pHL} = 14.39$~ps para la interna ($B$, penalizada por la precarga del nodo intermedio $n_{ab}$ y efecto cuerpo en $MN_A$).
 \end{itemize}
 
-\begin{figure}[htbp]
+\begin{figure}[!htbp]
 \centering
 \vspace{-1mm}
-\includegraphics[width=0.64\textwidth]{figuras/fig3_transitorio_compleja.png}
+\includegraphics[width=0.60\textwidth]{figuras/fig3_transitorio_compleja.png}
 \vspace{-2mm}
 \caption{Respuesta transitoria de la compuerta compleja $Y = \overline{(A \cdot B) + C}$ ante el barrido de las 8 combinaciones binarias ($111$ a $000$) en 8~ns.}
 \label{fig:compleja}
 \end{figure}
 
+\FloatBarrier
+\needspace{6\baselineskip}
 \begin{preguntas}[Preguntas de la Actividad 4]
 \begin{listapreg}
 \preg{¿Cuántos transistores requiere su implementación? Compárela con la realización de la misma función mediante NAND2 más inversores en cascada, en número de transistores y en número de etapas.}
@@ -509,6 +519,7 @@ La Figura~\ref{fig:compleja} presenta el barrido de las ocho combinaciones de en
 \end{listapreg}
 \end{preguntas}
 
+\clearpage
 %==============================================================================
 \section{Actividad 5 --- Potencia: dinámica, cortocircuito y fuga}
 %==============================================================================
@@ -546,15 +557,17 @@ La Figura~\ref{fig:compleja} presenta el barrido de las ocho combinaciones de en
 }
 \end{table}
 
-\begin{figure}[htbp]
+\begin{figure}[!htbp]
 \centering
 \vspace{1mm}
-\includegraphics[width=0.55\linewidth]{figuras/fig4_oscilador_anillo.png}
+\includegraphics[width=0.52\linewidth]{figuras/fig4_oscilador_anillo.png}
 \vspace{-1mm}
 \caption{Oscilación transitoria estacionaria de las 5 fases en el oscilador de anillo (45~nm HP).}
 \label{fig:ro}
 \end{figure}
 
+\FloatBarrier
+\needspace{6\baselineskip}
 \begin{preguntas}[Preguntas de la Actividad 5]
 \begin{listapreg}
 \preg{Calcule las razones $I_{leak,HP}/I_{leak,LP}$ y $f_{osc,HP}/f_{osc,LP}$. Enuncie el compromiso de diseño en una frase y cite el parámetro de la tarjeta que lo origina.}
@@ -590,6 +603,7 @@ La Figura~\ref{fig:compleja} presenta el barrido de las ocho combinaciones de en
   \item \textbf{Compromiso fundamental entre desempeño y potencia estática:} La caracterización comparativa entre 45~nm HP y LP demuestra que un factor de $3.5\times$ en velocidad exige tolerar un incremento superior a $200\times$ en corriente de fuga estática. Este comportamiento sustenta la implementación de procesos LP en arquitecturas energéticamente restringidas y de procesos HP en bloques de procesamiento de alto rendimiento.
 \end{enumerate}
 
+\clearpage
 %==============================================================================
 \appendix
 \section{Netlists de referencia}
@@ -692,6 +706,37 @@ C1 out 0 2f
 .tran 0 4n 0 0.5p
 .meas tran tpHL TRIG V(a) VAL={VDDv/2} RISE=1 TARG V(out) VAL={VDDv/2} FALL=1
 .meas tran tpLH TRIG V(a) VAL={VDDv/2} FALL=1 TARG V(out) VAL={VDDv/2} RISE=1
+.meas tran tp   PARAM (tpHL+tpLH)/2
+.end
+\end{lstlisting}
+
+\subsection{NOR2 estática}
+\label{sec:a3_nor}
+
+\begin{lstlisting}
+* === A3: NOR2 CMOS estatica ===
+.include 45nm_HP.pm
+.param VDDv = 1.0
+.param Lmin = 45n
+.param Wn   = 4*Lmin
+.param beta = 2.5    ; beta optimo del inversor
+
+V1 vdd 0 DC {VDDv}
+VA a 0 0
+VB b 0 PULSE(0 {VDDv} 1n 10p 10p 2n 4n)
+
+* --- PUN: PMOS serie ---
+MP1 y   a vdd vdd pmos L={Lmin} W={2*beta*Wn}
+MP2 out b y   vdd pmos L={Lmin} W={2*beta*Wn}
+
+* --- PDN: NMOS paralelo ---
+MN1 out a 0 0 nmos L={Lmin} W={Wn}
+MN2 out b 0 0 nmos L={Lmin} W={Wn}
+
+C1 out 0 2f
+.tran 0 8n 0 0.5p
+.meas tran tpHL TRIG V(b) VAL={VDDv/2} RISE=1 TARG V(out) VAL={VDDv/2} FALL=1
+.meas tran tpLH TRIG V(b) VAL={VDDv/2} FALL=1 TARG V(out) VAL={VDDv/2} RISE=1
 .meas tran tp   PARAM (tpHL+tpLH)/2
 .end
 \end{lstlisting}
