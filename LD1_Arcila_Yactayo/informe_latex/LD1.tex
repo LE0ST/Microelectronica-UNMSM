@@ -509,30 +509,53 @@ La Figura~\ref{fig:compleja} presenta el barrido de las ocho combinaciones de en
 %==============================================================================
 
 \subsection*{Procedimiento}
-\begin{enumerate}[leftmargin=1.6em,itemsep=0.35em]
+\begin{enumerate}[leftmargin=1.6em,itemsep=0.25em]
   \item \textbf{Fuga.} Con el netlist~\ref{sec:a1} modificado para punto de operación: fije \texttt{Vin~=~0} y luego \texttt{Vin~=~VDD}, y registre $|I(V1)|$ en cada caso. Repita con \texttt{45nm\_HP.pm} y \texttt{45nm\_LP.pm}.
   \item \textbf{Dinámica.} En el netlist~\ref{sec:a2}, use \lstinline|.meas tran Iavg AVG I(V1)| y calcule $P=|I_{avg}|\,V_{DD}$. Verifique contra $\alpha C_L V_{DD}^2 f$ y explique cualquier exceso.
+
+  \par\vspace{1mm}\noindent\textbf{Verificación de potencia dinámica del inversor ($C_L = 2$~fF, $f = 1$~GHz, $\alpha = 1$):}
+  \begin{itemize}[leftmargin=1.4em,itemsep=0.1em]
+    \item \textbf{Proceso 45~nm HP ($V_{DD}=1.0$~V, $I_{avg}=-2.754~\mu$A):}
+    \vspace{-1.5mm}
+    $$P_{teor} = \alpha C_L V_{DD}^2 f = (1)(2\times 10^{-15}\text{ F})(1.0\text{ V})^2(1\times 10^9\text{ Hz}) = 2.000~\mu\text{W}$$
+    \vspace{-2.5mm}
+    $$P_{sim} = |I_{avg}|V_{DD} = |-2.754~\mu\text{A}|(1.0\text{ V}) = 2.754~\mu\text{W} \implies \Delta P = 0.754~\mu\text{W}$$
+    \item \textbf{Proceso 45~nm LP ($V_{DD}=1.1$~V, $I_{avg}=-3.097~\mu$A):}
+    \vspace{-1.5mm}
+    $$P_{teor} = \alpha C_L V_{DD}^2 f = (1)(2\times 10^{-15}\text{ F})(1.1\text{ V})^2(1\times 10^9\text{ Hz}) = 2.420~\mu\text{W}$$
+    \vspace{-2.5mm}
+    $$P_{sim} = |I_{avg}|V_{DD} = |-3.097~\mu\text{A}|(1.1\text{ V}) = 3.407~\mu\text{W} \implies \Delta P = 0.987~\mu\text{W}$$
+  \end{itemize}
+  \vspace{-1mm}
+  \noindent\textbf{Discusión física de $\Delta P$:} El exceso $\Delta P$ evidencia que la potencia total real no es puramente capacitiva ideal; incorpora la componente de cortocircuito ($I_{cc}V_{DD}$) disipada durante la ventana en que ambos transistores conducen simultáneamente, sumada a la carga y descarga de las capacitancias parásitas intrínsecas de difusión ($C_{db}, C_{sb}$) de la celda.
+
   \item \textbf{Oscilador de anillo.} Arme el anillo de cinco etapas del Anexo~\ref{sec:a5}. Mida el período de oscilación, deduzca $t_{pd}=T_{osc}/(2N)$ y compárelo con el $t_p$ de la Actividad~2.
   \item Repita el anillo con la tarjeta LP del mismo nodo y complete la tabla.
 \end{enumerate}
 
 \begin{table}[htbp]
 \centering\small
-\caption{Resultados 5.1 --- Compromiso velocidad/fuga entre procesos HP y LP.}
-\label{tab:res51}
-\begin{tabularx}{\textwidth}{@{}lc*{4}{>{\centering\arraybackslash}X}@{}}
+\vspace{-2mm}
+\caption{Resultados 5.1 --- Compromiso velocidad/fuga y potencia entre procesos HP y LP.}
+\label{tab:act5_resultados}
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{lccccccc}
 \toprule
-\textbf{Proceso} & $\bm{V_{DD}}$ (V) & $\bm{I_{leak}}$ (A) & $\bm{f_{osc}}$ (GHz) & $\bm{t_{pd}}$ (ps) & $\bm{P_{prom}}$ (\textmu W) \\
+\textbf{Proceso} & $\boldsymbol{V_{DD}}$ (V) & $\boldsymbol{I_{leak}(0)}$ & $\boldsymbol{I_{leak}(V_{DD})}$ & $\boldsymbol{f_{osc}}$ (GHz) & $\boldsymbol{t_{pd}}$ (ps) & $\boldsymbol{P_{sim,inv}}$ ($\mu$W) & $\boldsymbol{P_{prom,RO}}$ ($\mu$W) \\
 \midrule
-45 nm HP & 1.0 & $3.13 \times 10^{-9}$  & 21.94 & 4.56  & 177.2 \\
-45 nm LP & 1.1 & $1.53 \times 10^{-11}$ & 6.25  & 15.99 & 65.6 \\
+45~nm HP & 1.0 & 4.131~nA & 1.589~nA & 21.94 & 4.56 & 2.754 & 177.2 \\
+45~nm LP & 1.1 & 19.58~pA & 10.98~pA & 6.25  & 15.99 & 3.407 & 65.6 \\
 \bottomrule
-\end{tabularx}
+\end{tabular}%
+}
+\vspace{-2mm}
 \end{table}
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=0.74\textwidth]{figuras/fig4_oscilador_anillo.png}
+\vspace{-2mm}
+\includegraphics[width=0.70\linewidth]{figuras/fig4_oscilador_anillo.png}
+\vspace{-2mm}
 \caption{Oscilación transitoria estacionaria de las 5 fases en el oscilador de anillo (45~nm HP).}
 \label{fig:ro}
 \end{figure}
@@ -541,7 +564,7 @@ La Figura~\ref{fig:compleja} presenta el barrido de las ocho combinaciones de en
 \begin{preguntas}[Preguntas de la Actividad 5]
 \begin{listapreg}
 \preg{Calcule las razones $I_{leak,HP}/I_{leak,LP}$ y $f_{osc,HP}/f_{osc,LP}$. Enuncie el compromiso de diseño en una frase y cite el parámetro de la tarjeta que lo origina.}
-\par\noindent\textbf{Rpta:} $I_{leak,HP}/I_{leak,LP} = 3.13\text{~nA}/15.3\text{~pA} \approx 205$ y $f_{osc,HP}/f_{osc,LP} = 21.94\text{~GHz}/6.25\text{~GHz} \approx 3.51$. Compromiso: ``Acelerar la velocidad $3.5\times$ cuesta aumentar $200\times$ el consumo estático''. El parámetro originario es el umbral $V_{TH0}$ (fijado por \texttt{toxe} y \texttt{voff}), que modula exponencialmente la fuga subumbral.
+\par\noindent\textbf{Rpta:} A partir de las corrientes promedio $I_{leak,HP} = (4.131+1.589)/2 = 2.860\text{~nA}$ e $I_{leak,LP} = (19.58+10.98)/2 = 15.28\text{~pA}$, la razón es $I_{leak,HP}/I_{leak,LP} = 2.860\text{~nA}/15.28\text{~pA} \approx 187.2$ y $f_{osc,HP}/f_{osc,LP} = 21.94\text{~GHz}/6.25\text{~GHz} \approx 3.51$. Compromiso: ``Acelerar la velocidad $3.5\times$ cuesta aumentar $\approx 187\times$ a $200\times$ el consumo estático''. El parámetro originario es el umbral $V_{TH0}$ (fijado por \texttt{toxe} y \texttt{voff}), que modula exponencialmente la fuga subumbral.
 
 \preg{La corriente de fuga que midió no proviene de un solo mecanismo. Nombre al menos tres e indique con qué parámetros del modelo BSIM4 se controlan en las tarjetas PTM (revise \texttt{voff}, \texttt{nfactor}, \texttt{eta0}, \texttt{agidl}, \texttt{aigc}).}
 \par\noindent\textbf{Rpta:} 1) Fuga subumbral ($I_{sub}$): controlada por \texttt{voff}, \texttt{nfactor} y \texttt{eta0} (efecto DIBL); 2) Corriente de túnel de compuerta ($I_{gate}$): gobernada por \texttt{aigc} y espesor \texttt{toxe}; y 3) Fuga en unión drenador-sustrato inducida por compuerta (GIDL): modulada por \texttt{agidl} y \texttt{bgidl}.
