@@ -320,7 +320,8 @@ $\bm{\beta}$ & $\bm{V_M}$ (V) & $\bm{V_{IL}}$ (V) & $\bm{V_{IH}}$ (V) & $\bm{NM_
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=0.82\linewidth]{figuras/fig1_cursores_ltspice.png}
+\vspace{-1mm}
+\includegraphics[width=0.72\linewidth]{figuras/fig1_cursores_ltspice.png}
 \vspace{-2mm}
 \caption{Medición directa en LTspice de los voltajes críticos $V_{IL}$ y $V_{IH}$ mediante cursores para cada $\beta$ simulado.}
 \label{fig:vtc_cursores}
@@ -513,18 +514,10 @@ La Figura~\ref{fig:compleja} presenta el barrido de las ocho combinaciones de en
   \item \textbf{Fuga.} Con el netlist~\ref{sec:a1} modificado para punto de operación: fije \texttt{Vin~=~0} y luego \texttt{Vin~=~VDD}, y registre $|I(V1)|$ en cada caso. Repita con \texttt{45nm\_HP.pm} y \texttt{45nm\_LP.pm}.
   \item \textbf{Dinámica.} En el netlist~\ref{sec:a2}, use \lstinline|.meas tran Iavg AVG I(V1)| y calcule $P=|I_{avg}|\,V_{DD}$. Verifique contra $\alpha C_L V_{DD}^2 f$ y explique cualquier exceso.
 
-  \par\vspace{1mm}\noindent\textbf{Verificación de potencia dinámica del inversor ($C_L = 2$~fF, $f = 1$~GHz, $\alpha = 1$):}
-  \begin{itemize}[leftmargin=1.4em,itemsep=0.1em]
-    \item \textbf{Proceso 45~nm HP ($V_{DD}=1.0$~V, $I_{avg}=-2.754~\mu$A):}
-    \vspace{-1.5mm}
-    $$P_{teor} = \alpha C_L V_{DD}^2 f = (1)(2\times 10^{-15}\text{ F})(1.0\text{ V})^2(1\times 10^9\text{ Hz}) = 2.000~\mu\text{W}$$
-    \vspace{-2.5mm}
-    $$P_{sim} = |I_{avg}|V_{DD} = |-2.754~\mu\text{A}|(1.0\text{ V}) = 2.754~\mu\text{W} \implies \Delta P = 0.754~\mu\text{W}$$
-    \item \textbf{Proceso 45~nm LP ($V_{DD}=1.1$~V, $I_{avg}=-3.097~\mu$A):}
-    \vspace{-1.5mm}
-    $$P_{teor} = \alpha C_L V_{DD}^2 f = (1)(2\times 10^{-15}\text{ F})(1.1\text{ V})^2(1\times 10^9\text{ Hz}) = 2.420~\mu\text{W}$$
-    \vspace{-2.5mm}
-    $$P_{sim} = |I_{avg}|V_{DD} = |-3.097~\mu\text{A}|(1.1\text{ V}) = 3.407~\mu\text{W} \implies \Delta P = 0.987~\mu\text{W}$$
+  \par\vspace{0.5mm}\noindent\textbf{Verificación de potencia dinámica del inversor ($C_L = 2$~fF, $f = 1$~GHz, $\alpha = 1$):}
+  \begin{itemize}[leftmargin=1.4em,itemsep=0.05em,topsep=1pt]
+    \item \textbf{Proceso 45~nm HP ($V_{DD}=1.0$~V, $I_{avg}=-2.754~\mu$A):} $P_{teor} = \alpha C_L V_{DD}^2 f = (1)(2\times 10^{-15}\text{ F})(1.0\text{ V})^2(1\times 10^9\text{ Hz}) = 2.000~\mu\text{W}$; $P_{sim} = |I_{avg}|V_{DD} = |-2.754~\mu\text{A}|(1.0\text{ V}) = 2.754~\mu\text{W} \implies \Delta P = 0.754~\mu\text{W}$.
+    \item \textbf{Proceso 45~nm LP ($V_{DD}=1.1$~V, $I_{avg}=-3.097~\mu$A):} $P_{teor} = \alpha C_L V_{DD}^2 f = (1)(2\times 10^{-15}\text{ F})(1.1\text{ V})^2(1\times 10^9\text{ Hz}) = 2.420~\mu\text{W}$; $P_{sim} = |I_{avg}|V_{DD} = |-3.097~\mu\text{A}|(1.1\text{ V}) = 3.407~\mu\text{W} \implies \Delta P = 0.987~\mu\text{W}$.
   \end{itemize}
   \vspace{-1mm}
   \noindent\textbf{Discusión física de $\Delta P$:} El exceso $\Delta P$ evidencia que la potencia total real no es puramente capacitiva ideal; incorpora la componente de cortocircuito ($I_{cc}V_{DD}$) disipada durante la ventana en que ambos transistores conducen simultáneamente, sumada a la carga y descarga de las capacitancias parásitas intrínsecas de difusión ($C_{db}, C_{sb}$) de la celda.
@@ -554,7 +547,7 @@ La Figura~\ref{fig:compleja} presenta el barrido de las ocho combinaciones de en
 \begin{figure}[htbp]
 \centering
 \vspace{-2mm}
-\includegraphics[width=0.70\linewidth]{figuras/fig4_oscilador_anillo.png}
+\includegraphics[width=0.55\linewidth]{figuras/fig4_oscilador_anillo.png}
 \vspace{-2mm}
 \caption{Oscilación transitoria estacionaria de las 5 fases en el oscilador de anillo (45~nm HP).}
 \label{fig:ro}
@@ -584,7 +577,7 @@ La Figura~\ref{fig:compleja} presenta el barrido de las ocho combinaciones de en
 \section{Conclusiones}
 %==============================================================================
 
-\begin{enumerate}[leftmargin=1.6em,itemsep=0.35em]
+\begin{enumerate}[leftmargin=1.6em,itemsep=0.20em]
   \item \textbf{Saturación de velocidad y centrado estático:} En nodos sub-65~nm, el umbral lógico $V_M$ y la simetría de la VTC están gobernados por la velocidad de saturación de portadores ($v_{sat,p}/v_{sat,n} \approx 0.88$) y no por la razón clásica de movilidades ($\mu_n/\mu_p \approx 2.70$), determinando que una relación $\beta \approx 2.50$ centra la conmutación y optimiza los márgenes de ruido ($NM_L \approx NM_H \approx 0.39\text{~V}$).
   
   \item \textbf{Resistencia efectiva y retardo intrínseco:} El comportamiento lineal de $t_p(C_L)$ desacopla la resistencia equivalente de conmutación (pendiente $m \propto R_{eq}$) del retardo intrínseco descargado (ordenada $t_0 \propto R_{eq} C_{int}$). El escalamiento tecnológico preserva la velocidad de propagación pese a la reducción de $V_{DD}$ debido a la contracción del área de compuerta y el adelgazamiento del óxido.
@@ -603,6 +596,7 @@ La Figura~\ref{fig:compleja} presenta el barrido de las ocho combinaciones de en
 
 Guarde cada bloque como archivo \texttt{.cir} y ejecútelo con \texttt{File $\rightarrow$ Open} en LTspice, o replique el circuito en esquemático.
 
+\setlength{\multicolsep}{4pt plus 1pt minus 1pt}
 \begin{multicols}{2}
 \subsection{Curva de transferencia del inversor}
 \label{sec:a1}
