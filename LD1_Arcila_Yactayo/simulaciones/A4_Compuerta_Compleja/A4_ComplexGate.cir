@@ -24,9 +24,14 @@ C1 out 0 2f
 
 .tran 0 8n 0 1p
 
-* --- Mediciones de retardo en las transiciones criticas
-.meas tran tplh_worst TRIG V(c) VAL={VDDv/2} FALL=2 TARG V(out) VAL={VDDv/2} RISE=2
-.meas tran tphl_c     TRIG V(c) VAL={VDDv/2} RISE=2 TARG V(out) VAL={VDDv/2} FALL=2
+* --- Mediciones robustas con ventana temporal (TD)
+* Peor caso de subida (t = 3 ns: transicion ABC = 101 -> 100, flanco de subida en out)
+.meas tran tplh_worst TRIG V(c) VAL={VDDv/2} TD=2.5n FALL=1 TARG V(out) VAL={VDDv/2} TD=2.5n RISE=1
+
+* Descarga rapida por transistor C (t = 4 ns: transicion ABC = 100 -> 011, flanco de bajada en out)
+.meas tran tphl_c     TRIG V(c) VAL={VDDv/2} TD=3.5n RISE=1 TARG V(out) VAL={VDDv/2} TD=3.5n FALL=1
+
+* Retardo promedio representativo
 .meas tran tp_avg     PARAM (tplh_worst + tphl_c)/2
 
 .end
