@@ -73,6 +73,7 @@ Todos los scripts emplean `matplotlib` y guardan automáticamente en `LD1_Arcila
   python LD1_Arcila_Yactayo\scripts\generar_fig2.py
   python LD1_Arcila_Yactayo\scripts\generar_comparativa_nodos.py
   python LD1_Arcila_Yactayo\scripts\generar_fig3.py
+  python LD1_Arcila_Yactayo\scripts\generar_bloque_cursores.py
   python LD1_Arcila_Yactayo\scripts\generar_graficas.py
   ```
 
