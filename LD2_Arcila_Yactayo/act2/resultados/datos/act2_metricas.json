@@ -1,0 +1,266 @@
+{
+    "nand3_cs_peor_caso_oficial": {
+        "measurements": {
+            "vdyn_min": 0.999841547088,
+            "dv": 0.000158452912414,
+            "vdyn_eval_min": -0.0190195385367,
+            "dv_eval_max": 1.01901953854,
+            "vout_eval_max": 1.00930786133,
+            "vout_end": 1.8300978031e-06,
+            "vn1_end": 0.68252102254,
+            "vn2_end": 0.652862685231,
+            "vn3_end": -0.0602506160206
+        },
+        "steps": [],
+        "elapsed_time": 0.407,
+        "is_valid": true
+    },
+    "nand3_cs_peor_caso_fisico": {
+        "measurements": {
+            "vdyn_min": 0.900339695729,
+            "dv": 0.0996603042711,
+            "vdyn_eval_min": 0.898965683095,
+            "dv_eval_max": 0.101034316905,
+            "vout_eval_max": 0.000149240993778,
+            "vout_end": 2.05106731662e-05,
+            "vn1_end": 0.67987753121,
+            "vn2_end": 0.659606211898,
+            "vn3_end": 1.37385305559e-06
+        },
+        "steps": [],
+        "elapsed_time": 0.478,
+        "is_valid": true
+    },
+    "nand3_cs_barrido_cl": {
+        "measurements": {
+            "vdyn_min": [
+                {
+                    "step": 1,
+                    "val": 0.827152968036
+                },
+                {
+                    "step": 2,
+                    "val": 0.86392380387
+                },
+                {
+                    "step": 3,
+                    "val": 0.900339695729
+                },
+                {
+                    "step": 4,
+                    "val": 0.933166821403
+                }
+            ],
+            "dv": [
+                {
+                    "step": 1,
+                    "val": 0.172847031964
+                },
+                {
+                    "step": 2,
+                    "val": 0.13607619613
+                },
+                {
+                    "step": 3,
+                    "val": 0.0996603042711
+                },
+                {
+                    "step": 4,
+                    "val": 0.0668331785974
+                }
+            ],
+            "vdyn_eval_min": [
+                {
+                    "step": 1,
+                    "val": 0.824077575307
+                },
+                {
+                    "step": 2,
+                    "val": 0.861744807189
+                },
+                {
+                    "step": 3,
+                    "val": 0.898965683095
+                },
+                {
+                    "step": 4,
+                    "val": 0.932377267736
+                }
+            ],
+            "dv_eval_max": [
+                {
+                    "step": 1,
+                    "val": 0.175922424693
+                },
+                {
+                    "step": 2,
+                    "val": 0.138255192811
+                },
+                {
+                    "step": 3,
+                    "val": 0.101034316905
+                },
+                {
+                    "step": 4,
+                    "val": 0.067622732264
+                }
+            ],
+            "vout_eval_max": [
+                {
+                    "step": 1,
+                    "val": 0.000678222277202
+                },
+                {
+                    "step": 2,
+                    "val": 0.000389114662539
+                },
+                {
+                    "step": 3,
+                    "val": 0.000149240993778
+                },
+                {
+                    "step": 4,
+                    "val": 8.26386429256e-06
+                }
+            ],
+            "vout_end": [
+                {
+                    "step": 1,
+                    "val": 0.000162876132061
+                },
+                {
+                    "step": 2,
+                    "val": 5.87876417224e-05
+                },
+                {
+                    "step": 3,
+                    "val": 2.05106731662e-05
+                },
+                {
+                    "step": 4,
+                    "val": 7.82861019912e-06
+                }
+            ],
+            "vn1_end": [
+                {
+                    "step": 1,
+                    "val": 0.673409470936
+                },
+                {
+                    "step": 2,
+                    "val": 0.676618961965
+                },
+                {
+                    "step": 3,
+                    "val": 0.67987753121
+                },
+                {
+                    "step": 4,
+                    "val": 0.682932955709
+                }
+            ],
+            "vn2_end": [
+                {
+                    "step": 1,
+                    "val": 0.656477600028
+                },
+                {
+                    "step": 2,
+                    "val": 0.658056705921
+                },
+                {
+                    "step": 3,
+                    "val": 0.659606211898
+                },
+                {
+                    "step": 4,
+                    "val": 0.66102597513
+                }
+            ]
+        },
+        "steps": [
+            {
+                "cl": 5e-16
+            },
+            {
+                "cl": 1e-15
+            },
+            {
+                "cl": 2e-15
+            },
+            {
+                "cl": 4e-15
+            }
+        ],
+        "elapsed_time": 1.318,
+        "is_valid": true
+    },
+    "nand3_cs_mitigacion_precarga": {
+        "measurements": {
+            "vdyn_min": 1.02903996471,
+            "dv": -0.0290399647077,
+            "vdyn_eval_min": 1.01204717159,
+            "dv_eval_max": -0.0120471715927,
+            "vout_eval_max": 0.000266500457656,
+            "vout_end": 9.54167521165e-07,
+            "vn1_end": 1.06912872321,
+            "vn2_end": 1.06162838583,
+            "vn3_end": 5.96562981382e-06
+        },
+        "steps": [],
+        "elapsed_time": 0.504,
+        "is_valid": true
+    },
+    "nand3_cs_mitigacion_reordenamiento": {
+        "measurements": {
+            "vdyn_min": 1.02217229474,
+            "dv": -0.0221722947412,
+            "vdyn_eval_min": 0.999985933304,
+            "dv_eval_max": 1.4066696167e-05,
+            "vout_eval_max": 0.000294241268421,
+            "vout_end": 5.14226254956e-07,
+            "vn1_end": 1.56521488286e-05,
+            "vn2_end": 1.05028951225e-05,
+            "vn3_end": 5.28550171097e-06
+        },
+        "steps": [],
+        "elapsed_time": 0.373,
+        "is_valid": true
+    },
+    "nand3_cs_mitigacion_keeper": {
+        "measurements": {
+            "vdyn_min": 0.99957269696,
+            "dv": 0.000427303040482,
+            "vdyn_eval_min": 0.957815110683,
+            "dv_eval_max": 0.0421848893166,
+            "vout_eval_max": 0.000384413433494,
+            "vout_end": 2.09437463457e-06,
+            "vn1_end": 0.689259241231,
+            "vn2_end": 0.663752881409,
+            "vn3_end": 1.39446390601e-06,
+            "t_rec": 3.08030399678e-09,
+            "t_restore": 8.03039967756e-11
+        },
+        "steps": [],
+        "elapsed_time": 0.458,
+        "is_valid": true
+    },
+    "nand3_cs_contencion_sin_keeper": {
+        "measurements": {
+            "tphl_dyn": 2.39493677289e-11,
+            "tplh_out": 3.75754607191e-11
+        },
+        "steps": [],
+        "elapsed_time": 0.43,
+        "is_valid": true
+    },
+    "nand3_cs_contencion_con_keeper": {
+        "measurements": {
+            "tphl_dyn": 2.74572178628e-11,
+            "tplh_out": 4.30946760764e-11
+        },
+        "steps": [],
+        "elapsed_time": 0.62,
+        "is_valid": true
+    }
+}

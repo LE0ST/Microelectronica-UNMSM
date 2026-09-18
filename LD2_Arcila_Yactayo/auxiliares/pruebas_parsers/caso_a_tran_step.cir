@@ -1,0 +1,8 @@
+* Caso A: Transient Stepped
+V1 in 0 pulse(0 1 1n 0.1n 0.1n 5n 10n)
+R1 in out {Rval}
+C1 out 0 1p
+.param Rval=1k
+.step param Rval list 1k 2k 4k
+.tran 0 10n
+.end

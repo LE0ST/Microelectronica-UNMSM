@@ -1,0 +1,53 @@
+* ==============================================================================
+* VALIDACION DE CONCURRENCIA DE MODELOS PTM RENOMBRADOS (LD2)
+* Verifica carga simultanea de ptm45hp.lib, ptm45lp.lib y ptm130.lib sin colisiones
+* ==============================================================================
+
+.include ../../modelos/ptm45hp.lib
+.include ../../modelos/ptm45lp.lib
+.include ../../modelos/ptm130.lib
+
+.options gmin=1e-15 abstol=1e-14 reltol=1e-4 method=gear
+.temp 27
+
+* Fuentes de alimentacion nominales
+Vdd_hp  vdd_hp  0 1.0
+Vdd_lp  vdd_lp  0 1.1
+Vdd_130 vdd_130 0 1.3
+
+* Fuentes de entrada (polarizacion activa: VGS = VDD para NMOS, VSG = VDD para PMOS)
+Vgn_hp  gn_hp  0 1.0
+Vgp_hp  gp_hp  0 0.0
+Vgn_lp  gn_lp  0 1.1
+Vgp_lp  gp_lp  0 0.0
+Vgn_130 gn_130 0 1.3
+Vgp_130 gp_130 0 0.0
+
+* 1. Transistores 45nm HP (Wn=90n, Wp=135n, L=45n)
+MN_hp dn_hp gn_hp 0      0      nmos_45hp W=90n  L=45n
+MP_hp dp_hp gp_hp vdd_hp vdd_hp pmos_45hp W=135n L=45n
+Vd_nhp vdd_hp dn_hp 0
+Vd_php dp_hp  0     0
+
+* 2. Transistores 45nm LP (Wn=90n, Wp=135n, L=45n)
+MN_lp dn_lp gn_lp 0      0      nmos_45lp W=90n  L=45n
+MP_lp dp_lp gp_lp vdd_lp vdd_lp pmos_45lp W=135n L=45n
+Vd_nlp vdd_lp dn_lp 0
+Vd_plp dp_lp  0     0
+
+* 3. Transistores 130nm bulk (Wn=260n, Wp=390n, L=130n)
+MN_130 dn_130 gn_130 0        0        nmos_130 W=260n L=130n
+MP_130 dp_130 gp_130 vdd_130  vdd_130  pmos_130 W=390n L=130n
+Vd_n130 vdd_130 dn_130 0
+Vd_p130 dp_130  0      0
+
+.op
+
+.meas op Ion_n_45hp  FIND I(Vd_nhp)
+.meas op Ion_p_45hp  FIND I(Vd_php)
+.meas op Ion_n_45lp  FIND I(Vd_nlp)
+.meas op Ion_p_45lp  FIND I(Vd_plp)
+.meas op Ion_n_130   FIND I(Vd_n130)
+.meas op Ion_p_130   FIND I(Vd_p130)
+
+.end

@@ -1,0 +1,38 @@
+* Experimento Controlado de Sensibilidad de gmin en 45nm LP (27C)
+.include ../../modelos/ptm45lp.lib
+.options gmin=1e-15 abstol=1e-14 reltol=1e-4 method=gear
+.temp 27
+
+.param VDD=1.1
+.param Ln=45n Wn=90n Wp=135n
+.param CL=2f
+.param Tstop=1u
+
+Vdd vdd 0 {VDD}
+
+* Reloj detenido en evaluacion (CLK=1 despues de precarga inicial)
+Vclk clk 0 PWL(0 0 0.5n 0 0.52n {VDD} {Tstop} {VDD})
+Va a 0 0
+Vb b 0 0
+Vc c 0 0
+
+* NAND3 dinamica footed (PDN abierta)
+Mp dyn clk vdd vdd pmos_45lp W={Wp} L={Ln}
+M1 n1 a dyn 0 nmos_45lp W={Wn*3} L={Ln}
+M2 n2 b n1  0 nmos_45lp W={Wn*3} L={Ln}
+M3 n3 c n2  0 nmos_45lp W={Wn*3} L={Ln}
+Mf 0 clk n3 0 nmos_45lp W={Wn*3} L={Ln}
+CL dyn 0 {CL}
+
+* Inversor de salida
+Mpi out dyn vdd vdd pmos_45lp W={Wp} L={Ln}
+Mni out dyn 0   0   nmos_45lp W={Wn} L={Ln}
+Cout out 0 1f
+
+.tran 0 {Tstop} 0 1n
+
+.meas TRAN Vdyn_start FIND V(dyn) AT=1n
+.meas TRAN Vdyn_end   FIND V(dyn) AT={Tstop}
+.meas TRAN dV_leak    PARAM Vdyn_start-Vdyn_end
+.meas TRAN Ileak_avg  AVG -I(Vdd) FROM=100n TO={Tstop}
+.end

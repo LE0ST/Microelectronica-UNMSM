@@ -1,0 +1,18 @@
+* Caracterizacion VTC Inversor de Referencia LD2 - 130_85C
+.include ../../modelos/ptm130.lib
+.options gmin=1e-15 abstol=1e-14 reltol=1e-4 method=gear
+.temp 85
+
+.param VDDval = 1.3
+Vdd vdd 0 {VDDval}
+Vin in 0 0
+
+MN out in 0   0   nmos_130 W=260n L=130n
+MP out in vdd vdd pmos_130 W=390n L=130n
+Cout out 0 1f
+
+.dc Vin 0 {VDDval} 0.5m
+.meas dc VM FIND V(in) WHEN V(out)=V(in)
+.meas dc VOH FIND V(out) AT=0
+.meas dc VOL FIND V(out) AT={VDDval}
+.end

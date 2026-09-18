@@ -1,0 +1,21 @@
+% Tabla generada automaticamente por generar_tablas_latex.py
+% Fuente de datos: act2_metricas.json (Trazabilidad 100% verificada)
+\begin{table}[htbp]
+\centering
+\footnotesize
+\caption[Evaluación cuantitativa de técnicas de mitigación de charge sharing]{Evaluación cuantitativa de técnicas de mitigación de compartición de carga en NAND3 dinámica footed ($C_L=2.0\,\text{fF}$, $T_{clk}=2\,\text{ns}$, PTM 45\,nm HP).}
+\label{tab:mitigaciones_act2}
+\begin{tabularx}{\linewidth}{@{}>{\RaggedRight\arraybackslash}p{3.2cm} c c c >{\RaggedRight\arraybackslash}X@{}}
+\toprule
+\textbf{Configuración} & \textbf{$\Delta V_{\text{eval}}$} & \textbf{Transistores Extra} & \textbf{Carga $CLK$} & \textbf{Comportamiento y Trade-off} \\
+\midrule
+\textbf{Base (Sin Mitigación)} & 101.03\,mV & 0 (7 total) & Base & $V_{dyn,\text{min}} = 0.8990\,\text{V}$. Sin recuperación en evaluación; restauración en siguiente precarga. \\
+\midrule
+\textbf{Mitigación 1: Precarga} & $\le 0\,$mV & +2 PMOS ($135\,$nm) & +0.34\,fF (+67\%) & Elimina droop ($V_{dyn,\text{min}} = 1.0120\,\text{V}$). Overshoot transitorio por feedthrough capacitivo en compuertas de precarga interna. \\
+\midrule
+\textbf{Mitigación 2: Reordenamiento} & 14.1\,$\mu$V & 0 transistores & 0 fF & Supresión casi total ($V_{dyn} = 0.99999\,\text{V}$). Aísla difusión de $n_1, n_2$ ubicando $C$ al tope de la PDN; impacto en enrutamiento. \\
+\midrule
+\textbf{Mitigación 3: Keeper} & 42.18\,mV & +1 PMOS ($45\,$nm) & 0 fF & Atenúa caída en 58.2\% ($V_{dyn,\text{min}} = 0.9578\,\text{V}$) y restaura al 99\% en 80.30\,ps. Penalización de descarga: +14.6\% en $t_{pHL,dyn}$. \\
+\bottomrule
+\end{tabularx}
+\end{table}

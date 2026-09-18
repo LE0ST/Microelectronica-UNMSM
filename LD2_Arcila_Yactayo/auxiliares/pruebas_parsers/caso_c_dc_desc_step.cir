@@ -1,0 +1,8 @@
+* Caso C: DC Stepped Descendente
+V1 in 0 1
+R1 in out {Rval}
+R2 out 0 1k
+.param Rval=1k
+.step param Rval list 1k 2k 4k
+.dc V1 1 0 -0.1
+.end

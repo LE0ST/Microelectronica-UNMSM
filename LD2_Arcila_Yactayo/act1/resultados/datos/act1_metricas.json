@@ -1,0 +1,55 @@
+{
+  "dinamica_base": {
+    "tphl_dyn_s": 2.21668997743e-11,
+    "tplh_dyn_s": 2.51313212167e-11,
+    "tplh_out_s": 3.58862621156e-11,
+    "tphl_out_s": 3.80590574223e-11,
+    "tpd_eval_dyn_s": 2.21668997743e-11,
+    "tpd_eval_out_s": 3.58862621156e-11,
+    "pavg_w": 1.23927355192e-06
+  },
+  "estatica_base_historica": {
+    "tphl_stat_s": 9.76486715507e-12,
+    "tplh_stat_s": 1.23840610615e-11,
+    "pavg_stat_sw_w": 8.20550428483e-07
+  },
+  "estatica_mismo_estimulo": {
+    "tphl_stat_s": 9.61251944317e-12,
+    "tplh_stat_s": 1.24014219711e-11,
+    "pavg_stat_sw_w": 2.69188324075e-07,
+    "ratio_potencia_conmutando": 4.603741845707689
+  },
+  "control_retardo_equivalente_cl0": {
+    "tphl_dyn_s": 1.12599961535e-11,
+    "tplh_dyn_s": 1.45951860696e-11,
+    "tplh_out_s": 2.12690014052e-11,
+    "tphl_out_s": 2.48477656268e-11,
+    "pavg_w": 7.20840474312e-07
+  },
+  "entradas_fijas_1": {
+    "pavg_dyn_fixed1_w": 2.72550336913e-06,
+    "pavg_stat_fixed1_w": 1.70036373878e-09,
+    "ratio_potencia_fijas1": 1602.8943142986163
+  },
+  "capacitancia_entrada": {
+    "qin_dyn_c": 3.41475381093e-16,
+    "qin_stat_c": 5.9360412544e-16,
+    "cin_dyn_f": 3.41475381093e-16,
+    "cin_stat_f": 5.9360412544e-16,
+    "ratio_cin": 0.575257762638
+  },
+  "retencion_pdn_abierta": {
+    "tclk_2n": {
+      "vdyn_min_v": 0.993585646152,
+      "vdyn_drop_v": 0.0064143538475,
+      "vout_max_v": 0.000314888049616
+    },
+    "tclk_400n": {
+      "vdyn_final_v": 0.883721277817,
+      "vdyn_min_v": 0.883643269539,
+      "vdyn_drop_v": 0.116278722183,
+      "vout_final_v": 3.79694140128e-05,
+      "vout_max_v": 0.000303607957903
+    }
+  }
+}

@@ -1,0 +1,175 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish,es-noshorthands,es-tabla,es-nodecimaldot]{babel}
+\usepackage{lmodern}
+
+\usepackage[a4paper,top=2.0cm,bottom=2.0cm,left=2.0cm,right=2.0cm,
+            headheight=22pt,footskip=0.9cm]{geometry}
+
+\usepackage{amsmath,amssymb}
+\usepackage{bm}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{ragged2e}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{listings}
+\usepackage[most]{tcolorbox}
+\usepackage{hyperref}
+\usepackage[section]{placeins}
+\usepackage{needspace}
+
+% Optimización de colocación de flotantes para evitar páginas vacías
+\renewcommand{\topfraction}{0.88}
+\renewcommand{\bottomfraction}{0.88}
+\renewcommand{\textfraction}{0.12}
+\renewcommand{\floatpagefraction}{0.70}
+\setlength{\floatsep}{6pt plus 2pt minus 2pt}
+\setlength{\textfloatsep}{8pt plus 2pt minus 2pt}
+\setlength{\intextsep}{6pt plus 2pt minus 2pt}
+
+\definecolor{navy}{HTML}{1E2761}
+\definecolor{coral}{HTML}{F96167}
+\definecolor{iceblue}{HTML}{CADCFC}
+\definecolor{grisclaro}{HTML}{F4F6FB}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=navy,
+  urlcolor=coral,
+  citecolor=navy,
+  pdftitle={Laboratorio Dirigido Nro. 2 - Logica CMOS Dinamica},
+  pdfauthor={Leonardo Yactayo Tolentino, Marco Arcila Santander - UNMSM FIEE}
+}
+
+% -------------------------------- Encabezados ----------------------------------
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\footnotesize\color{navy}\textsc{Microelectrónica y Sistemas Nanoelectrónicos} · Laboratorio N.\textsuperscript{o} 2}
+\fancyhead[R]{\footnotesize\color{navy}LD2 -- Lógica CMOS Dinámica}
+\fancyfoot[L]{\footnotesize\color{navy}MsC. Luz Adanaqué Infante}
+\fancyfoot[C]{\footnotesize\color{navy}UNMSM -- FIEE}
+\fancyfoot[R]{\footnotesize\color{navy}\thepage}
+\renewcommand{\headrulewidth}{0.8pt}
+\renewcommand{\footrulewidth}{0.4pt}
+\renewcommand{\headrule}{\hbox to\headwidth{\color{coral}\leaders\hrule height \headrulewidth\hfill}}
+
+% -------------------------------- Titulos --------------------------------------
+\titleformat{\section}
+  {\normalfont\Large\bfseries\color{navy}}{\thesection.}{0.6em}{}
+  [\vspace{-0.6em}{\color{coral}\rule{\textwidth}{1.2pt}}]
+\titleformat{\subsection}
+  {\normalfont\large\bfseries\color{navy}}{\thesubsection}{0.6em}{}
+\titleformat{\subsubsection}
+  {\normalfont\normalsize\bfseries\color{navy}}{\thesubsubsection}{0.5em}{}
+\titlespacing*{\section}{0pt}{1.0em}{0.4em}
+\titlespacing*{\subsection}{0pt}{0.7em}{0.3em}
+\titlespacing*{\subsubsection}{0pt}{0.5em}{0.2em}
+
+% --------------------------- Estilo para codigo SPICE --------------------------
+\lstdefinelanguage{SPICE}{
+  alsoletter={.},
+  morekeywords={.include,.param,.model,.tran,.dc,.ac,.op,.meas,.measure,.step,
+                .ic,.subckt,.ends,.end,.options,.lib,.save,.four,
+                PULSE,PWL,SIN,TRIG,TARG,VAL,RISE,FALL,TD,AVG,MAX,MIN,PARAM,
+                FIND,WHEN,AT,DERIV,nmos,pmos,level},
+  sensitive=false,
+  morecomment=[f]{*},
+  morecomment=[l]{;},
+}
+\lstdefinestyle{spice}{
+  language=SPICE,
+  basicstyle=\fontsize{7.5pt}{8.8pt}\selectfont\ttfamily,
+  keywordstyle=\color{navy}\bfseries,
+  commentstyle=\color{coral!85!black}\itshape,
+  backgroundcolor=\color{grisclaro},
+  frame=leftline,
+  framerule=1.5pt,
+  rulecolor=\color{iceblue},
+  framesep=4pt,
+  xleftmargin=6pt,
+  breaklines=true,
+  showstringspaces=false,
+  columns=fullflexible,
+  aboveskip=0.6em,
+  belowskip=0.6em,
+}
+\lstset{style=spice}
+
+% --------------------------------- Cajas ---------------------------------------
+\newtcolorbox{aviso}[1][]{
+  enhanced, breakable, colback=coral!8, colframe=coral,
+  boxrule=0pt, leftrule=3.5pt, arc=2pt, left=8pt, right=8pt, top=6pt, bottom=6pt,
+  fonttitle=\bfseries\color{white}, #1}
+
+\newtcolorbox{nota}[1][]{
+  enhanced, breakable, colback=iceblue!35, colframe=navy,
+  boxrule=0pt, leftrule=3.5pt, arc=2pt, left=8pt, right=8pt, top=6pt, bottom=6pt,
+  #1}
+
+\newtcolorbox{preguntas}[1][]{
+  enhanced, breakable, colback=white, colframe=navy,
+  boxrule=0.8pt, arc=2pt, left=6pt, right=6pt, top=4pt, bottom=4pt,
+  title={\bfseries #1}, coltitle=white, colbacktitle=navy}
+
+% ---------------------------- Utilidades y Tablas -----------------------------
+\renewcommand{\arraystretch}{1.20}
+\setlength{\tabcolsep}{4pt}
+
+% ==============================================================================
+\begin{document}
+% ==============================================================================
+
+% --------------------------------- Portada ------------------------------------
+\hypersetup{pageanchor=false}
+\begin{titlepage}
+\centering
+\vspace*{1.0cm}
+
+{\color{navy}\rule{\textwidth}{2pt}}\\[0.5em]
+{\Large\bfseries\color{navy} UNIVERSIDAD NACIONAL MAYOR DE SAN MARCOS}\\[0.35em]
+{\normalsize\color{navy} Universidad del Perú, Decana de América}\\[0.6em]
+{\color{coral}\rule{\textwidth}{2pt}}\\[1.2cm]
+
+{\large\color{navy} Facultad de Ingeniería Electrónica y Eléctrica}\\[0.3em]
+{\large\color{navy} Escuela Profesional de Ingeniería Electrónica}\\[1.8cm]
+
+{\color{coral}\Large\bfseries INFORME DE LABORATORIO DIRIGIDO N.\textsuperscript{o} 2}\\[0.8cm]
+{\Huge\bfseries\color{navy} Lógica CMOS Dinámica}\\[0.7cm]
+{\large\color{navy}\itshape Caracterización Temporal, Robustez frente a Fugas,\\ Métricas de Consumo y Dimensionamiento en Tecnologías Submicrométricas}\\[2.0cm]
+
+\begin{tabular}{@{}r@{\hspace{1em}}l@{}}
+\bfseries\color{navy} Curso: & Microelectrónica y Sistemas Nanoelectrónicos (Semestre 2026-II) \\
+\bfseries\color{navy} Docente: & MsC. Luz Adanaqué Infante \\
+\bfseries\color{navy} Integrantes: & Leonardo Sait Yactayo Tolentino (23190214) \\
+                                   & Marco Antonio Arcila Santander (23190140) \\
+\bfseries\color{navy} Modalidad: & Parejas \\
+\end{tabular}
+
+\vfill
+{\color{iceblue}\rule{\textwidth}{6pt}}\\[0.4em]
+{\footnotesize\color{navy} Lima, Perú --- 2026}
+\end{titlepage}
+
+\newpage
+\hypersetup{pageanchor=true}
+\pagenumbering{arabic}
+
+% --------------------------------- Contenido ----------------------------------
+\input{secciones/01_metodologia.tex}
+\input{secciones/02_actividad1.tex}
+\input{secciones/03_actividad2.tex}
+
+% ------------------------------------------------------------------------------
+% ACTIVIDADES FUTURAS (En desarrollo para las siguientes fases de entrega)
+% ------------------------------------------------------------------------------
+% \section{Actividad 3: Fugas y Dimensionamiento del Keeper}
+% \section{Actividad 4: Monotonicidad y Cascada Dominó}
+% \section{Actividad 5: Frecuencia Mínima, Tensión Mínima y Operación NTV}
+
+\end{document}

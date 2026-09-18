@@ -1,0 +1,17 @@
+* ==============================================================================
+* VALIDACION EXPERIMENTAL DE CONVENCION DE CORRIENTE Y POTENCIA EN LTSPICE
+* ==============================================================================
+
+Vdd vdd 0 1.0
+R1  vdd 0 100
+
+.tran 0 10n 0 1n
+
+.meas tran I_direct     AVG I(Vdd)
+.meas tran I_negated    AVG -I(Vdd)
+.meas tran I_resistor   AVG I(R1)
+.meas tran P_direct     AVG I(Vdd)*V(vdd)
+.meas tran P_supplied   AVG -I(Vdd)*V(vdd)
+.meas tran P_resistor   AVG I(R1)*V(vdd)
+
+.end
