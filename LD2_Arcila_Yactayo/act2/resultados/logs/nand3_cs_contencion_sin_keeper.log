@@ -1,0 +1,23 @@
+LTspice 26.0.2 for Windows
+Circuit: G:\Proyectos\MicroNano\LD2_Arcila_Yactayo\act2\circuitos\nand3_cs_contencion_sin_keeper.cir
+Start Time: Thu Sep 17 01:31:58 2026
+Options:gmin=1e-15 abstol=1e-14 reltol=1e-4 method=gear
+solver = Normal
+Maximum thread count: 4
+tnom = 27
+temp = 27
+method = Gear
+gmin = 1e-15
+abstol = 1e-14
+reltol = 0.0001
+Direct Newton iteration succeeded in finding operating point.
+Total elapsed time: 0.430 seconds.
+
+Files loaded:
+G:\Proyectos\MicroNano\LD2_Arcila_Yactayo\act2\circuitos\nand3_cs_contencion_sin_keeper.cir
+G:\Proyectos\MicroNano\LD2_Arcila_Yactayo\modelos\ptm45hp.lib
+G:\Proyectos\MicroNano\LD2_Arcila_Yactayo\modelos\ptm45lp.lib
+G:\Proyectos\MicroNano\LD2_Arcila_Yactayo\modelos\ptm130.lib
+
+tphl_dyn=2.39493677289e-11 FROM 1.01e-09 TO 1.03394936773e-09
+tplh_out=3.75754607191e-11 FROM 1.01e-09 TO 1.04757546072e-09

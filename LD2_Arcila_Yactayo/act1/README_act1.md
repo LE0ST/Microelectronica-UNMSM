@@ -47,7 +47,7 @@ Todas las métricas numéricas fueron extraídas mediante el pipeline automatiza
 | **$t_{pLH}$ (Precarga en nodo $dyn$)** | **25.13 ps** | **12.40 ps** | **2.027** | $t_{pLH,dyn}$ oficial vs $t_{pLH,stat}$ (ENS-A1-07) |
 | **Retardo en Salidas Lógicas (Triggers Asimétricos)** | **35.89 ps** (salida $out$<br>desde flanco $CLK\uparrow$) | **9.61 ps** (salida $out\_stat$<br>desde flanco $A\uparrow$) | **3.734** | Ambos observados en salida lógica ($C_{out}=1\text{ fF}$); eventos de disparo distintos ($CLK\uparrow$ vs $A\uparrow$, cociente descriptivo) |
 | **Control sin carga externa $C_L$ en $dyn$ (ENS-A1-08)** | $t_{pHL,dyn}=11.26\text{ ps}$<br>$t_{pd,\text{eval}}=21.27\text{ ps}$ | — | — | Control con $C_L=0$; el nodo $dyn$ conserva difusiones, capacidades MOS y compuerta del inversor |
-| **Capacitancia de Entrada $C_{in}(A)$** | **0.3415 fF** | **0.5936 fF** | **0.5753** (-42.5%) | Integración $Q=\int I\,dt$ (ENS-A1-04) |
+| **Capacitancia de Entrada $C_{in}(A)$** | **0.3417 fF** | **0.5936 fF** | **0.5756** (-42.4%) | Integración $Q=\int I\,dt$ (ENS-A1-HIG-01; hist. 0.3415 fF en ENS-A1-04) |
 | **$P_{\text{avg}}$ con $A$ conmutando ($T_A=8\text{ ns}$)** | **1.2393 $\mu$W** | **0.2692 $\mu$W** | **4.604** | Estímulo idéntico de $125\text{ MHz}$ (ENS-A1-07) |
 | *$P_{\text{avg}}$ Estática con $A$ a 500 MHz (Histórico)* | *1.2393 $\mu$W* | *0.8206 $\mu$W* | *1.510* | *Referencia histórica preliminar (ENS-A1-02)* |
 | **$P_{\text{avg}}$ @ 500 MHz (Entradas fijas en 1)** | **2.7255 $\mu$W** | **1.7004 nW** | **1602.9** | Trampa de potencia: $\alpha=1$ vs $\alpha=0$ (ENS-A1-03) |
@@ -153,9 +153,17 @@ En este ensayo se fijó $V_c = 0\text{ V}$ (corte en el transistor inferior $M_3
 * **Diferencia Estructural:**
   * En la compuerta estática, la entrada $A$ comanda un NMOS de la PDN ($W = 270\text{ nm}$) y un PMOS de la PUN ($W = 135\text{ nm}$), totalizando un ancho de compuerta de $405\text{ nm}$.
   * En la compuerta dinámica footed, la PUN se reemplaza por el PMOS de precarga global gobernado por el reloj. La entrada $A$ comanda únicamente el transistor NMOS de la PDN ($W = 270\text{ nm}$).
-* **Resultado Extraído (ENS-A1-04):**
-  * $C_{in,\text{dyn}} = \mathbf{0.3415\text{ fF}}$ frente a $C_{in,\text{stat}} = \mathbf{0.5936\text{ fF}}$, logrando una reducción del **$42.5\%$** en la carga capacitiva de entrada.
-  * Esta reducción del esfuerzo lógico de entrada favorece la velocidad en etapas combinacionales que alimentan compuertas dominó.
+* **Resultado Canónico Corregido (ENS-A1-HIG-01):**
+  * Medido en `nand3_extraccion_cin_corregido.cir` ($M_{ni}$ a $W=90\text{ nm}$ en estricta coherencia con la topología de compuerta base) mediante integración de corriente ante rampa de $50\text{ ps}$ ($Q_{in} = \int_{90\text{ ps}}^{170\text{ ps}} -I(V_a)\,dt$):
+    $$C_{in,\text{dyn}} = \mathbf{0.3417\text{ fF}} \quad \text{vs} \quad C_{in,\text{stat}} = \mathbf{0.5936\text{ fF}} \implies \text{Cociente } \mathbf{0.5756} \quad (-\mathbf{42.4\%})$$
+  * *Referencia histórica preliminar (ENS-A1-04):* Obtenido con $M_{ni} = 270\text{ nm}$, arrojó $C_{in,\text{dyn}} = 0.3415\text{ fF}$ ($-42.5\%$), confirmando que la carga vista desde $A$ está casi totalmente gobernada por $M_1$.
+* **Estimación Geométrica Orientativa vs Medición SPICE:**
+  * Estimación analítica ideal ($C_{geom} \approx C_{ox,n} W_n L + C_{ox,p} W_p L$), con parámetros extraídos de `modelos/ptm45hp.lib` ($t_{oxe,n} = 1.25\text{ nm}$, $t_{oxe,p} = 1.30\text{ nm}$, $\epsilon_{ox} = 3.9 \cdot \epsilon_0$):
+    $$C_{ox,n} = \frac{3.9 \times 8.854 \times 10^{-12}\text{ F/m}}{1.25 \times 10^{-9}\text{ m}} \approx 27.63\text{ fF/\mu m}^2$$
+    $$C_{ox,p} = \frac{3.9 \times 8.854 \times 10^{-12}\text{ F/m}}{1.30 \times 10^{-9}\text{ m}} \approx 26.56\text{ fF/\mu m}^2$$
+    $$C_{in,\text{dyn,geom}} \approx C_{ox,n} \cdot W_n \cdot L = (27.63\text{ fF/\mu m}^2)(0.270\,\mu\text{m} \times 0.045\,\mu\text{m}) \approx \mathbf{0.336\text{ fF}}$$
+    $$C_{in,\text{stat,geom}} \approx C_{ox,n} W_n L + C_{ox,p} W_p L = 0.3356\text{ fF} + (26.56\text{ fF/\mu m}^2)(0.135\,\mu\text{m} \times 0.045\,\mu\text{m}) = 0.3356\text{ fF} + 0.1614\text{ fF} \approx \mathbf{0.497\text{ fF}}$$
+  * La diferencia con la medición SPICE proviene de que la integración en gran señal incorpora la formación de canal en inversión fuerte, capacidades de solapamiento compuerta-fuente/drenador ($C_{ov}$) y capacitancias marginales (*fringing*), no contempladas en el cálculo geométrico 1D elemental.
 
 ---
 

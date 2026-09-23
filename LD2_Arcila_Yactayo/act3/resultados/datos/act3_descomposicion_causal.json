@@ -1,0 +1,120 @@
+{
+  "metadata": {
+    "fase": "A3.7.2",
+    "tecnologia": "45nm HP",
+    "temperatura_C": 85,
+    "VDD_V": 1.0,
+    "CL_fF": 2.0,
+    "Cout_fF": 1.0,
+    "objetivo": "Descomposicion causal de la reduccion de penalizacion de contencion"
+  },
+  "arquitecturas": {
+    "A_sin_keeper": {
+      "nombre": "Sin keeper (Referencia base)",
+      "ensayo_id": "ENS-A3-CONT-01",
+      "tpHL_dyn_ps": 31.799427438665195,
+      "tpLH_out_ps": 51.151957462239885,
+      "penalizacion_pct": 0.0,
+      "cumple_criterio_10pct": true,
+      "t_hab_Mk_en_ps": null,
+      "t_desc_Mk_fb_ps": null,
+      "corrientes": {
+        "ikp_max_uA": 0.0,
+        "ipdn_max_uA": 66.42659718636423,
+        "ikp_at_dyn50_uA": 0.0,
+        "ipdn_at_dyn50_uA": 59.13499990128912,
+        "t_overlap_start_ps": null,
+        "t_overlap_end_ps": null,
+        "duracion_overlap_ps": 0.0
+      }
+    },
+    "B_keeper_convencional_45nm": {
+      "nombre": "Keeper convencional de 45nm",
+      "ensayo_id": "ENS-A3-CONT-02-P04",
+      "tpHL_dyn_ps": 35.9007957685614,
+      "tpLH_out_ps": 57.99821715807887,
+      "penalizacion_pct": 12.897616907747572,
+      "cumple_criterio_10pct": false,
+      "t_hab_Mk_en_ps": 0.0,
+      "t_desc_Mk_fb_ps": 67.99821715807595,
+      "corrientes": {
+        "ikp_max_uA": 17.651871530688368,
+        "ipdn_max_uA": 67.02639802824706,
+        "ikp_at_dyn50_uA": 17.651871530688368,
+        "ipdn_at_dyn50_uA": 60.57468272047117,
+        "t_overlap_start_ps": 21.99999999999703,
+        "t_overlap_end_ps": 71.99999999999686,
+        "duracion_overlap_ps": 49.99999999999983
+      }
+    },
+    "C_dos_pmos_serie_sin_retardo": {
+      "nombre": "Dos PMOS en serie (45nm) con habilitacion sin retardo (tau=0ps)",
+      "ensayo_id": "ENS-A3-COND-CTRL-01",
+      "tpHL_dyn_ps": 33.60988607735235,
+      "tpLH_out_ps": 54.71853333091659,
+      "penalizacion_pct": 5.693368668914457,
+      "cumple_criterio_10pct": true,
+      "t_hab_Mk_en_ps": 9.99999999999707,
+      "tau_delay_ps": 0.0,
+      "t_desc_Mk_fb_ps": 64.71853333091367,
+      "corrientes": {
+        "ikp_max_uA": 9.376904017699417,
+        "ipdn_max_uA": 66.75306940451264,
+        "ikp_at_dyn50_uA": 9.310579116572626,
+        "ipdn_at_dyn50_uA": 59.68084224150516,
+        "t_overlap_start_ps": 21.99999999999703,
+        "t_overlap_end_ps": 73.99999999999685,
+        "duracion_overlap_ps": 51.99999999999982
+      }
+    },
+    "D_dos_pmos_serie_con_3inv": {
+      "nombre": "Dos PMOS en serie (45nm) con 3 inversores de CLK",
+      "ensayo_id": "ENS-A3-COND-PILOT-01",
+      "tpHL_dyn_ps": 33.42508651312787,
+      "tpLH_out_ps": 54.53626305497134,
+      "penalizacion_pct": 5.112227500316635,
+      "cumple_criterio_10pct": true,
+      "t_hab_Mk_en_ps": 26.14901994849181,
+      "tau_delay_ps": 16.14901994849474,
+      "t_desc_Mk_fb_ps": 64.53626305496842,
+      "corrientes": {
+        "ikp_max_uA": 9.400389899383299,
+        "ipdn_max_uA": 66.37483602389693,
+        "ikp_at_dyn50_uA": 9.34322815737687,
+        "ipdn_at_dyn50_uA": 59.51496495981701,
+        "t_overlap_start_ps": 29.999999999997,
+        "t_overlap_end_ps": 73.99999999999685,
+        "duracion_overlap_ps": 43.99999999999985
+      }
+    }
+  },
+  "descomposicion_causal": {
+    "efecto_resistencia_serie_B_vs_C": {
+      "descripcion": "Efecto estructural al pasar de 1 PMOS a 2 PMOS en serie sin retardo intencional",
+      "delta_tpHL_dyn_ps": -2.290909691209052,
+      "delta_penalizacion_puntos_pct": -7.204248238833116,
+      "reduccion_ikp_pico_uA": 8.274967512988951,
+      "reduccion_ikp_at_dyn50_uA": 8.341292414115742,
+      "duracion_contencion_ps": {
+        "B_convencional": 49.99999999999983,
+        "C_serie_sin_retardo": 51.99999999999982
+      }
+    },
+    "efecto_retardo_cadena_C_vs_D": {
+      "descripcion": "Efecto temporal anadido por la cadena de 3 inversores de retardo (tau_delay = 16.15ps)",
+      "delta_tpHL_dyn_ps": -0.18479956422447522,
+      "delta_penalizacion_puntos_pct": -0.5811411685978216,
+      "desfase_inicio_contencion_ps": 7.999999999999972,
+      "variacion_duracion_contencion_ps": -7.999999999999972,
+      "variacion_ikp_at_dyn50_uA": 0.03264904080424458
+    },
+    "balance_global_B_vs_D": {
+      "descripcion": "Mejora global del keeper condicional (+5.11% vs +12.90% convencional). No constituye particion lineal aditiva universal: combina resistencia de canal doble, carga de reloj y desactivacion diferida.",
+      "delta_tpHL_dyn_ps": -2.475709255433527,
+      "delta_penalizacion_puntos_pct": -7.785389407430937,
+      "ikp_max_sin_retardo_uA": 9.376904017699417,
+      "ikp_max_con_retardo_uA": 9.400389899383299,
+      "observacion_fisica": "Anadir la cadena de retardo no reduce el pico de contencion (ikp_max pasa de 9.38 uA a 9.40 uA); la mejora de retardo responde al desfase de habilitacion y apagado antes de la conmutacion plena."
+    }
+  }
+}

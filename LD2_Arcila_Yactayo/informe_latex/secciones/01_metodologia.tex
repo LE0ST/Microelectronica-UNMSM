@@ -9,9 +9,9 @@ Para el desarrollo del presente informe se implementó una infraestructura de si
 \subsection{Modelos de Dispositivos y Nodo Tecnológico}
 Se emplean tarjetas de modelo predictivas BSIM4 (\textit{Predictive Technology Model}, PTM) desarrolladas por la Universidad Estatal de Arizona (ASU / Nanoscale Integration and Modeling Group). Con el propósito de prevenir colisiones de nombres al incluir múltiples nodos en simulaciones de referencia cruzada, los modelos se integraron en librerías modulares:
 \begin{itemize}[leftmargin=1.4em,itemsep=0.1em]
-  \item \texttt{ptm45hp.lib}: Proceso PTM de 45\,nm \textit{High Performance} ($V_{DD} = 1.0\,\text{V}$, $L_{\text{nom}} = 45\,\text{nm}$, $t_{oxe} = 1.25\,\text{nm}$, $V_{th0,n} \approx 0.47\,\text{V}$, $V_{th0,p} \approx -0.42\,\text{V}$). Nodo primario en la Actividad~1.
+  \item \texttt{ptm45hp.lib}: Proceso PTM de 45\,nm \textit{High Performance} ($V_{DD} = 1.0\,\text{V}$, $L_{\text{nom}} = 45\,\text{nm}$, $t_{oxe,n/p} = 1.25/1.30\,\text{nm}$, $V_{th0,n} \approx 0.469\,\text{V}$, $V_{th0,p} \approx -0.492\,\text{V}$). Nodo primario en la Actividad~1.
   \item \texttt{ptm45lp.lib}: Proceso PTM de 45\,nm \textit{Low Power} ($V_{DD} = 1.1\,\text{V}$, $L_{\text{nom}} = 45\,\text{nm}$, $t_{oxe} = 1.80\,\text{nm}$, $V_{th0,n} \approx 0.62\,\text{V}$, $V_{th0,p} \approx -0.58\,\text{V}$).
-  \item \texttt{ptm130.lib}: Proceso clásico de 130\,nm Bulk ($V_{DD} = 1.3\,\text{V}$, $L_{\text{nom}} = 130\,\text{nm}$, $t_{oxe} = 3.10\,\text{nm}$).
+  \item \texttt{ptm130.lib}: Proceso Bulk de 130\,nm ($V_{DD} = 1.3\,\text{V}$, $L_{\text{nom}} = 130\,\text{nm}$, $t_{oxe,n/p} = 2.25/2.35\,\text{nm}$).
 \end{itemize}
 
 \subsection{Parámetros Numéricos del Solver SPICE}

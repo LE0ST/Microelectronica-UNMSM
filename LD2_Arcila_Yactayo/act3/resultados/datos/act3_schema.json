@@ -1,0 +1,71 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Actividad 3 Metricas Schema",
+  "description": "Esquema formal de datos para la caracterización de fugas y keeper en Actividad 3 (LD2)",
+  "type": "object",
+  "properties": {
+    "ensayos_retencion": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id_ensayo": { "type": "string" },
+          "proceso": { "type": "string", "enum": ["45nm_HP", "45nm_LP", "130nm"] },
+          "temperatura_C": { "type": "number", "enum": [27.0, 85.0] },
+          "VDD": { "type": "number" },
+          "Wkp": { "type": ["number", "null"] },
+          "Vdyn_end_1us": { "type": ["number", "null"] },
+          "t_cross_0p9VDD": { "type": ["number", "null"] },
+          "t_cross_VDD2": { "type": ["number", "null"] },
+          "t_cross_VM": { "type": ["number", "null"] },
+          "VM_calibrado": { "type": ["number", "null"] },
+          "t_eval_start": { "type": ["number", "null"] },
+          "t_hold_0p9VDD": { "type": ["number", "null"] },
+          "t_hold_VDD2": { "type": ["number", "null"] },
+          "t_hold_VM": { "type": ["number", "null"] },
+          "I_supply_avg": { "type": ["number", "null"] },
+          "I_net_dyn_init": { "type": ["number", "null"] },
+          "I_leak_pdn_avg": { "type": ["number", "null"] },
+          "I_leak_mp_avg": { "type": ["number", "null"] },
+          "I_kp_avg": { "type": ["number", "null"] },
+          "estado": { "type": "string", "enum": ["PENDIENTE", "SIMULADO", "VALIDADO", "CENSURADO"] }
+        },
+        "required": ["id_ensayo", "proceso", "temperatura_C", "VDD", "Wkp", "estado"]
+      }
+    },
+    "ensayos_contencion": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id_ensayo": { "type": "string" },
+          "proceso": { "type": "string" },
+          "temperatura_C": { "type": "number" },
+          "VDD": { "type": "number" },
+          "Wkp": { "type": ["number", "null"] },
+          "ratio_r": { "type": ["number", "null"] },
+          "tpHL_dyn": { "type": ["number", "null"] },
+          "tplh_out": { "type": ["number", "null"] },
+          "penalizacion_pct": { "type": ["number", "null"] },
+          "cumple_contencion_menor_10pct": { "type": ["boolean", "null"] },
+          "estado": { "type": "string", "enum": ["PENDIENTE", "SIMULADO", "VALIDADO"] }
+        },
+        "required": ["id_ensayo", "proceso", "temperatura_C", "VDD", "Wkp", "estado"]
+      }
+    },
+    "dimensionamiento_optimo": {
+      "type": "object",
+      "properties": {
+        "Wkp_min_45hp_27C": { "type": ["number", "null"] },
+        "Wkp_min_45hp_85C": { "type": ["number", "null"] },
+        "Wkp_min_45lp_27C": { "type": ["number", "null"] },
+        "Wkp_min_45lp_85C": { "type": ["number", "null"] },
+        "Wkp_min_130_27C": { "type": ["number", "null"] },
+        "Wkp_min_130_85C": { "type": ["number", "null"] },
+        "ventana_viable_45hp_85C": { "type": ["boolean", "null"] },
+        "ventana_viable_45lp_85C": { "type": ["boolean", "null"] }
+      }
+    }
+  },
+  "required": ["ensayos_retencion", "ensayos_contencion", "dimensionamiento_optimo"]
+}

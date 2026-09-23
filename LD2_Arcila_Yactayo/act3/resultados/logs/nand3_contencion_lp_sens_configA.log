@@ -1,0 +1,76 @@
+LTspice 26.0.2 for Windows
+Circuit: G:\Proyectos\MicroNano\LD2_Arcila_Yactayo\act3\circuitos\nand3_contencion_lp_sens_configA.cir
+Start Time: Sun Sep 20 23:25:04 2026
+Options:gmin=1e-15 abstol=1e-14 reltol=1e-4 method=gear
+
+.step wkp=3.4e-08
+solver = Normal
+Maximum thread count: 4
+tnom = 27
+temp = 85
+method = Gear
+gmin = 1e-15
+abstol = 1e-14
+reltol = 0.0001
+Direct Newton iteration failed to find operating point.
+Starting Gmin stepping
+Gmin stepping succeeded in finding the operating point.
+
+
+.step wkp=3.5e-08
+Direct Newton iteration failed to find operating point.
+Starting Gmin stepping
+Gmin stepping succeeded in finding the operating point.
+
+
+.step wkp=3.6e-08
+Direct Newton iteration failed to find operating point.
+Starting Gmin stepping
+Gmin stepping succeeded in finding the operating point.
+
+
+.step wkp=3.7e-08
+Direct Newton iteration succeeded in finding operating point.
+Total elapsed time: 1.533 seconds.
+
+Files loaded:
+G:\Proyectos\MicroNano\LD2_Arcila_Yactayo\act3\circuitos\nand3_contencion_lp_sens_configA.cir
+G:\Proyectos\MicroNano\LD2_Arcila_Yactayo\modelos\ptm45hp.lib
+G:\Proyectos\MicroNano\LD2_Arcila_Yactayo\modelos\ptm45lp.lib
+G:\Proyectos\MicroNano\LD2_Arcila_Yactayo\modelos\ptm130.lib
+
+
+Measurement: tphl_dyn
+  step	tphl_dyn	FROM	TO
+     1	1.15372277667e-10	1.00999999978e-09	1.12537227745e-09
+     2	1.15839722564e-10	1.00999999978e-09	1.12583972235e-09
+     3	1.16316512032e-10	1.00999999978e-09	1.12631651182e-09
+     4	1.16800405876e-10	1.00999999978e-09	1.12680040566e-09
+
+Measurement: tplh_out
+  step	tplh_out	FROM	TO
+     1	2.02485184714e-10	1.00999999978e-09	1.2124851845e-09
+     2	2.03395564241e-10	1.00999999978e-09	1.21339556402e-09
+     3	2.04317966846e-10	1.00999999978e-09	1.21431796663e-09
+     4	2.05251767471e-10	1.00999999978e-09	1.21525176725e-09
+
+Measurement: t_trig_clk
+  step	V(clk)={VDD/2} 
+     1	1.00999999978e-09
+     2	1.00999999978e-09
+     3	1.00999999978e-09
+     4	1.00999999978e-09
+
+Measurement: t_targ_dyn
+  step	V(dyn)={VDD/2} 
+     1	1.12537227745e-09
+     2	1.12583972235e-09
+     3	1.12631651182e-09
+     4	1.12680040566e-09
+
+Measurement: t_targ_out
+  step	V(out)={VDD/2} 
+     1	1.2124851845e-09
+     2	1.21339556402e-09
+     3	1.21431796663e-09
+     4	1.21525176725e-09

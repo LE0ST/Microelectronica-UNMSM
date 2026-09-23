@@ -1,0 +1,93 @@
+LTspice 26.0.2 for Windows
+Circuit: G:\Proyectos\MicroNano\LD2_Arcila_Yactayo\act3\circuitos\dc_fugas_nmos_pdn_45hp_27C.cir
+Start Time: Mon Sep 21 17:47:49 2026
+Options:gmin=1e-15 abstol=1e-14 reltol=1e-4 method=gear
+solver = Normal
+Maximum thread count: 4
+tnom = 27
+temp = 27
+method = Gear
+gmin = 1e-15
+abstol = 1e-14
+reltol = 0.0001
+.step vsb_val=0
+.step vsb_val=0.3
+.step vsb_val=0.6
+Total elapsed time: 0.372 seconds.
+
+Files loaded:
+G:\Proyectos\MicroNano\LD2_Arcila_Yactayo\act3\circuitos\dc_fugas_nmos_pdn_45hp_27C.cir
+G:\Proyectos\MicroNano\LD2_Arcila_Yactayo\modelos\ptm45hp.lib
+
+
+Measurement: ids_vds0p05
+  step	Id(M_DUT) 	at
+     1	1.4350932942e-10	0.05
+     2	1.80516764731e-11	0.05
+     3	2.8307523426e-12	0.05
+
+Measurement: ids_vds0p5
+  step	Id(M_DUT) 	at
+     1	8.67161509266e-10	0.5
+     2	1.20233031864e-10	0.5
+     3	2.2715971465e-11	0.5
+
+Measurement: ids_vds1p0
+  step	Id(M_DUT) 	at
+     1	5.51093837231e-09	1
+     2	8.44479708384e-10	1
+     3	1.80227624491e-10	1
+
+Measurement: ig_terminal
+  step	Ig(M_DUT) 	at
+     1	-4.16039563911e-11	1
+     2	-4.16036441409e-11	1
+     3	-4.160239514e-11	1
+
+Measurement: ib_terminal
+  step	Ib(M_DUT) 	at
+     1	-1.63228405249e-15	1
+     2	-2.05999619794e-15	1
+     3	-3.83954698683e-15	1
+
+Measurement: is_terminal
+  step	Is(M_DUT) 	at
+     1	-5.46933298651e-09	1
+     2	-8.02873989514e-10	1
+     3	-1.38621392143e-10	1
+
+Measurement: vd_abs
+  step	V(d) 	at
+     1	1	1
+     2	1.29999995232	1
+     3	1.60000002384	1
+
+Measurement: vg_abs
+  step	V(g) 	at
+     1	0	1
+     2	0.300000011921	1
+     3	0.600000023842	1
+
+Measurement: vs_abs
+  step	V(s) 	at
+     1	0	1
+     2	0.300000011921	1
+     3	0.600000023842	1
+
+Measurement: vds_eff
+  step	{V(d)-V(s)} 	at
+     1	1	1
+     2	0.999999940395	1
+     3	1	1
+
+Measurement: vgs_eff
+  step	{V(g)-V(s)} 	at
+     1	0	1
+     2	0	1
+     3	0	1
+
+Measurement: vsb_eff
+  step	V(s) 	at
+     1	0	1
+     2	0.300000011921	1
+     3	0.600000023842	1

@@ -1,0 +1,88 @@
+LTspice 26.0.2 for Windows
+Circuit: G:\Proyectos\MicroNano\LD2_Arcila_Yactayo\act2\circuitos\nand3_cs_barrido_cl.cir
+Start Time: Thu Sep 17 01:31:50 2026
+Options:gmin=1e-15 abstol=1e-14 reltol=1e-4 method=gear
+
+.step cl=5e-16
+solver = Normal
+Maximum thread count: 4
+tnom = 27
+temp = 27
+method = Gear
+gmin = 1e-15
+abstol = 1e-14
+reltol = 0.0001
+Direct Newton iteration succeeded in finding operating point.
+
+.step cl=1e-15
+Direct Newton iteration succeeded in finding operating point.
+
+.step cl=2e-15
+Direct Newton iteration succeeded in finding operating point.
+
+.step cl=4e-15
+Direct Newton iteration succeeded in finding operating point.
+Total elapsed time: 1.318 seconds.
+
+Files loaded:
+G:\Proyectos\MicroNano\LD2_Arcila_Yactayo\act2\circuitos\nand3_cs_barrido_cl.cir
+G:\Proyectos\MicroNano\LD2_Arcila_Yactayo\modelos\ptm45hp.lib
+G:\Proyectos\MicroNano\LD2_Arcila_Yactayo\modelos\ptm45lp.lib
+G:\Proyectos\MicroNano\LD2_Arcila_Yactayo\modelos\ptm130.lib
+
+
+Measurement: vdyn_min
+  step	V(dyn) 	at
+     1	0.827152968036	3.9e-09
+     2	0.86392380387	3.9e-09
+     3	0.900339695729	3.9e-09
+     4	0.933166821403	3.9e-09
+
+Measurement: dv
+  step	{VDD}-Vdyn_min
+     1	0.172847031964
+     2	0.13607619613
+     3	0.0996603042711
+     4	0.0668331785974
+
+Measurement: vdyn_eval_min
+  step	MIN(V(dyn) )	FROM	TO
+     1	0.824077575307	3e-09	4e-09
+     2	0.861744807189	3e-09	4e-09
+     3	0.898965683095	3e-09	4e-09
+     4	0.932377267736	3e-09	4e-09
+
+Measurement: dv_eval_max
+  step	{VDD}-Vdyn_eval_min
+     1	0.175922424693
+     2	0.138255192811
+     3	0.101034316905
+     4	0.067622732264
+
+Measurement: vout_eval_max
+  step	MAX(V(out) )	FROM	TO
+     1	0.000678222277202	3e-09	4e-09
+     2	0.000389114662539	3e-09	4e-09
+     3	0.000149240993778	3e-09	4e-09
+     4	8.26386429256e-06	3e-09	4e-09
+
+Measurement: vout_end
+  step	V(out) 	at
+     1	0.000162876132061	3.9e-09
+     2	5.87876417224e-05	3.9e-09
+     3	2.05106731662e-05	3.9e-09
+     4	7.82861019912e-06	3.9e-09
+
+Measurement: vn1_end
+  step	V(n1) 	at
+     1	0.673409470936	3.9e-09
+     2	0.676618961965	3.9e-09
+     3	0.67987753121	3.9e-09
+     4	0.682932955709	3.9e-09
+
+Measurement: vn2_end
+  step	V(n2) 	at
+     1	0.656477600028	3.9e-09
+     2	0.658056705921	3.9e-09
+     3	0.659606211898	3.9e-09
+     4	0.66102597513	3.9e-09

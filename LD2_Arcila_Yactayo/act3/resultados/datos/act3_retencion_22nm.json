@@ -1,0 +1,36 @@
+{
+  "T_27C": {
+    "ensayo_id": "ENS-A3-RET-22NM-27C",
+    "netlist": "nand3_retencion_wkp_22nm_27C.cir",
+    "temp_C": 27,
+    "Wkp_nm": 22.0,
+    "Weff_nm": 12.0,
+    "vdyn_start_V": 1.0205026865,
+    "vdyn_end_1us_V": 0.999994039536,
+    "vdyn_min_V": 0.999132931232,
+    "t_cross_0p9vdd_s": null,
+    "t_hold_s": null,
+    "t_hold_str": "> 1.0 us (Censurado)",
+    "isupply_avg_A": 8.27061316605e-10,
+    "ileak_pdn_avg_A": 1.21922221697e-10,
+    "ikp_inj_avg_A": 2.4209052566e-10,
+    "estado_retencion": "PASS"
+  },
+  "T_85C": {
+    "ensayo_id": "ENS-A3-RET-22NM-85C",
+    "netlist": "nand3_retencion_wkp_22nm_85C.cir",
+    "temp_C": 85,
+    "Wkp_nm": 22.0,
+    "Weff_nm": 12.0,
+    "vdyn_start_V": 1.02335572243,
+    "vdyn_end_1us_V": 0.999975204468,
+    "vdyn_min_V": 0.999078273773,
+    "t_cross_0p9vdd_s": null,
+    "t_hold_s": null,
+    "t_hold_str": "> 1.0 us (Censurado)",
+    "isupply_avg_A": 2.57998814788e-09,
+    "ileak_pdn_avg_A": 4.68061802804e-10,
+    "ikp_inj_avg_A": 5.97344034471e-10,
+    "estado_retencion": "PASS"
+  }
+}

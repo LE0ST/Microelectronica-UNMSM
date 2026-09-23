@@ -1,0 +1,109 @@
+* ==============================================================================
+* ACTIVIDAD 3 - LD2: Auxiliar Diagnostico Terminales - CON KEEPER Wkp=45nm
+* Microelectronica y Sistemas Nanoelectronicos - UNMSM 2026-II
+* ==============================================================================
+
+.include ../../modelos/ptm45hp.lib
+.include ../../modelos/ptm45lp.lib
+.include ../../modelos/ptm130.lib
+
+.param VDD=1.0
+.param Ln=45n Wn=90n Wp=135n
+.param Wkp=45n
+.param CL=2f Cout=1f
+.param Teval_start=0.52n
+.param Tret=1.0u
+.param Tstop={Teval_start + Tret}
+.temp 27
+.options gmin=1e-15 abstol=1e-14 reltol=1e-4 method=gear
+
+Vdd vdd 0 {VDD}
+
+Vclk clk 0 PWL(0 0 0.5n 0 0.52n {VDD} {Tstop} {VDD})
+Va a 0 0
+Vb b 0 0
+Vc c 0 0
+
+.param Ad={Wn*3*90n} Pd={Wn*3+180n}
+
+Mp dyn clk vdd vdd pmos_45hp W={Wp} L={Ln}
+M1 n1 a dyn 0 nmos_45hp W={Wn*3} L={Ln} AS={Ad} AD={Ad} PS={Pd} PD={Pd}
+M2 n2 b n1 0 nmos_45hp W={Wn*3} L={Ln} AS={Ad} AD={Ad} PS={Pd} PD={Pd}
+M3 n3 c n2 0 nmos_45hp W={Wn*3} L={Ln} AS={Ad} AD={Ad} PS={Pd} PD={Pd}
+Mf 0 clk n3 0 nmos_45hp W={Wn*3} L={Ln} AS={Ad} AD={Ad} PS={Pd} PD={Pd}
+
+CL dyn 0 {CL}
+
+Mk dyn out vdd vdd pmos_45hp W={Wkp} L={Ln}
+
+Mpi out dyn vdd vdd pmos_45hp W={Wp} L={Ln}
+Mni out dyn 0 0 nmos_45hp W={Wn} L={Ln}
+Cout out 0 {Cout}
+
+.tran 0 {Tstop} 0 1n
+
+* --- Mediciones Instantaneas a t = 10ns, 100ns, 500ns, 900ns ---
+.meas TRAN is_m1_10n FIND Is(M1) AT=10n
+.meas TRAN id_m1_10n FIND Id(M1) AT=10n
+.meas TRAN ig_m1_10n FIND Ig(M1) AT=10n
+.meas TRAN ib_m1_10n FIND Ib(M1) AT=10n
+.meas TRAN id_mp_10n FIND Id(Mp) AT=10n
+.meas TRAN is_mp_10n FIND Is(Mp) AT=10n
+.meas TRAN id_mk_10n FIND Id(Mk) AT=10n
+.meas TRAN is_mk_10n FIND Is(Mk) AT=10n
+.meas TRAN ig_mk_10n FIND Ig(Mk) AT=10n
+.meas TRAN ib_mk_10n FIND Ib(Mk) AT=10n
+.meas TRAN ig_mni_10n FIND Ig(Mni) AT=10n
+.meas TRAN ig_mpi_10n FIND Ig(Mpi) AT=10n
+.meas TRAN i_cl_10n FIND I(CL) AT=10n
+.meas TRAN i_vdd_10n FIND I(Vdd) AT=10n
+.meas TRAN vdyn_10n FIND V(dyn) AT=10n
+
+.meas TRAN is_m1_100n FIND Is(M1) AT=100n
+.meas TRAN id_m1_100n FIND Id(M1) AT=100n
+.meas TRAN ig_m1_100n FIND Ig(M1) AT=100n
+.meas TRAN ib_m1_100n FIND Ib(M1) AT=100n
+.meas TRAN id_mp_100n FIND Id(Mp) AT=100n
+.meas TRAN id_mk_100n FIND Id(Mk) AT=100n
+.meas TRAN is_mk_100n FIND Is(Mk) AT=100n
+.meas TRAN ig_mk_100n FIND Ig(Mk) AT=100n
+.meas TRAN ib_mk_100n FIND Ib(Mk) AT=100n
+.meas TRAN ig_mni_100n FIND Ig(Mni) AT=100n
+.meas TRAN ig_mpi_100n FIND Ig(Mpi) AT=100n
+.meas TRAN i_cl_100n FIND I(CL) AT=100n
+.meas TRAN i_vdd_100n FIND I(Vdd) AT=100n
+.meas TRAN vdyn_100n FIND V(dyn) AT=100n
+
+.meas TRAN is_m1_500n FIND Is(M1) AT=500n
+.meas TRAN id_m1_500n FIND Id(M1) AT=500n
+.meas TRAN ig_m1_500n FIND Ig(M1) AT=500n
+.meas TRAN ib_m1_500n FIND Ib(M1) AT=500n
+.meas TRAN id_mp_500n FIND Id(Mp) AT=500n
+.meas TRAN id_mk_500n FIND Id(Mk) AT=500n
+.meas TRAN is_mk_500n FIND Is(Mk) AT=500n
+.meas TRAN ig_mk_500n FIND Ig(Mk) AT=500n
+.meas TRAN ib_mk_500n FIND Ib(Mk) AT=500n
+.meas TRAN ig_mni_500n FIND Ig(Mni) AT=500n
+.meas TRAN ig_mpi_500n FIND Ig(Mpi) AT=500n
+.meas TRAN i_cl_500n FIND I(CL) AT=500n
+.meas TRAN i_vdd_500n FIND I(Vdd) AT=500n
+.meas TRAN vdyn_500n FIND V(dyn) AT=500n
+
+.meas TRAN is_m1_900n FIND Is(M1) AT=900n
+.meas TRAN id_m1_900n FIND Id(M1) AT=900n
+.meas TRAN ig_m1_900n FIND Ig(M1) AT=900n
+.meas TRAN ib_m1_900n FIND Ib(M1) AT=900n
+.meas TRAN id_mp_900n FIND Id(Mp) AT=900n
+.meas TRAN id_mk_900n FIND Id(Mk) AT=900n
+.meas TRAN is_mk_900n FIND Is(Mk) AT=900n
+.meas TRAN ig_mk_900n FIND Ig(Mk) AT=900n
+.meas TRAN ib_mk_900n FIND Ib(Mk) AT=900n
+.meas TRAN ig_mni_900n FIND Ig(Mni) AT=900n
+.meas TRAN ig_mpi_900n FIND Ig(Mpi) AT=900n
+.meas TRAN i_cl_900n FIND I(CL) AT=900n
+.meas TRAN i_vdd_900n FIND I(Vdd) AT=900n
+.meas TRAN vdyn_900n FIND V(dyn) AT=900n
+
+.save V(clk) V(dyn) V(out) I(Vdd) I(CL) Id(M1) Is(M1) Ig(M1) Ib(M1) Id(Mp) Is(Mp) Ig(Mp) Ib(Mp) Id(Mk) Is(Mk) Ig(Mk) Ib(Mk) Ig(Mni) Ig(Mpi)
+
+.end

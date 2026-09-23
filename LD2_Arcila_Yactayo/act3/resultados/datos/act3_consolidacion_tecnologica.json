@@ -1,0 +1,90 @@
+{
+  "descripcion": "Consolidaci\u00f3n Tecnol\u00f3gica Tri-Nodo de Retenci\u00f3n (Actividad 3) - UNMSM",
+  "comparativa_sin_keeper": [
+    {
+      "proceso": "45nm_HP",
+      "temp_C": 27.0,
+      "VDD_V": 1.0,
+      "Vdyn_start_V": 1.02445065975,
+      "Vdyn_end_V": 0.936959385872,
+      "Vdyn_end_norm": 0.936959385872,
+      "umbral_0p9VDD_V": 0.9,
+      "estado_retencion": "CUMPLE (Censurado >1.0us)",
+      "t_cross_0p9_s": null,
+      "I_supply_avg_A": 1.28856933598e-09,
+      "I_leak_pdn_avg_A": 1.10527549236e-10,
+      "menor_keeper_cumple_nm": "No requerido (Sin keeper cumple)"
+    },
+    {
+      "proceso": "45nm_HP",
+      "temp_C": 85.0,
+      "VDD_V": 1.0,
+      "Vdyn_start_V": 1.02601861954,
+      "Vdyn_end_V": 0.830868899822,
+      "Vdyn_end_norm": 0.830868899822,
+      "umbral_0p9VDD_V": 0.9,
+      "estado_retencion": "FALLA (Cruzo a 0.6082 us)",
+      "t_cross_0p9_s": 6.08685794956e-07,
+      "I_supply_avg_A": 2.17974108486e-08,
+      "I_leak_pdn_avg_A": 4.30888076152e-10,
+      "menor_keeper_cumple_nm": "15 nm (malla gruesa) / 10.5 nm (malla fina)"
+    },
+    {
+      "proceso": "45nm_LP",
+      "temp_C": 27.0,
+      "VDD_V": 1.1,
+      "Vdyn_start_V": 1.13210535049,
+      "Vdyn_end_V": 1.12748062611,
+      "Vdyn_end_norm": 1.0249823873727273,
+      "umbral_0p9VDD_V": 0.99,
+      "estado_retencion": "CUMPLE (Censurado >1.0us)",
+      "t_cross_0p9_s": null,
+      "I_supply_avg_A": 1.38943371146e-12,
+      "I_leak_pdn_avg_A": 6.05794200446e-14,
+      "menor_keeper_cumple_nm": "No requerido (Sin keeper cumple)"
+    },
+    {
+      "proceso": "45nm_LP",
+      "temp_C": 85.0,
+      "VDD_V": 1.1,
+      "Vdyn_start_V": 1.13326132298,
+      "Vdyn_end_V": 1.1256994009,
+      "Vdyn_end_norm": 1.0233630917272727,
+      "umbral_0p9VDD_V": 0.99,
+      "estado_retencion": "CUMPLE (Censurado >1.0us)",
+      "t_cross_0p9_s": null,
+      "I_supply_avg_A": 7.06181779207e-12,
+      "I_leak_pdn_avg_A": 3.40210338033e-12,
+      "menor_keeper_cumple_nm": "No requerido (Sin keeper cumple)"
+    },
+    {
+      "proceso": "130nm_bulk",
+      "temp_C": 27.0,
+      "VDD_V": 1.3,
+      "Vdyn_start_V": 1.38703250885,
+      "Vdyn_end_V": 1.01776957512,
+      "Vdyn_end_norm": 0.7828996731692307,
+      "umbral_0p9VDD_V": 1.17,
+      "estado_retencion": "FALLA",
+      "t_cross_0p9_s": 3.18828202059e-07,
+      "I_supply_avg_A": 1.18598230355e-06,
+      "I_leak_pdn_avg_A": 1.08351408117e-09,
+      "menor_keeper_cumple_nm": "15 nm"
+    },
+    {
+      "proceso": "130nm_bulk",
+      "temp_C": 85.0,
+      "VDD_V": 1.3,
+      "Vdyn_start_V": 1.39412820339,
+      "Vdyn_end_V": 0.876965165138,
+      "Vdyn_end_norm": 0.6745885885676923,
+      "umbral_0p9VDD_V": 1.17,
+      "estado_retencion": "FALLA",
+      "t_cross_0p9_s": 1.68047418905e-07,
+      "I_supply_avg_A": 5.57478226881e-06,
+      "I_leak_pdn_avg_A": 3.50750993895e-09,
+      "menor_keeper_cumple_nm": "15 nm",
+      "nota": "Complementario provisional (pendiente respuesta docente)"
+    }
+  ]
+}

@@ -1,0 +1,76 @@
+* ==============================================================================
+* ACTIVIDAD 3 - LD2: Retencion Sin Keeper - 130nm Bulk @ 27C
+* Ensayo: ENS-A3-130-RET-01
+* Tecnologia: 130nm Bulk, VDD = 1.3V, Temp = 27C, Tret = 1.0us
+* Microelectronica y Sistemas Nanoelectronicos - UNMSM 2026-II
+* ==============================================================================
+
+.include ../../modelos/ptm45hp.lib
+.include ../../modelos/ptm45lp.lib
+.include ../../modelos/ptm130.lib
+
+.param VDD=1.3
+.param Ln=130n Wn=260n Wp=390n
+.param CL=2f Cout=1f
+.param Teval_start=0.52n
+.param Tret=1.0u
+.param Tstop={Teval_start + Tret}
+.temp 27
+.options gmin=1e-15 abstol=1e-14 reltol=1e-4 method=gear
+
+Vdd vdd 0 {VDD}
+
+* --- Estimulo de Reloj (Precarga hasta 0.5ns, Evaluacion/Retencion desde 0.52ns) ---
+Vclk clk 0 PWL(0 0 0.5n 0 0.52n {VDD} {Tstop} {VDD})
+
+* --- Entradas Fijas en 0 (PDN Abierta / Bloqueada) ---
+Va a 0 0
+Vb b 0 0
+Vc c 0 0
+
+* --- Parametros de Geometria de Difusion 130nm ---
+.param Ad={Wn*3*260n} Pd={Wn*3+520n}
+
+* --- Transistor de Precarga ---
+Mp dyn clk vdd vdd pmos_130 W={Wp} L={Ln}
+
+* --- Red de Descenso (PDN) Footed con Difusiones ---
+* Terminales: Drain Gate Source Bulk (dyn conectado a Source de M1)
+M1 n1 a dyn 0 nmos_130 W={Wn*3} L={Ln} AS={Ad} AD={Ad} PS={Pd} PD={Pd}
+M2 n2 b n1 0 nmos_130 W={Wn*3} L={Ln} AS={Ad} AD={Ad} PS={Pd} PD={Pd}
+M3 n3 c n2 0 nmos_130 W={Wn*3} L={Ln} AS={Ad} AD={Ad} PS={Pd} PD={Pd}
+Mf 0 clk n3 0 nmos_130 W={Wn*3} L={Ln} AS={Ad} AD={Ad} PS={Pd} PD={Pd}
+
+* --- Capacitancia de Carga Externa ---
+CL dyn 0 {CL}
+
+* --- Inversor Domino de Salida ---
+Mpi out dyn vdd vdd pmos_130 W={Wp} L={Ln}
+Mni out dyn 0 0 nmos_130 W={Wn} L={Ln}
+Cout out 0 {Cout}
+
+* --- Analisis Transitorio ---
+.tran 0 {Tstop} 0 1n
+
+* --- Mediciones de Tension y Umbrales ---
+.meas TRAN vdyn_start FIND V(dyn) AT={Teval_start}
+.meas TRAN vdyn_end_1us FIND V(dyn) AT={Tstop}
+.meas TRAN vdyn_min MIN V(dyn) FROM={Teval_start} TO={Tstop}
+.meas TRAN t_cross_0p9vdd WHEN V(dyn)={0.90*VDD} FALL=1
+.meas TRAN t_cross_vdd2 WHEN V(dyn)={0.50*VDD} FALL=1
+.meas TRAN t_cross_vm WHEN V(dyn)=0.5833 FALL=1
+
+* --- Mediciones de Corriente ---
+.meas TRAN isupply_avg AVG -I(Vdd) FROM=10n TO={Tstop}
+.meas TRAN ileak_pdn_avg AVG Is(M1) FROM=10n TO={Tstop}
+.meas TRAN ileak_mp_avg AVG Id(Mp) FROM=10n TO={Tstop}
+.meas TRAN ig_inv_n_avg AVG Ig(Mni) FROM=10n TO={Tstop}
+.meas TRAN ig_inv_p_avg AVG Ig(Mpi) FROM=10n TO={Tstop}
+
+* --- Derivada Inicial (t = 10ns tras fin de precarga) ---
+.meas TRAN dvd_dt DERIV V(dyn) AT=10n
+
+* --- Senales a Guardar en RAW ---
+.save V(clk) V(dyn) V(out) I(Vdd) I(CL) Id(M1) Is(M1) Id(Mp) Ig(Mni) Ig(Mpi)
+
+.end

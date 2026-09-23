@@ -1,0 +1,26 @@
+LTspice 26.0.2 for Windows
+Circuit: G:\Proyectos\MicroNano\LD2_Arcila_Yactayo\act1\circuitos\nand3_control_retardo_equivalente.cir
+Start Time: Wed Sep 16 23:28:10 2026
+Options:gmin=1e-15 abstol=1e-14 reltol=1e-4 method=gear
+solver = Normal
+Maximum thread count: 4
+tnom = 27
+temp = 27
+method = Gear
+gmin = 1e-15
+abstol = 1e-14
+reltol = 0.0001
+Direct Newton iteration succeeded in finding operating point.
+Total elapsed time: 0.390 seconds.
+
+Files loaded:
+G:\Proyectos\MicroNano\LD2_Arcila_Yactayo\act1\circuitos\nand3_control_retardo_equivalente.cir
+G:\Proyectos\MicroNano\LD2_Arcila_Yactayo\modelos\ptm45hp.lib
+G:\Proyectos\MicroNano\LD2_Arcila_Yactayo\modelos\ptm45lp.lib
+G:\Proyectos\MicroNano\LD2_Arcila_Yactayo\modelos\ptm130.lib
+
+tphl_dyn=1.12599961535e-11 FROM 2.00999999999e-09 TO 2.02125999614e-09
+tplh_dyn=1.45951860696e-11 FROM 3.02999999972e-09 TO 3.04459518579e-09
+tplh_out=2.12690014052e-11 FROM 2.00999999999e-09 TO 2.03126900139e-09
+tphl_out=2.48477656268e-11 FROM 3.02999999972e-09 TO 3.05484776535e-09
+pavg: AVG(-I(Vdd)*V(vdd) )=7.20840474312e-07 FROM 4e-09 TO 1.6e-08

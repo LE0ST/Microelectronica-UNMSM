@@ -1,0 +1,77 @@
+{
+  "metadata": {
+    "fase": "A3.7.1",
+    "tecnologia": "45nm HP",
+    "temperatura_C": 85,
+    "VDD_V": 1.0,
+    "CL_fF": 2.0,
+    "Cout_fF": 1.0,
+    "Wkp_fb_nm": 45.0,
+    "Wkp_en_nm": 45.0,
+    "topologia_keeper": "Mk_fb (out) en serie con Mk_en (d3) + 3 inversores desde CLK"
+  },
+  "piloto_a": {
+    "ensayo_id": "ENS-A3-COND-PILOT-01",
+    "descripcion": "Piloto A - Descarga intencional con entradas en 1 (45nm HP @ 85C)",
+    "t_clk_rise_ps": 1009.9999999999972,
+    "t_d3_fall_ps": 1026.149019948492,
+    "t_dyn_50_ps": 1043.425086513125,
+    "t_out_10_ps": 1048.8896002183392,
+    "t_out_50_ps": 1064.5362630549685,
+    "t_out_90_ps": 1081.564423454252,
+    "tpHL_dyn_ps": 33.42508651312787,
+    "tpLH_out_ps": 54.53626305497134,
+    "tau_delay_3inv_ps": 16.14901994849474,
+    "referencias_comparativas": {
+      "sin_keeper": {
+        "tpHL_dyn_ps": 31.7994,
+        "tpLH_out_ps": 51.151999999999994
+      },
+      "keeper_convencional_45nm": {
+        "tpHL_dyn_ps": 35.900800000000004,
+        "tpLH_out_ps": 57.998200000000004,
+        "penalizacion_pct": 12.897727630081086
+      }
+    },
+    "penalizacion_pct_vs_sin": 5.112318198229756,
+    "cumple_criterio_10pct": true,
+    "contencion_residual": {
+      "detectada": true,
+      "t_inicio_ps": 1029.999999999997,
+      "t_fin_ps": 1073.9999999999968,
+      "duracion_ps": 43.99999999999985,
+      "ikp_pico_uA": 9.400389899383299
+    }
+  },
+  "piloto_b": {
+    "ensayo_id": "ENS-A3-COND-PILOT-02",
+    "descripcion": "Piloto B - Retencion real de 1.0us continuo (45nm HP @ 85C, A=B=C=0)",
+    "t0_inicio_eval_ns": 0.52,
+    "t_fin_eval_us": 1.0005199999999999,
+    "vdyn_start_V": 1.0258688926696777,
+    "vdyn_end_1us_V": 0.9999759793281555,
+    "vdyn_min_V": 0.9992373585700989,
+    "vout_end_V": 8.057685590756591e-06,
+    "vd3_end_V": 8.058573257585522e-06,
+    "vkmid_end_V": 0.9999874830245972,
+    "irest_end_nA": 0.6080948522502183,
+    "ileak_pdn_end_nA": 0.47570064554136593,
+    "isupply_avg_nA": 12.2348056388,
+    "t_cross_0p9vdd_ns": null,
+    "censurado_0p9": true,
+    "d3_habilita_durante_toda_retencion": true,
+    "cumple_retencion_1us": true
+  },
+  "piloto_c": {
+    "ensayo_id": "ENS-A3-COND-PILOT-03",
+    "descripcion": "Piloto C - Charge sharing preliminar con nodos descargados (45nm HP @ 85C, A=B=1, C=0)",
+    "vdyn_min_eval2_V": 0.9247030019760132,
+    "vout_max_eval2_V": 0.0001795434654923156,
+    "dV_caida_mV": 75.29699802398682,
+    "tau_delay_3inv_ps": 16.125605614048624,
+    "t_d3_act_ps": 26.125605405429297,
+    "vdyn_end_eval2_V": 0.998030424118042,
+    "vout_end_eval2_V": 9.441271686227992e-06,
+    "recuperacion_observada": true
+  }
+}

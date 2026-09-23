@@ -1,0 +1,30 @@
+% Tabla de contencion y penalizacion de retardo en evaluacion - Actividad 3
+% Fuentes: act3_contencion_metricas.json, act3_conciliacion_a3_5_1.json, act3_descomposicion_causal.json
+\begin{table}[htbp]
+\centering
+\footnotesize
+\caption[Penalización de velocidad por contención del keeper en evaluación activa]{Penalización de velocidad en evaluación activa ($A=B=C=1$) bajo peor caso térmico ($85^\circ\text{C}$, $C_L=2.0\,\text{fF}$, $C_{out}=1.0\,\text{fF}$).}
+\label{tab:contencion}
+\begin{tabularx}{\linewidth}{@{}>{\RaggedRight\arraybackslash}p{3.2cm} c c c c >{\RaggedRight\arraybackslash}X@{}}
+\toprule
+\textbf{Arquitectura / Configuración} & \textbf{$W_{kp}$} & \textbf{$r = \frac{W_{kp}}{67.5\,\text{nm}}$} & \textbf{$t_{pHL,dyn}$} & \textbf{Penaliz. $\Delta t_{pHL}$} & \textbf{Estado frente a Cota Estricta $< 10.0\%$} \\
+\midrule
+\multicolumn{6}{@{}l@{}}{\textbf{Tecnología 45\,nm HP ($V_{DD}=1.0\,\text{V}$, $t_{pHL,\text{base}} = 31.80\,\text{ps}$)}} \\
+Sin Keeper (Referencia) & --- & --- & 31.80\,ps & 0.00\% & Referencia base inalterada. \\
+Keeper Convencional (Mín. Malla) & 10.5\,nm & 0.156 & 32.96\,ps & +3.64\% & \textbf{CUMPLE}. Mínimo ensayado en la malla de simulación. \\
+Keeper Convencional (Punto Guía §7) & 22.0\,nm & 0.326 & 33.47\,ps & +5.25\% & \textbf{CUMPLE}. Cumple holgadamente velocidad y retención. \\
+Keeper Convencional (Frontera Máx.) & 38.0\,nm & 0.563 & 34.96\,ps & \textbf{+9.94\%} & \textbf{CUMPLE}. Máximo ancho ensayado que cumple velocidad (+9.96\% Config B). \\
+Keeper Convencional (Primer Fallo) & 39.0\,nm & 0.578 & 35.09\,ps & \textbf{+10.35\%} & \textbf{FALLA}. Excede la cota estricta del 10.0\%. \\
+Keeper Convencional Unitario & 45.0\,nm & 0.667 & 35.90\,ps & +12.90\% & \textbf{FALLA}. Inadmisible ($I_{kp,\max} = 17.65\,\mu\text{A}$). \\
+Keeper Convencional Límite & 180.0\,nm & 2.667 & $\infty$ & $\infty$ & \textbf{FALLA SEVERA}. Pérdida de conmutación ($V_{dyn,\min}=0.633\,\text{V} > V_M$). \\
+\midrule
+\multicolumn{6}{@{}l@{}}{\textbf{Tecnología 45\,nm LP ($V_{DD}=1.1\,\text{V}$, $t_{pHL,\text{base}} = 105.74\,\text{ps}$)}} \\
+Keeper LP (Frontera Máxima) & 36.0\,nm & 0.533 & 116.30\,ps & \textbf{+9.99\%} & \textbf{CUMPLE}. Máximo ensayado admisible en LP. \\
+Keeper LP (Primer Fallo) & 37.0\,nm & 0.548 & 116.78\,ps & \textbf{+10.45\%} & \textbf{FALLA}. Excede la cota estricta del 10.0\%. \\
+\midrule
+\multicolumn{6}{@{}l@{}}{\textbf{Alternativa Complementaria: Keeper Condicional (45\,nm HP @ $85^\circ\text{C}$)}} \\
+Control 2 PMOS Serie ($\tau=0\,\text{ps}$) & 45.0\,nm & 0.667 & 33.61\,ps & +5.69\% & \textbf{CUMPLE}. $I_{kp,\max}=9.38\,\mu\text{A}$, solapamiento de 52\,ps. \\
+Keeper Condicional con 3 Inv. & 45.0\,nm & 0.667 & 33.43\,ps & \textbf{+5.11\%} & \textbf{CUMPLE}. $I_{kp,\max}=9.40\,\mu\text{A}$, solapamiento acortado a 44\,ps. \\
+\bottomrule
+\end{tabularx}
+\end{table}

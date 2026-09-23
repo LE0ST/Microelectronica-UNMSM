@@ -1,0 +1,219 @@
+LTspice 26.0.2 for Windows
+Circuit: G:\Proyectos\MicroNano\LD2_Arcila_Yactayo\act3\circuitos\nand3_retencion_130_con_keeper_27C.cir
+Start Time: Sun Sep 20 19:20:09 2026
+Options:gmin=1e-15 abstol=1e-14 reltol=1e-4 method=gear
+
+.step wkp=1.5e-08
+solver = Normal
+Maximum thread count: 4
+tnom = 27
+temp = 27
+method = Gear
+gmin = 1e-15
+abstol = 1e-14
+reltol = 0.0001
+Warning: toxe, toxp and dtox all given and toxe != toxp + dtox; dtox ignored.
+Direct Newton iteration failed to find operating point.
+Starting Gmin stepping
+Gmin stepping succeeded in finding the operating point.
+
+
+.step wkp=3e-08
+Direct Newton iteration failed to find operating point.
+Starting Gmin stepping
+Gmin stepping succeeded in finding the operating point.
+
+
+.step wkp=4.5e-08
+Direct Newton iteration failed to find operating point.
+Starting Gmin stepping
+Gmin stepping succeeded in finding the operating point.
+
+
+.step wkp=6.5e-08
+Direct Newton iteration failed to find operating point.
+Starting Gmin stepping
+Gmin stepping succeeded in finding the operating point.
+
+
+.step wkp=9e-08
+Direct Newton iteration failed to find operating point.
+Starting Gmin stepping
+Gmin stepping succeeded in finding the operating point.
+
+
+.step wkp=1.3e-07
+Direct Newton iteration succeeded in finding operating point.
+
+.step wkp=1.8e-07
+Direct Newton iteration failed to find operating point.
+Starting Gmin stepping
+Gmin stepping succeeded in finding the operating point.
+
+
+.step wkp=2.6e-07
+Direct Newton iteration failed to find operating point.
+Starting Gmin stepping
+Gmin stepping succeeded in finding the operating point.
+
+
+.step wkp=3.9e-07
+Direct Newton iteration failed to find operating point.
+Starting Gmin stepping
+Gmin stepping succeeded in finding the operating point.
+
+Total elapsed time: 1.834 seconds.
+
+Files loaded:
+G:\Proyectos\MicroNano\LD2_Arcila_Yactayo\act3\circuitos\nand3_retencion_130_con_keeper_27C.cir
+G:\Proyectos\MicroNano\LD2_Arcila_Yactayo\modelos\ptm45hp.lib
+G:\Proyectos\MicroNano\LD2_Arcila_Yactayo\modelos\ptm45lp.lib
+G:\Proyectos\MicroNano\LD2_Arcila_Yactayo\modelos\ptm130.lib
+
+
+Measurement: vdyn_start
+  step	V(dyn) 	at
+     1	1.38414490223	5.2e-10
+     2	1.38248407841	5.2e-10
+     3	1.37952506542	5.2e-10
+     4	1.37584424019	5.2e-10
+     5	1.3716006279	5.2e-10
+     6	1.36552107334	5.2e-10
+     7	1.35895729065	5.2e-10
+     8	1.35035502911	5.2e-10
+     9	1.3399797678	5.2e-10
+
+Measurement: vdyn_end_1us
+  step	V(dyn) 	at
+     1	1.29973912239	1.00052e-06
+     2	1.29982852936	1.00052e-06
+     3	1.29989922047	1.00052e-06
+     4	1.29993486404	1.00052e-06
+     5	1.299954772	1.00052e-06
+     6	1.29996955395	1.00052e-06
+     7	1.29997837543	1.00052e-06
+     8	1.29998528957	1.00052e-06
+     9	1.29999029636	1.00052e-06
+
+Measurement: vdyn_min
+  step	MIN(V(dyn) )	FROM	TO
+     1	1.29823052883	5.2e-10	1.00052e-06
+     2	1.29840767384	5.2e-10	1.00052e-06
+     3	1.29841566086	5.2e-10	1.00052e-06
+     4	1.29837393761	5.2e-10	1.00052e-06
+     5	1.29862034321	5.2e-10	1.00052e-06
+     6	1.29853272438	5.2e-10	1.00052e-06
+     7	1.2987511158	5.2e-10	1.00052e-06
+     8	1.29882752895	5.2e-10	1.00052e-06
+     9	1.29891836643	5.2e-10	1.00052e-06
+Measurement "t_cross_0p9vdd" FAIL'ed
+Measurement "t_cross_vdd2" FAIL'ed
+Measurement "t_cross_vm" FAIL'ed
+
+Measurement: isupply_avg
+  step	AVG(-I(Vdd) )	FROM	TO
+     1	1.18189566471e-08	1e-08	1.00052e-06
+     2	1.18006763466e-08	1e-08	1.00052e-06
+     3	1.17862586705e-08	1e-08	1.00052e-06
+     4	1.17791414564e-08	1e-08	1.00052e-06
+     5	1.1775287592e-08	1e-08	1.00052e-06
+     6	1.17726152395e-08	1e-08	1.00052e-06
+     7	1.17712664647e-08	1e-08	1.00052e-06
+     8	1.17706046491e-08	1e-08	1.00052e-06
+     9	1.17707822252e-08	1e-08	1.00052e-06
+
+Measurement: ileak_pdn_avg
+  step	AVG(Is(M1) )	FROM	TO
+     1	1.83442737186e-09	1e-08	1.00052e-06
+     2	1.83502548738e-09	1e-08	1.00052e-06
+     3	1.83549963104e-09	1e-08	1.00052e-06
+     4	1.8357379059e-09	1e-08	1.00052e-06
+     5	1.83587128261e-09	1e-08	1.00052e-06
+     6	1.83597071645e-09	1e-08	1.00052e-06
+     7	1.83602991106e-09	1e-08	1.00052e-06
+     8	1.83607575163e-09	1e-08	1.00052e-06
+     9	1.83610927846e-09	1e-08	1.00052e-06
+
+Measurement: ileak_mp_avg
+  step	AVG(Id(Mp) )	FROM	TO
+     1	-2.57551898591e-12	1e-08	1.00052e-06
+     2	-1.69493178619e-12	1e-08	1.00052e-06
+     3	-9.96089189734e-13	1e-08	1.00052e-06
+     4	-6.4461447112e-13	1e-08	1.00052e-06
+     5	-4.47780171583e-13	1e-08	1.00052e-06
+     6	-3.00979684129e-13	1e-08	1.00052e-06
+     7	-2.13545542319e-13	1e-08	1.00052e-06
+     8	-1.45809004023e-13	1e-08	1.00052e-06
+     9	-9.62286324938e-14	1e-08	1.00052e-06
+
+Measurement: ikp_d_avg
+  step	AVG(Id(Mk) )	FROM	TO
+     1	-3.42053964812e-09	1e-08	1.00052e-06
+     2	-3.42292506957e-09	1e-08	1.00052e-06
+     3	-3.42481826865e-09	1e-08	1.00052e-06
+     4	-3.42577028358e-09	1e-08	1.00052e-06
+     5	-3.42630215672e-09	1e-08	1.00052e-06
+     6	-3.42669996842e-09	1e-08	1.00052e-06
+     7	-3.42693645912e-09	1e-08	1.00052e-06
+     8	-3.42711985096e-09	1e-08	1.00052e-06
+     9	-3.42725398514e-09	1e-08	1.00052e-06
+
+Measurement: ikp_inj_avg
+  step	{-ikp_d_avg}
+     1	3.42053964812e-09
+     2	3.42292506957e-09
+     3	3.42481826865e-09
+     4	3.42577028358e-09
+     5	3.42630215672e-09
+     6	3.42669996842e-09
+     7	3.42693645912e-09
+     8	3.42711985096e-09
+     9	3.42725398514e-09
+
+Measurement: ikp_s_avg
+  step	AVG(Is(Mk) )	FROM	TO
+     1	3.42057346322e-09	1e-08	1.00052e-06
+     2	3.42306092485e-09	1e-08	1.00052e-06
+     3	3.42505647785e-09	1e-08	1.00052e-06
+     4	3.42614494262e-09	1e-08	1.00052e-06
+     5	3.42684737648e-09	1e-08	1.00052e-06
+     6	3.42751807711e-09	1e-08	1.00052e-06
+     7	3.42809568732e-09	1e-08	1.00052e-06
+     8	3.42882486174e-09	1e-08	1.00052e-06
+     9	3.42984589139e-09	1e-08	1.00052e-06
+
+Measurement: ig_inv_n_avg
+  step	AVG(Ig(Mni) )	FROM	TO
+     1	1.59516528185e-09	1e-08	1.00052e-06
+     2	1.5960462408e-09	1e-08	1.00052e-06
+     3	1.59674466792e-09	1e-08	1.00052e-06
+     4	1.59709567936e-09	1e-08	1.00052e-06
+     5	1.59729218604e-09	1e-08	1.00052e-06
+     6	1.59743872811e-09	1e-08	1.00052e-06
+     7	1.59752595576e-09	1e-08	1.00052e-06
+     8	1.59759357767e-09	1e-08	1.00052e-06
+     9	1.59764300648e-09	1e-08	1.00052e-06
+
+Measurement: ig_inv_p_avg
+  step	AVG(Ig(Mpi) )	FROM	TO
+     1	1.28646630566e-12	1e-08	1.00052e-06
+     2	1.28967713842e-12	1e-08	1.00052e-06
+     3	1.29240542656e-12	1e-08	1.00052e-06
+     4	1.29375862312e-12	1e-08	1.00052e-06
+     5	1.29451483617e-12	1e-08	1.00052e-06
+     6	1.29507865559e-12	1e-08	1.00052e-06
+     7	1.29541434482e-12	1e-08	1.00052e-06
+     8	1.29567432613e-12	1e-08	1.00052e-06
+     9	1.2958645828e-12	1e-08	1.00052e-06
+
+Measurement: dvd_dt
+  step	V(dyn) 	at
+     1	357.627868652	1e-08
+     2	0	1e-08
+     3	0	1e-08
+     4	-119.209289551	1e-08
+     5	0	1e-08
+     6	0	1e-08
+     7	0	1e-08
+     8	0	1e-08
+     9	0	1e-08

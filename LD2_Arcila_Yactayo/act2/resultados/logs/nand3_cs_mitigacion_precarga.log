@@ -1,0 +1,30 @@
+LTspice 26.0.2 for Windows
+Circuit: G:\Proyectos\MicroNano\LD2_Arcila_Yactayo\act2\circuitos\nand3_cs_mitigacion_precarga.cir
+Start Time: Thu Sep 17 01:31:53 2026
+Options:gmin=1e-15 abstol=1e-14 reltol=1e-4 method=gear
+solver = Normal
+Maximum thread count: 4
+tnom = 27
+temp = 27
+method = Gear
+gmin = 1e-15
+abstol = 1e-14
+reltol = 0.0001
+Direct Newton iteration succeeded in finding operating point.
+Total elapsed time: 0.504 seconds.
+
+Files loaded:
+G:\Proyectos\MicroNano\LD2_Arcila_Yactayo\act2\circuitos\nand3_cs_mitigacion_precarga.cir
+G:\Proyectos\MicroNano\LD2_Arcila_Yactayo\modelos\ptm45hp.lib
+G:\Proyectos\MicroNano\LD2_Arcila_Yactayo\modelos\ptm45lp.lib
+G:\Proyectos\MicroNano\LD2_Arcila_Yactayo\modelos\ptm130.lib
+
+vdyn_min: V(dyn) =1.02903996471 at 3.9e-09
+dv: {VDD}-Vdyn_min=-0.0290399647077
+vdyn_eval_min: MIN(V(dyn) )=1.01204717159 FROM 3e-09 TO 4e-09
+dv_eval_max: {VDD}-Vdyn_eval_min=-0.0120471715927
+vout_eval_max: MAX(V(out) )=0.000266500457656 FROM 3e-09 TO 4e-09
+vout_end: V(out) =9.54167521165e-07 at 3.9e-09
+vn1_end: V(n1) =1.06912872321 at 3.9e-09
+vn2_end: V(n2) =1.06162838583 at 3.9e-09
+vn3_end: V(n3) =5.96562981382e-06 at 3.9e-09

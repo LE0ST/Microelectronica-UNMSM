@@ -1,0 +1,161 @@
+LTspice 26.0.2 for Windows
+Circuit: G:\Proyectos\MicroNano\LD2_Arcila_Yactayo\act3\circuitos\nand3_contencion_lp_refinamiento_85C.cir
+Start Time: Sun Sep 20 20:48:30 2026
+Options:gmin=1e-15 abstol=1e-14 reltol=1e-4 method=gear
+
+.step wkp=3e-08
+solver = Normal
+Maximum thread count: 4
+tnom = 27
+temp = 85
+method = Gear
+gmin = 1e-15
+abstol = 1e-14
+reltol = 0.0001
+Direct Newton iteration failed to find operating point.
+Starting Gmin stepping
+Gmin stepping succeeded in finding the operating point.
+
+
+.step wkp=3.1e-08
+Direct Newton iteration succeeded in finding operating point.
+
+.step wkp=3.2e-08
+Direct Newton iteration failed to find operating point.
+Starting Gmin stepping
+Gmin stepping succeeded in finding the operating point.
+
+
+.step wkp=3.3e-08
+Direct Newton iteration failed to find operating point.
+Starting Gmin stepping
+Gmin stepping succeeded in finding the operating point.
+
+
+.step wkp=3.4e-08
+Direct Newton iteration failed to find operating point.
+Starting Gmin stepping
+Gmin stepping succeeded in finding the operating point.
+
+
+.step wkp=3.5e-08
+Direct Newton iteration failed to find operating point.
+Starting Gmin stepping
+Gmin stepping succeeded in finding the operating point.
+
+
+.step wkp=3.6e-08
+Direct Newton iteration failed to find operating point.
+Starting Gmin stepping
+Gmin stepping succeeded in finding the operating point.
+
+
+.step wkp=3.7e-08
+Direct Newton iteration succeeded in finding operating point.
+
+.step wkp=3.8e-08
+Direct Newton iteration failed to find operating point.
+Starting Gmin stepping
+Gmin stepping succeeded in finding the operating point.
+
+
+.step wkp=3.9e-08
+Direct Newton iteration failed to find operating point.
+Starting Gmin stepping
+Gmin stepping succeeded in finding the operating point.
+
+
+.step wkp=4e-08
+Direct Newton iteration failed to find operating point.
+Starting Gmin stepping
+Gmin stepping succeeded in finding the operating point.
+
+
+.step wkp=4.1e-08
+Direct Newton iteration failed to find operating point.
+Starting Gmin stepping
+Gmin stepping succeeded in finding the operating point.
+
+
+.step wkp=4.2e-08
+Direct Newton iteration failed to find operating point.
+Starting Gmin stepping
+Gmin stepping succeeded in finding the operating point.
+
+
+.step wkp=4.3e-08
+Direct Newton iteration succeeded in finding operating point.
+
+.step wkp=4.4e-08
+Direct Newton iteration succeeded in finding operating point.
+
+.step wkp=4.5e-08
+Direct Newton iteration failed to find operating point.
+Starting Gmin stepping
+Gmin stepping succeeded in finding the operating point.
+
+Total elapsed time: 5.552 seconds.
+
+Files loaded:
+G:\Proyectos\MicroNano\LD2_Arcila_Yactayo\act3\circuitos\nand3_contencion_lp_refinamiento_85C.cir
+G:\Proyectos\MicroNano\LD2_Arcila_Yactayo\modelos\ptm45hp.lib
+G:\Proyectos\MicroNano\LD2_Arcila_Yactayo\modelos\ptm45lp.lib
+G:\Proyectos\MicroNano\LD2_Arcila_Yactayo\modelos\ptm130.lib
+
+
+Measurement: tphl_dyn
+  step	tphl_dyn	FROM	TO
+     1	1.13567830267e-10	1.00999999978e-09	1.12356783005e-09
+     2	1.14008206657e-10	1.00999999978e-09	1.12400820644e-09
+     3	1.14456665504e-10	1.00999999978e-09	1.12445666529e-09
+     4	1.14911302048e-10	1.00999999978e-09	1.12491130183e-09
+     5	1.15372277667e-10	1.00999999978e-09	1.12537227745e-09
+     6	1.15839722564e-10	1.00999999978e-09	1.12583972235e-09
+     7	1.16316512032e-10	1.00999999978e-09	1.12631651182e-09
+     8	1.16800405876e-10	1.00999999978e-09	1.12680040566e-09
+     9	1.17291234182e-10	1.00999999978e-09	1.12729123397e-09
+    10	1.17789152947e-10	1.00999999978e-09	1.12778915273e-09
+    11	1.1829696985e-10	1.00999999978e-09	1.12829696963e-09
+    12	1.18812880226e-10	1.00999999978e-09	1.12881288001e-09
+    13	1.19336413703e-10	1.00999999978e-09	1.12933641349e-09
+    14	1.198677208e-10	1.00999999978e-09	1.12986772058e-09
+    15	1.20410405773e-10	1.00999999978e-09	1.13041040556e-09
+    16	1.20961421054e-10	1.00999999978e-09	1.13096142084e-09
+
+Measurement: tplh_out
+  step	tplh_out	FROM	TO
+     1	1.9895774435e-10	1.00999999978e-09	1.20895774413e-09
+     2	1.99824790402e-10	1.00999999978e-09	1.20982479019e-09
+     3	2.00699088286e-10	1.00999999978e-09	1.21069908807e-09
+     4	2.01587239907e-10	1.00999999978e-09	1.21158723969e-09
+     5	2.02485184714e-10	1.00999999978e-09	1.2124851845e-09
+     6	2.03395564241e-10	1.00999999978e-09	1.21339556402e-09
+     7	2.04317966846e-10	1.00999999978e-09	1.21431796663e-09
+     8	2.05251767471e-10	1.00999999978e-09	1.21525176725e-09
+     9	2.06199429201e-10	1.00999999978e-09	1.21619942898e-09
+    10	2.07157885267e-10	1.00999999978e-09	1.21715788505e-09
+    11	2.08131703486e-10	1.00999999978e-09	1.21813170327e-09
+    12	2.09116166553e-10	1.00999999978e-09	1.21911616634e-09
+    13	2.10117030438e-10	1.00999999978e-09	1.22011703022e-09
+    14	2.11128928157e-10	1.00999999978e-09	1.22112892794e-09
+    15	2.12157816407e-10	1.00999999978e-09	1.22215781619e-09
+    16	2.13198744094e-10	1.00999999978e-09	1.22319874388e-09
+
+Measurement: toff_kp
+  step	V(out)={VDD-0.587} 
+     1	1.2057143056e-09
+     2	1.20656867528e-09
+     3	1.2074357915e-09
+     4	1.20831368934e-09
+     5	1.2092021023e-09
+     6	1.21010425568e-09
+     7	1.21101514571e-09
+     8	1.21194232629e-09
+     9	1.21287688944e-09
+    10	1.2138291862e-09
+    11	1.21478944057e-09
+    12	1.21576766618e-09
+    13	1.21675503608e-09
+    14	1.21776067486e-09
+    15	1.21877608593e-09
+    16	1.21981079373e-09

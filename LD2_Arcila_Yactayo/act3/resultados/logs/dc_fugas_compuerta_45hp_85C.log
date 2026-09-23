@@ -1,0 +1,29 @@
+LTspice 26.0.2 for Windows
+Circuit: G:\Proyectos\MicroNano\LD2_Arcila_Yactayo\act3\circuitos\dc_fugas_compuerta_45hp_85C.cir
+Start Time: Mon Sep 21 17:47:55 2026
+Options:gmin=1e-15 abstol=1e-14 reltol=1e-4 method=gear
+solver = Normal
+Maximum thread count: 4
+tnom = 27
+temp = 85
+method = Gear
+gmin = 1e-15
+abstol = 1e-14
+reltol = 0.0001
+Direct Newton iteration succeeded in finding operating point.
+Total elapsed time: 0.222 seconds.
+
+Files loaded:
+G:\Proyectos\MicroNano\LD2_Arcila_Yactayo\act3\circuitos\dc_fugas_compuerta_45hp_85C.cir
+G:\Proyectos\MicroNano\LD2_Arcila_Yactayo\modelos\ptm45hp.lib
+
+ig_nmos_m1: Ig(M1_leak)=-4.16039563911e-11 at 1
+ig_pmos_mp: Ig(Mp_leak)=-4.22696170846e-28 at 1
+ig_pmos_mk: Ig(Mk_leak)=-5.56287828302e-11 at 1
+ig_inv_n: Ig(Mni_leak)=4.06882791348e-11 at 1
+ig_inv_p: Ig(Mpi_leak)=9.17475748152e-11 at 1
+id_nmos_m1: Id(M1_leak)=1.72472400806e-08 at 1
+id_pmos_mp: Id(Mp_leak)=2.1131806499e-28 at 1
+id_pmos_mk: Id(Mk_leak)=2.64551817952e-11 at 1
+id_inv_n: Id(Mni_leak)=-1.25363538994e-11 at 1
+id_inv_p: Id(Mpi_leak)=-2.0542667567e-09 at 1

@@ -18,6 +18,7 @@ y desde los archivos .raw de simulacion real. No se admiten copias hardcodeadas 
 import os
 import sys
 import json
+import shutil
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -39,6 +40,7 @@ ACT2_DIR = os.path.dirname(SCRIPT_DIR)
 RAW_DIR = os.path.join(ACT2_DIR, "resultados", "raw")
 DATOS_DIR = os.path.join(ACT2_DIR, "resultados", "datos")
 FIG_DIR = os.path.join(ACT2_DIR, "figuras")
+INFORME_FIG_DIR = os.path.abspath(os.path.join(ACT2_DIR, "..", "informe_latex", "figuras"))
 
 PARSER_DIR = os.path.abspath(os.path.join(ACT2_DIR, "..", "scripts", "lectura_resultados"))
 sys.path.insert(0, PARSER_DIR)
@@ -152,6 +154,8 @@ def generar_figura_1(metricas):
     os.makedirs(FIG_DIR, exist_ok=True)
     out_file = os.path.join(FIG_DIR, "fig1_act2_peor_caso_formas_onda.png")
     plt.savefig(out_file, dpi=300)
+    if os.path.exists(INFORME_FIG_DIR):
+        shutil.copy2(out_file, os.path.join(INFORME_FIG_DIR, "fig1_act2_peor_caso_formas_onda.png"))
     plt.close()
     print(f"[OK] Generada Figura 1 en: {out_file}")
 
@@ -175,7 +179,7 @@ def generar_figura_2(metricas):
     dv_pred_guia_dense = VDD * Ca / (Ca + cl_sweep_dense + C_extra_guia) * 1e3
     dv_pred_full_dense = VDD * Ca / (Ca + cl_sweep_dense + C_extra_full) * 1e3
 
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(9.0, 4.2))
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(9.0, 4.4))
 
     # Panel A: dV vs CL
     ax1.plot(cl_sweep_dense, dv_pred_nom_dense, label=r'Analítico Nominal: $\frac{C_a}{C_a + C_L}$',
@@ -192,7 +196,7 @@ def generar_figura_2(metricas):
 
     ax1.set_xlabel(r'Capacitancia de Carga $C_L$ (fF)')
     ax1.set_ylabel(r'Caída de Tensión $\Delta V$ (mV)')
-    ax1.set_title('(a) Caída por Redistribución vs Carga', fontsize=10.5)
+    ax1.set_title('(a) Caída por Redistribución vs Carga', fontsize=10.0, pad=6)
     ax1.set_xlim(0.3, 4.3)
     ax1.set_ylim(40, 700)
     ax1.grid(True)
@@ -214,24 +218,26 @@ def generar_figura_2(metricas):
 
     ax2.set_xlabel(r'Capacitancia de Carga $C_L$ (fF)')
     ax2.set_ylabel(r'Tensión Mínima $V_{dyn,min}$ (V)')
-    ax2.set_title('(b) Margen Dinámico y Región Segura', fontsize=10.5)
+    ax2.set_title('(b) Margen Dinámico y Región Segura', fontsize=10.0, pad=6)
     ax2.set_xlim(0.3, 4.3)
     ax2.set_ylim(0.35, 1.05)
     ax2.grid(True)
     ax2.legend(loc='lower right', framealpha=0.9, fontsize=7.8)
 
-    fig.suptitle('Validación Paramétrica de Charge Sharing: Analítica vs Simulación (45nm HP)\nNetlist: nand3_cs_barrido_cl.cir (ENS-A2-03)', y=0.99)
-    plt.tight_layout()
-    plt.subplots_adjust(top=0.88)
+    fig.suptitle('Validación Paramétrica de Charge Sharing: Analítica vs Simulación (45nm HP)', fontsize=11.2, y=0.975)
+    fig.text(0.5, 0.915, 'Netlist: nand3_cs_barrido_cl.cir (ENS-A2-03)', fontsize=8.8, ha='center', color='#333333')
+    fig.tight_layout(rect=[0, 0.02, 1.0, 0.89])
 
     out_file = os.path.join(FIG_DIR, "fig2_act2_dv_vs_cl_analitico_simulado.png")
     plt.savefig(out_file, dpi=300)
+    if os.path.exists(INFORME_FIG_DIR):
+        shutil.copy2(out_file, os.path.join(INFORME_FIG_DIR, "fig2_act2_dv_vs_cl_analitico_simulado.png"))
     plt.close()
     print(f"[OK] Generada Figura 2 en: {out_file}")
 
 def generar_figura_3(metricas):
     """Figura 3: Comparacion de las 3 Mitigaciones y Evaluacion de Contencion"""
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(9.2, 4.2))
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(9.2, 4.4))
 
     # Cargar datos RAW transitorios
     raw_base = read_raw(os.path.join(RAW_DIR, "nand3_cs_peor_caso_fisico.raw"))['data']
@@ -271,7 +277,7 @@ def generar_figura_3(metricas):
     ax1.set_ylim(0.85, 1.05)
     ax1.set_xlabel('Tiempo (ns)')
     ax1.set_ylabel(r'Tensión $V(dyn)$ (V)')
-    ax1.set_title(r'(a) Respuesta de $V(dyn)$ en Evaluación ($A=B=1, C=0$)', fontsize=10.0)
+    ax1.set_title(r'(a) Respuesta de $V(dyn)$ en Evaluación ($A=B=1, C=0$)', fontsize=10.0, pad=6)
     ax1.grid(True)
     ax1.legend(loc='lower right', framealpha=0.9, fontsize=7.5)
 
@@ -320,16 +326,19 @@ def generar_figura_3(metricas):
     ax2.set_ylim(-0.05, 1.1)
     ax2.set_xlabel('Tiempo (ns)')
     ax2.set_ylabel('Tensión Nodal (V)')
-    ax2.set_title(r'(b) Compromiso de Contención ($A=B=C=1$)', fontsize=10.0)
+    ax2.set_title(r'(b) Compromiso de Contención ($A=B=C=1$)', fontsize=10.0, pad=6)
     ax2.grid(True)
     ax2.legend(loc='center right', framealpha=0.9, fontsize=7.5)
 
-    fig.suptitle('Efectividad de Mitigaciones y Compromiso de Contención (45nm HP)\nNetlists: ENS-A2-02, ENS-A2-04, ENS-A2-05, ENS-A2-06, ENS-A2-07a/b', y=0.99)
-    plt.tight_layout()
-    plt.subplots_adjust(top=0.88)
+    fig.suptitle('Efectividad de Mitigaciones y Compromiso de Contención (45nm HP)', fontsize=11.2, y=0.975)
+    fig.text(0.5, 0.915, 'Netlists: ENS-A2-02, ENS-A2-04, ENS-A2-05, ENS-A2-06, ENS-A2-07a/b',
+             fontsize=8.8, ha='center', color='#333333')
+    fig.tight_layout(rect=[0, 0.02, 1.0, 0.89])
 
     out_file = os.path.join(FIG_DIR, "fig3_act2_comparacion_mitigaciones.png")
     plt.savefig(out_file, dpi=300)
+    if os.path.exists(INFORME_FIG_DIR):
+        shutil.copy2(out_file, os.path.join(INFORME_FIG_DIR, "fig3_act2_comparacion_mitigaciones.png"))
     plt.close()
     print(f"[OK] Generada Figura 3 en: {out_file}")
 

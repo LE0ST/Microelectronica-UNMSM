@@ -10,7 +10,10 @@
 ## 3. Verificación de Criterios y Trazabilidad
 * Conteo de flancos y ventanas temporales revisadas.
 * Opciones de solver: `gmin=1e-15 abstol=1e-14 reltol=1e-4 method=gear`.
-* Ausencia de advertencias de convergencia en el log.
+* Comportamiento de convergencia del solver:
+  - En los netlists sin keeper y con precarga/reordenamiento, la iteración directa de Newton converge inmediatamente (`Direct Newton iteration succeeded`).
+  - En los netlists con keeper realimentado (`nand3_cs_contencion_con_keeper.log` y `nand3_cs_mitigacion_keeper.log`), la iteración directa de Newton falla inicialmente en el punto de operación DC (`Direct Newton failed`), pero el algoritmo de respaldo de LTspice recupera la convergencia exitosamente mediante `Gmin stepping` (`Gmin stepping succeeded in finding the operating point`).
+  - En todos los casos, el análisis transitorio converge completamente sin errores fatales y todas las mediciones `.meas` son plenamente válidas y estables.
 
 ## 4. Registro de Resultados Clave
 *(Se completará durante la ejecución de simulaciones en la Fase 2)*
