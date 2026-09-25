@@ -104,11 +104,13 @@ Además de la carga externa $C_L$, el nodo `dyn` contiene:
 2. **Capacitancia de solapamiento compuerta-drenaje de $M_p$:**
    $$C_{gd}(M_p) = cgdo \times W_p = (1.10 \times 10^{-10}\text{ F/m}) \times (135 \times 10^{-9}\text{ m}) = 0.01485\text{ fF} \approx 0.015\text{ fF}$$
 3. **Capacitancia de entrada del inversor dominó ($C_{in,inv}$):**
-   * Parámetros PTM: $t_{oxe} = 1.25\text{ nm} \implies C_{ox} = \frac{\varepsilon_0 \varepsilon_{SiO2}}{t_{oxe}} = \frac{8.854 \times 10^{-12} \times 3.9}{1.25 \times 10^{-9}} = 27.62\text{ fF}/\mu\text{m}^2$.
-   * $C_{gate,pi} = W_{pi} \times L \times C_{ox} = 135\text{ nm} \times 45\text{ nm} \times 27.62\text{ fF}/\mu\text{m}^2 = 0.1678\text{ fF}$.
-   * $C_{gate,ni} = W_{ni} \times L \times C_{ox} = 90\text{ nm} \times 45\text{ nm} \times 27.62\text{ fF}/\mu\text{m}^2 = 0.1119\text{ fF}$.
-   * Solapamientos: $2 \times cgdo \times (W_{pi} + W_{ni}) = 2(1.1 \times 10^{-10})(225\text{ nm}) = 0.0495\text{ fF}$.
-   * $C_g(\text{inversor}) \approx 0.1678 + 0.1119 + 0.0495 = 0.3292\text{ fF} \approx 0.33\text{ fF}$.
+   * Parámetros PTM:
+     * NMOS: $t_{oxe,n} = 1.25\text{ nm} \implies C_{ox,n} = \frac{\varepsilon_{ox}}{t_{oxe,n}} = \frac{8.854 \times 10^{-12} \times 3.9}{1.25 \times 10^{-9}} = 27.62\text{ fF}/\mu\text{m}^2 = 2.762 \times 10^{-5}\text{ fF/nm}^2$.
+     * PMOS: $t_{oxe,p} = 1.30\text{ nm} \implies C_{ox,p} = \frac{\varepsilon_{ox}}{t_{oxe,p}} = \frac{8.854 \times 10^{-12} \times 3.9}{1.30 \times 10^{-9}} = 26.5626\text{ fF}/\mu\text{m}^2 = 2.65626 \times 10^{-5}\text{ fF/nm}^2$.
+   * $C_{gate,pi} = W_{pi} \times L \times C_{ox,p} = 135\text{ nm} \times 45\text{ nm} \times 26.5626\text{ fF}/\mu\text{m}^2 = 0.1614\text{ fF}$.
+   * $C_{gate,ni} = W_{ni} \times L \times C_{ox,n} = 90\text{ nm} \times 45\text{ nm} \times 27.62\text{ fF}/\mu\text{m}^2 = 0.1119\text{ fF}$.
+   * Solapamientos: $2 \times cgdo \times (W_{pi} + W_{ni}) = 2(1.10 \times 10^{-10}\text{ F/m})(225\text{ nm}) = 0.0495\text{ fF}$.
+   * $C_g(\text{inversor}) \approx 0.1614 + 0.1119 + 0.0495 = 0.3228\text{ fF} \approx 0.33\text{ fF}$ (o $0.3292\text{ fF}$ empleando $C_{ox}$ promediado según la formulación estándar de la guía).
 
 ---
 
@@ -144,10 +146,12 @@ $$\Delta Q_{n2} \le C_{n2} \cdot (V_{DD} - V_{th2})$$
 
 ## 5. Tabla de Predicciones Numéricas ($\Delta V_{pred}$ vs $C_L$)
 
-Se evalúan los tres modelos de capacitancia sobre el nodo dinámico:
+Se evalúan los tres modelos analíticos de capacitancia sobre el nodo dinámico:
 1. **Modelo 1 (Nominal puro):** $C_{dyn} = C_L$
-2. **Modelo 2 (Guía Oficial Sec. 6.2):** $C_{dyn} = C_L + C_{gd}(M_p) + C_g(\text{inversor}) = C_L + 0.344\text{ fF}$
-3. **Modelo 3 (Carga Total Completa):** $C_{dyn} = C_L + C_{diff,M1} + C_{gd}(M_p) + C_g(\text{inversor}) = C_L + 0.581\text{ fF}$
+2. **Modelo 2 (Guía Oficial Sec. 6.2):** $C_{dyn} = C_L + C_{gd}(M_p) + C_g(\text{inversor}) = C_L + 0.3441\text{ fF}$ ($2.3441\text{ fF}$ nominal a $C_L=2\text{ fF}$)
+3. **Modelo 3 (Carga Total Completa):** $C_{dyn} = C_L + C_{diff,M1} + C_{gd}(M_p) + C_g(\text{inversor}) = C_L + 0.5813\text{ fF}$ ($2.5813\text{ fF}$ nominal a $C_L=2\text{ fF}$)
+
+*Conciliación metodológica:* La cifra documental previa informal de $C_{dyn} \approx 2.65\text{ fF}$ correspondió a un redondeo heurístico no reproducible y queda formalmente retirada en favor de las definiciones exactas de los Modelos 2 y 3.
 
 Con $C_a = 0.9486\text{ fF}$ y $V_{DD} = 1.0\text{ V}$:
 

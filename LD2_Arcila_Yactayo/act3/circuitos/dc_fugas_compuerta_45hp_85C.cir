@@ -1,0 +1,48 @@
+* ==============================================================================
+* ENS-A3-DC-01C-85C: Fugas de Compuerta en Dispositivos Clave @ 85C (45nm HP)
+* Polarizaciones representativas de retencion estatica (dyn=1.0V, out=0.0V, clk=1.0V)
+* ==============================================================================
+.include ../../modelos/ptm45hp.lib
+
+.param Ln=45n Wn_pdn=270n Wp=135n Wkp=45n Wni=90n
+.temp 85
+.options gmin=1e-15 abstol=1e-14 reltol=1e-4 method=gear
+
+* Fuentes de referencia estatica
+Vdd vdd 0 1.0
+Vdyn dyn 0 1.0
+Vout out 0 0.0
+Vg_nmos g_nmos 0 0.0
+
+* 1. NMOS PDN (M1 en corte con dyn=1V, A=0V): D G S B
+M1_leak dyn g_nmos 0 0 nmos_45hp W={Wn_pdn} L={Ln}
+
+* 2. PMOS Precarga (Mp en corte con clk=1V, dyn=1V): D G S B
+Mp_leak dyn vdd vdd vdd pmos_45hp W={Wp} L={Ln}
+
+* 3. PMOS Keeper (Mk activo con out=0V, dyn=1V): D G S B
+Mk_leak dyn out vdd vdd pmos_45hp W={Wkp} L={Ln}
+
+* 4. Inversor Domino: NMOS (Mni con compuerta a dyn=1V): D G S B
+Mni_leak out dyn 0 0 nmos_45hp W={Wni} L={Ln}
+
+* 5. Inversor Domino: PMOS (Mpi con compuerta a dyn=1V): D G S B
+Mpi_leak out dyn vdd vdd pmos_45hp W={Wp} L={Ln}
+
+.op
+
+* Mediciones de corriente de compuerta en punto estatico
+.meas OP Ig_nmos_m1 FIND Ig(M1_leak)
+.meas OP Ig_pmos_mp FIND Ig(Mp_leak)
+.meas OP Ig_pmos_mk FIND Ig(Mk_leak)
+.meas OP Ig_inv_n   FIND Ig(Mni_leak)
+.meas OP Ig_inv_p   FIND Ig(Mpi_leak)
+
+* Mediciones de corriente de drenaje y fuente para balance
+.meas OP Id_nmos_m1 FIND Id(M1_leak)
+.meas OP Id_pmos_mp FIND Id(Mp_leak)
+.meas OP Id_pmos_mk FIND Id(Mk_leak)
+.meas OP Id_inv_n   FIND Id(Mni_leak)
+.meas OP Id_inv_p   FIND Id(Mpi_leak)
+
+.end

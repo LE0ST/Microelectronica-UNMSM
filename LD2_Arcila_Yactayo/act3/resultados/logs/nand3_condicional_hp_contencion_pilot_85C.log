@@ -1,0 +1,41 @@
+LTspice 26.0.2 for Windows
+Circuit: G:\Proyectos\MicroNano\LD2_Arcila_Yactayo\act3\circuitos\nand3_condicional_hp_contencion_pilot_85C.cir
+Start Time: Mon Sep 21 00:26:49 2026
+Options:gmin=1e-15 abstol=1e-14 reltol=1e-4 method=gear
+solver = Normal
+Maximum thread count: 4
+tnom = 27
+temp = 85
+method = Gear
+gmin = 1e-15
+abstol = 1e-14
+reltol = 0.0001
+Direct Newton iteration succeeded in finding operating point.
+Total elapsed time: 28.782 seconds.
+
+Files loaded:
+G:\Proyectos\MicroNano\LD2_Arcila_Yactayo\act3\circuitos\nand3_condicional_hp_contencion_pilot_85C.cir
+G:\Proyectos\MicroNano\LD2_Arcila_Yactayo\modelos\ptm45hp.lib
+G:\Proyectos\MicroNano\LD2_Arcila_Yactayo\modelos\ptm45lp.lib
+G:\Proyectos\MicroNano\LD2_Arcila_Yactayo\modelos\ptm130.lib
+
+tphl_dyn=3.34250865131e-11 FROM 1.01e-09 TO 1.04342508651e-09
+tplh_out=5.4536263055e-11 FROM 1.01e-09 TO 1.06453626305e-09
+tau_delay_3inv=1.61490199485e-11 FROM 1.01e-09 TO 1.02614901995e-09
+t_clk_rise: V(clk)={VDD/2}  AT 1.01e-09
+t_d3_fall: V(d3)={VDD/2}  AT 1.02614901995e-09
+t_dyn_50: V(dyn)={VDD/2}  AT 1.04342508651e-09
+t_out_10: V(out)={0.10*VDD}  AT 1.04888960022e-09
+t_out_50: V(out)={0.50*VDD}  AT 1.06453626305e-09
+t_out_90: V(out)={0.90*VDD}  AT 1.08156442345e-09
+vdyn_min: MIN(V(dyn) )=2.57923056779e-05 FROM 1e-09 TO 2e-09
+vout_max: MAX(V(out) )=0.999969601631 FROM 1e-09 TO 2e-09
+vk_mid_at_dyn50: V(k_mid) =0.828549374606 at 1.04342508651e-09
+vd3_at_dyn50: V(d3) =-0.00171624461914 at 1.04342508651e-09
+vout_at_dyn50: V(out) =0.0264612565307 at 1.04342508651e-09
+vk_mid_at_out50: V(k_mid) =0.645451145925 at 1.06453626305e-09
+vd3_at_out50: V(d3) =-0.00238507669574 at 1.06453626305e-09
+ikp_at_dyn50: -Id(Mk_en) =9.30091272384e-06 at 1.04342508651e-09
+ipdn_at_dyn50: Is(M1) =5.99550266449e-05 at 1.04342508651e-09
+ikp_max: MAX(-Id(Mk_en) )=9.40038989938e-06 FROM 1e-09 TO 1.2e-09
+ipdn_max: MAX(Is(M1) )=6.63748360239e-05 FROM 1e-09 TO 1.2e-09

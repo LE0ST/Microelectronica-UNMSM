@@ -1,0 +1,84 @@
+* ==============================================================================
+* ACTIVIDAD 3 - LD2: Piloto de Charge Sharing - Keeper Condicional 45nm HP @ 85C
+* Ensayo: ENS-A3-COND-PILOT-03
+* Topologia: PMOS en serie (Mk_fb + Mk_en) con 3 inversores de retardo desde CLK
+* Secuencia 2 ciclos: Ciclo 1 descarga n1/n2 a 0V; Ciclo 2 prueba CS (A=B=1, C=0)
+* Microelectronica y Sistemas Nanoelectronicos - UNMSM 2026-II
+* ==============================================================================
+
+.include ../../modelos/ptm45hp.lib
+.include ../../modelos/ptm45lp.lib
+.include ../../modelos/ptm130.lib
+
+.param VDD=1.0
+.param Ln=45n Wn=90n Wp=135n
+.param Wkp_fb=45n Wkp_en=45n
+.param CL=2f Cout=1f
+.param Tclk=2n
+.temp 85
+.options gmin=1e-15 abstol=1e-14 reltol=1e-4 method=gear
+
+Vdd vdd 0 {VDD}
+
+* --- Reloj y Estimulos para Aislamiento Riguroso de Condiciones Iniciales ---
+* Ciclo 1 (t in [1n, 2n]): Evaluacion con A=B=C=1 -> descarga completa de dyn, n1, n2, n3 a 0V
+* Precarga 2 (t in [2n, 3n]): CLK=0 -> dyn se precarga a 1.0V; A=0, B=0 -> n1, n2 quedan descargados
+* Evaluacion 2 (t in [3n, 4n]): CLK=1 -> A=1, B=1 a t=3.0n, C=0 -> Redistribucion de carga pura dyn -> n1, n2
+Vclk clk 0 PULSE(0 {VDD} {Tclk/2} 20p 20p {Tclk/2} {Tclk})
+Va a 0 PWL(0 {VDD} 2.0n {VDD} 2.02n 0 2.98n 0 3.0n {VDD})
+Vb b 0 PWL(0 {VDD} 2.0n {VDD} 2.02n 0 2.98n 0 3.0n {VDD})
+Vc c 0 PWL(0 {VDD} 2.0n {VDD} 2.02n 0)
+
+* --- Parametros de Geometria de Difusion ---
+.param Ad={Wn*3*90n} Pd={Wn*3+180n}
+
+* --- Transistor de Precarga ---
+Mp dyn clk vdd vdd pmos_45hp W={Wp} L={Ln}
+
+* --- Red de Descenso (PDN) Footed con Difusiones ---
+M1 n1 a dyn 0 nmos_45hp W={Wn*3} L={Ln} AS={Ad} AD={Ad} PS={Pd} PD={Pd}
+M2 n2 b n1 0 nmos_45hp W={Wn*3} L={Ln} AS={Ad} AD={Ad} PS={Pd} PD={Pd}
+M3 n3 c n2 0 nmos_45hp W={Wn*3} L={Ln} AS={Ad} AD={Ad} PS={Pd} PD={Pd}
+Mf 0 clk n3 0 nmos_45hp W={Wn*3} L={Ln} AS={Ad} AD={Ad} PS={Pd} PD={Pd}
+
+* --- Capacitancia de Carga Externa ---
+CL dyn 0 {CL}
+
+* --- Inversor Domino de Salida ---
+Mpi out dyn vdd vdd pmos_45hp W={Wp} L={Ln}
+Mni out dyn 0 0 nmos_45hp W={Wn} L={Ln}
+Cout out 0 {Cout}
+
+* --- CADENA DE 3 INVERSORES DE RETARDO DESDE CLK ---
+* Etapa 1: clk -> d1
+Mpinv1 d1 clk vdd vdd pmos_45hp W={Wp} L={Ln}
+Mninv1 d1 clk 0 0 nmos_45hp W={Wn} L={Ln}
+
+* Etapa 2: d1 -> d2
+Mpinv2 d2 d1 vdd vdd pmos_45hp W={Wp} L={Ln}
+Mninv2 d2 d1 0 0 nmos_45hp W={Wn} L={Ln}
+
+* Etapa 3: d2 -> d3 (senal de habilitacion activa en bajo)
+Mpinv3 d3 d2 vdd vdd pmos_45hp W={Wp} L={Ln}
+Mninv3 d3 d2 0 0 nmos_45hp W={Wn} L={Ln}
+
+* --- KEEPER CONDICIONAL (Dos PMOS en serie) ---
+* Mk_fb: sensa la salida (out)
+Mk_fb k_mid out vdd vdd pmos_45hp W={Wkp_fb} L={Ln}
+* Mk_en: habilitado por la senal de retardo d3 (activa en bajo)
+Mk_en dyn d3 k_mid vdd pmos_45hp W={Wkp_en} L={Ln}
+
+* --- Analisis Transitorio ---
+.tran 0 {Tclk*2.5} 0 2p
+
+* --- Mediciones de Charge Sharing en Evaluacion 2 (t in [3.0ns, 4.0ns]) ---
+.meas TRAN vdyn_cs_min MIN V(dyn) FROM=3.0n TO=4.0n
+.meas TRAN vout_cs_max MAX V(out) FROM=3.0n TO=4.0n
+.meas TRAN dV_drop PARAM {VDD-vdyn_cs_min}
+.meas TRAN tau_delay_3inv TRIG V(clk) VAL={VDD/2} RISE=2 TARG V(d3) VAL={VDD/2} FALL=2
+.meas TRAN t_d3_act WHEN V(d3)={VDD/2} FALL=2
+.meas TRAN vdyn_end_cs FIND V(dyn) AT=3.95n
+.meas TRAN vout_end_cs FIND V(out) AT=3.95n
+.meas TRAN ikp_cs_max MAX -Id(Mk_en) FROM=3.0n TO=4.0n
+
+.end

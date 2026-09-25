@@ -1,0 +1,33 @@
+LTspice 26.0.2 for Windows
+Circuit: G:\Proyectos\MicroNano\LD2_Arcila_Yactayo\act3\circuitos\nand3_retencion_piloto_sin_keeper.cir
+Start Time: Sun Sep 20 16:29:55 2026
+Options:gmin=1e-15 abstol=1e-14 reltol=1e-4 method=gear
+solver = Normal
+Maximum thread count: 4
+tnom = 27
+temp = 27
+method = Gear
+gmin = 1e-15
+abstol = 1e-14
+reltol = 0.0001
+Direct Newton iteration succeeded in finding operating point.
+Total elapsed time: 0.397 seconds.
+
+Files loaded:
+G:\Proyectos\MicroNano\LD2_Arcila_Yactayo\act3\circuitos\nand3_retencion_piloto_sin_keeper.cir
+G:\Proyectos\MicroNano\LD2_Arcila_Yactayo\modelos\ptm45hp.lib
+G:\Proyectos\MicroNano\LD2_Arcila_Yactayo\modelos\ptm45lp.lib
+G:\Proyectos\MicroNano\LD2_Arcila_Yactayo\modelos\ptm130.lib
+
+vdyn_start: V(dyn) =1.02445065975 at 5.2e-10
+vdyn_end_1us: V(dyn) =0.936959385872 at 1.00052e-06
+vdyn_min: MIN(V(dyn) )=0.936959385872 FROM 5.2e-10 TO 1.00052e-06
+Measurement "t_cross_0p9vdd" FAIL'ed
+Measurement "t_cross_vdd2" FAIL'ed
+Measurement "t_cross_vm" FAIL'ed
+isupply_avg: AVG(-I(Vdd) )=1.28856933598e-09 FROM 1e-08 TO 1.00052e-06
+ileak_pdn_avg: AVG(Id(M1) )=-7.96416957684e-11 FROM 1e-08 TO 1.00052e-06
+ileak_mp_avg: AVG(Id(Mp) )=-1.22587407455e-11 FROM 1e-08 TO 1.00052e-06
+ig_inv_n_avg: AVG(Ig(Mni) )=1.64411473655e-11 FROM 1e-08 TO 1.00052e-06
+ig_inv_p_avg: AVG(Ig(Mpi) )=7.63107268972e-11 FROM 1e-08 TO 1.00052e-06
+dvd_dt: V(dyn) =-99301.3381958 at 1e-08

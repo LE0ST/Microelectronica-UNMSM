@@ -32,11 +32,20 @@
     "ratio_potencia_fijas1": 1602.8943142986163
   },
   "capacitancia_entrada": {
-    "qin_dyn_c": 3.41475381093e-16,
+    "qin_dyn_c": 3.41662314562e-16,
     "qin_stat_c": 5.9360412544e-16,
-    "cin_dyn_f": 3.41475381093e-16,
+    "cin_dyn_f": 3.41662314562e-16,
     "cin_stat_f": 5.9360412544e-16,
-    "ratio_cin": 0.575257762638
+    "ratio_cin": 0.575572675321,
+    "ensayo_referencia": "ENS-A1-HIG-01 (nand3_extraccion_cin_corregido.cir, Mni W=90nm)",
+    "historico_banco_original": {
+      "qin_dyn_c": 3.41475381093e-16,
+      "qin_stat_c": 5.9360412544e-16,
+      "cin_dyn_f": 3.41475381093e-16,
+      "cin_stat_f": 5.9360412544e-16,
+      "ratio_cin": 0.575257762638,
+      "ensayo": "ENS-A1-04 (nand3_extraccion_cin.cir, Mni W=270nm)"
+    }
   },
   "retencion_pdn_abierta": {
     "tclk_2n": {

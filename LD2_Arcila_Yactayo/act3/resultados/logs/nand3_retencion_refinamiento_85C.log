@@ -1,0 +1,105 @@
+LTspice 26.0.2 for Windows
+Circuit: G:\Proyectos\MicroNano\LD2_Arcila_Yactayo\act3\circuitos\nand3_retencion_refinamiento_85C.cir
+Start Time: Sun Sep 20 16:55:35 2026
+Options:gmin=1e-15 abstol=1e-14 reltol=1e-4 method=gear
+
+.step wkp=1.05e-08
+solver = Normal
+Maximum thread count: 4
+tnom = 27
+temp = 85
+method = Gear
+gmin = 1e-15
+abstol = 1e-14
+reltol = 0.0001
+Warning: Weff = 5e-10 <= 1e-9. Recommended Weff >=1e-7
+Warning: Weff for CV = 5e-10 <= 1e-9. Recommended WeffCV >= 1e-7
+Warning: (B1 + Weff) may be too small.
+Direct Newton iteration succeeded in finding operating point.
+
+.step wkp=1.1e-08
+Direct Newton iteration succeeded in finding operating point.
+
+.step wkp=1.2e-08
+Direct Newton iteration succeeded in finding operating point.
+
+.step wkp=1.3e-08
+Direct Newton iteration succeeded in finding operating point.
+
+.step wkp=1.4e-08
+Direct Newton iteration succeeded in finding operating point.
+
+.step wkp=1.5e-08
+Direct Newton iteration succeeded in finding operating point.
+Total elapsed time: 1.478 seconds.
+
+Files loaded:
+G:\Proyectos\MicroNano\LD2_Arcila_Yactayo\act3\circuitos\nand3_retencion_refinamiento_85C.cir
+G:\Proyectos\MicroNano\LD2_Arcila_Yactayo\modelos\ptm45hp.lib
+G:\Proyectos\MicroNano\LD2_Arcila_Yactayo\modelos\ptm45lp.lib
+G:\Proyectos\MicroNano\LD2_Arcila_Yactayo\modelos\ptm130.lib
+
+
+Measurement: vdyn_start
+  step	V(dyn) 	at
+     1	1.02403891087	5.2e-10
+     2	1.02400493622	5.2e-10
+     3	1.02394032478	5.2e-10
+     4	1.02387905121	5.2e-10
+     5	1.02382016182	5.2e-10
+     6	1.02376294136	5.2e-10
+
+Measurement: vdyn_end_1us
+  step	V(dyn) 	at
+     1	0.999967515469	1.00052e-06
+     2	0.999967992306	1.00052e-06
+     3	0.999968886375	1.00052e-06
+     4	0.99996972084	1.00052e-06
+     5	0.999970436096	1.00052e-06
+     6	0.999971091747	1.00052e-06
+
+Measurement: vdyn_min
+  step	MIN(V(dyn) )	FROM	TO
+     1	0.998959183693	5.2e-10	1.00052e-06
+     2	0.998957693577	5.2e-10	1.00052e-06
+     3	0.998956441879	5.2e-10	1.00052e-06
+     4	0.99895709753	5.2e-10	1.00052e-06
+     5	0.998959302902	5.2e-10	1.00052e-06
+     6	0.998964846134	5.2e-10	1.00052e-06
+Measurement "t_cross_0p9vdd" FAIL'ed
+
+Measurement: isupply_avg
+  step	AVG(-I(Vdd) )	FROM	TO
+     1	2.56204031478e-09	1e-08	1.00052e-06
+     2	2.56281379563e-09	1e-08	1.00052e-06
+     3	2.56436443495e-09	1e-08	1.00052e-06
+     4	2.56591936943e-09	1e-08	1.00052e-06
+     5	2.56747764888e-09	1e-08	1.00052e-06
+     6	2.56903769238e-09	1e-08	1.00052e-06
+
+Measurement: ileak_pdn_avg
+  step	AVG(Is(M1) )	FROM	TO
+     1	4.68059061925e-10	1e-08	1.00052e-06
+     2	4.68059234306e-10	1e-08	1.00052e-06
+     3	4.68059564567e-10	1e-08	1.00052e-06
+     4	4.6805984334e-10	1e-08	1.00052e-06
+     5	4.68060111084e-10	1e-08	1.00052e-06
+     6	4.68060349735e-10	1e-08	1.00052e-06
+
+Measurement: ikp_d_avg
+  step	AVG(Id(Mk) )	FROM	TO
+     1	-5.97323599394e-10	1e-08	1.00052e-06
+     2	-5.97325280079e-10	1e-08	1.00052e-06
+     3	-5.97327384091e-10	1e-08	1.00052e-06
+     4	-5.9732970108e-10	1e-08	1.00052e-06
+     5	-5.97331772063e-10	1e-08	1.00052e-06
+     6	-5.97333161757e-10	1e-08	1.00052e-06
+
+Measurement: ikp_inj_avg
+  step	{-ikp_d_avg}
+     1	5.97323599394e-10
+     2	5.97325280079e-10
+     3	5.97327384091e-10
+     4	5.9732970108e-10
+     5	5.97331772063e-10
+     6	5.97333161757e-10

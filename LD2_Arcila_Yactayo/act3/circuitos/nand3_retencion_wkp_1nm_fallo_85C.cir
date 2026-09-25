@@ -1,0 +1,44 @@
+* ==============================================================================
+* ACTIVIDAD 3 - LD2: Ensayo de Evidencia Fallo Wkp=1nm en BSIM4 @ 85C
+* Ensayo: ENS-A3-ERR-02
+* Demostracion de limitacion matematica del modelo: Wint=5nm => Weff <= 0
+* ==============================================================================
+
+.include ../../modelos/ptm45hp.lib
+.include ../../modelos/ptm45lp.lib
+.include ../../modelos/ptm130.lib
+
+.param VDD=1.0
+.param Ln=45n Wn=90n Wp=135n
+.param Wkp=1n
+.param CL=2f Cout=1f
+.param Teval_start=0.52n
+.param Tret=1.0u
+.param Tstop={Teval_start + Tret}
+.temp 85
+.options gmin=1e-15 abstol=1e-14 reltol=1e-4 method=gear
+
+Vdd vdd 0 {VDD}
+Vclk clk 0 PWL(0 0 0.5n 0 0.52n {VDD} {Tstop} {VDD})
+Va a 0 0
+Vb b 0 0
+Vc c 0 0
+
+.param Ad={Wn*3*90n} Pd={Wn*3+180n}
+
+Mp dyn clk vdd vdd pmos_45hp W={Wp} L={Ln}
+M1 n1 a dyn 0 nmos_45hp W={Wn*3} L={Ln} AS={Ad} AD={Ad} PS={Pd} PD={Pd}
+M2 n2 b n1 0 nmos_45hp W={Wn*3} L={Ln} AS={Ad} AD={Ad} PS={Pd} PD={Pd}
+M3 n3 c n2 0 nmos_45hp W={Wn*3} L={Ln} AS={Ad} AD={Ad} PS={Pd} PD={Pd}
+Mf 0 clk n3 0 nmos_45hp W={Wn*3} L={Ln} AS={Ad} AD={Ad} PS={Pd} PD={Pd}
+CL dyn 0 {CL}
+
+* Keeper con Wkp=1nm (provoca Weff = 1n - 2*5n = -9n <= 0)
+Mk dyn out vdd vdd pmos_45hp W={Wkp} L={Ln}
+
+Mpi out dyn vdd vdd pmos_45hp W={Wp} L={Ln}
+Mni out dyn 0 0 nmos_45hp W={Wn} L={Ln}
+Cout out 0 {Cout}
+
+.tran 0 {Tstop} 0 1n
+.end

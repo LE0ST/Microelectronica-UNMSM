@@ -1,0 +1,128 @@
+% ==============================================================================
+% SECCION 4: ACTIVIDAD 3 - FUGAS, RETENCION Y DIMENSIONAMIENTO DEL KEEPER
+% ==============================================================================
+\needspace{6\baselineskip}
+\section{Actividad 3: Fugas, Retención y Dimensionamiento del Keeper}
+\label{sec:actividad3}
+
+En tecnologías nanométricas sub-45\,nm, el adelgazamiento del óxido ($t_{oxe} = 1.25\,\text{nm}$ en NMOS, $1.30\,\text{nm}$ en PMOS) y las tensiones de umbral reducidas disparan las corrientes de fuga parásitas. En lógica dinámica, estas fugas descargan el nodo flotante cuando el reloj se detiene en evaluación (\textit{clock gating} para ahorro de energía), induciendo fallas lógicas si no se incorpora compensación activa (\textit{keeper}). Esta sección aborda la caracterización de las componentes de fuga, su dependencia térmica, la comparación tecnológica tri-nodo y el compromiso de diseño entre retención y velocidad.
+
+\subsection{Retención del Nodo Dinámico y Pérdida de Carga en Evaluación}
+Para caracterizar la retención dinámica con $V_{DD} = 1.0\,\text{V}$, las entradas se fijan estáticamente en $A=B=C=0$ (PDN abierta), mientras el reloj conmuta a nivel alto en $t_{\text{eval\_start}} = 0.52\,\text{ns}$ y permanece detenido en evaluación durante $T_{\text{ret}} = 1.0\,\mu\text{s}$ ($T_{\text{stop}} = 1000.52\,\text{ns}$). El transistor de precarga $M_p$ se encuentra cortado ($V_{GS} = 0\,\text{V}$), dejando al nodo $dyn$ en estado flotante.
+
+Las curvas transitorias se presentan en la Figura~\ref{fig:retencion_formas_onda}. En ausencia de keeper:
+\begin{itemize}[leftmargin=1.4em,itemsep=0.12em]
+  \item \textbf{A temperatura ambiente ($27^\circ\text{C}$):} La tensión dinámica evoluciona de $V_{dyn}(t_0 = 10.0\,\text{ns}) = 1.0235\,\text{V}$ a $V_{dyn}(t_1 = 1000.52\,\text{ns}) = 0.9370\,\text{V}$ ($\Delta V_{dyn} = -86.54\,\text{mV}$). El circuito \textbf{cumple holgadamente} el criterio de retención estricto ($V_{dyn} > 0.90\,V_{DD} = 0.90\,\text{V}$) durante todo el microsegundo.
+  \item \textbf{A alta temperatura ($85^\circ\text{C}$):} El incremento térmico de las fugas acelera el drenaje, con extremos $V_{dyn}(t_0) = 1.0240\,\text{V}$ y $V_{dyn}(t_1) = 0.8309\,\text{V}$ ($\Delta V_{dyn} = -193.11\,\text{mV}$). La tensión cruza el umbral de $0.90\,V_{DD}$ en un tiempo absoluto de $t_{\text{cross}} = 608.69\,\text{ns}$, equivalente a un tiempo de retención neto de $t_{\text{hold}} = t_{\text{cross}} - t_{\text{eval\_start}} = \mathbf{608.17\,\text{ns}}$, \textbf{incumpliendo el criterio estricto de retención de $1.0\,\mu\text{s}$}. No obstante, dado que $V_{dyn}(1\,\mu\text{s}) = 0.831\,\text{V} > V_M \approx 0.50\,\text{V}$, la salida permanece en $0\,\text{V}$ sin falla lógica funcional en la ventana de $1\,\mu\text{s}$.
+  \item \textbf{Acoplamiento en $t_0$ y Capacitancia Aparente:} En ambas temperaturas, $V_{dyn}(t_0)$ supera nominalmente a $V_{DD}$ por acoplamiento compuerta-drenaje en el flanco ascendente de reloj. Asimismo, la integración numérica en gran señal revela una capacitancia aparente $C_{\text{eff}} \equiv \langle I_{\text{net}} \rangle \Delta t / |\Delta V| \approx 2.18\,\text{fF}$ (parásita $C_{\text{par}} \approx 0.18\,\text{fF}$ frente al capacitor concentrado $C_L=2.0\,\text{fF}$), explicada físicamente porque $M_{pi}$ opera con $V_{GS} \approx 0\,\text{V}$ en subumbral y las difusiones de $dyn$ se polarizan en reversa plena ($V_R = 1\,\text{V}$).
+\end{itemize}
+
+\subsection{Descomposición de Componentes de Fuga y Balance Nodal}
+Aplicando la ley de corrientes de Kirchhoff (KCL) sobre el nodo $dyn$ durante retención:
+\begin{equation}
+  \langle I_s(M_1) \rangle + \langle I_d(M_p) \rangle + \langle I_g(M_{pi}) \rangle + \langle I_g(M_{ni}) \rangle + \langle I(C_L) \rangle + \langle I(C_{\text{par}}) \rangle = 0
+  \label{eq:kcl_dyn}
+\end{equation}
+Los resultados cuantitativos se consolidan en la Tabla~\ref{tab:balance_fugas}.
+
+\input{tablas/tabla_balance_fugas_act3.tex}
+
+\begin{enumerate}[leftmargin=1.4em,itemsep=0.12em]
+  \item \textbf{Drenaje hacia la PDN Footed ($\langle I_s(M_1) \rangle$):} Es la vía principal de descarga hacia masa, promediando $+110.53\,\text{pA}$ a $27^\circ\text{C}$ y escalando a $+430.89\,\text{pA}$ a $85^\circ\text{C}$ (factor térmico de $\mathbf{3.90\times}$).
+  \item \textbf{Inyección de Precarga ($\langle I_d(M_p) \rangle$):} Al operar con $V_{DS} \approx 0 \to 0.17\,\text{V}$, $M_p$ inyecta corriente reconstitutiva hacia $dyn$ ($-12.26\,\text{pA}$ a $27^\circ\text{C}$ y $-56.08\,\text{pA}$ a $85^\circ\text{C}$), atenuando levemente la descarga.
+  \item \textbf{Fugas de Compuerta del Inversor Dominó:} $M_{pi}$ absorbe $+76.31\,\text{pA}$ a $27^\circ\text{C}$ ($+49.86\,\text{pA}$ a $85^\circ\text{C}$) por túnel directo en compuerta ($V_{GD} \approx 1.0\,\text{V}$), mientras $M_{ni}$ aporta $+16.44\,\text{pA}$ ($+0.61\,\text{pA}$ a $85^\circ\text{C}$).
+  \item \textbf{Aislamiento de GIDL y Compuerta de $M_1$:} La corriente de compuerta externa de $M_1$ ($-41.60\,\text{pA}$) es suministrada por el generador de entrada $a$; no descarga $dyn$. Asimismo, el ensayo de ablación con \texttt{agidl=0} en \texttt{ptm45hp\_aux.lib} arrojó $\Delta I_D = 0.0\,\text{A}$ y $|\Delta I_B| \sim 10^{-20}\,\text{A}$, confirmando que GIDL tiene efecto nulo bajo las condiciones nominales.
+\end{enumerate}
+
+\subsection{Dependencia Térmica y Comparación Tecnológica Tri-Nodo}
+El modelo clásico predice que la corriente subumbral escala como $I_{sub}(T) \propto (k T / q)^2 \exp[(V_{GS} - V_{th})/(n k T / q)]$. En el modelo PTM BSIM4, la modulación térmica responde a $k_{t1} = -0.11\,\text{V}$, derivando $\frac{\Delta V_{th}}{\Delta T} \approx -0.366\,\text{mV/}^\circ\text{C}$ ($\Delta V_{th} \approx -21.2\,\text{mV}$ entre $27^\circ\text{C}$ y $85^\circ\text{C}$).
+\noindent La Tabla~\ref{tab:retencion_tecnologica} y la Figura~\ref{fig:consolidacion_tecnologica} contrastan el comportamiento en tres plataformas semiconductoras:
+
+\input{tablas/tabla_retencion_tecnologica_act3.tex}
+
+\begin{figure}[htbp]
+  \centering
+  \begin{minipage}[t]{0.485\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{figuras/fig1_act3_retencion_formas_onda.png}
+    \caption[Formas de onda transitorias de retención]{Retención en $dyn$ y $out$ ($1.0\,\mu\text{s}$, 45\,nm HP) a 27\,$^\circ$C y 85\,$^\circ$C sin keeper vs con keeper.}
+    \label{fig:retencion_formas_onda}
+  \end{minipage}\hfill
+  \begin{minipage}[t]{0.485\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{figuras/fig2_act3_consolidacion_hp_lp_130.png}
+    \caption[Consolidación tecnológica tri-nodo de retención]{Tensión normalizada $V_{dyn}(1\,\mu\text{s})/V_{DD}$ vs $W_{kp}$ para 45\,nm HP, 45\,nm LP y 130\,nm Bulk.}
+    \label{fig:consolidacion_tecnologica}
+  \end{minipage}
+\end{figure}
+
+\begin{itemize}[leftmargin=1.4em,itemsep=0.12em]
+  \item \textbf{45\,nm LP ($V_{DD}=1.1\,\text{V}$):} Óxido grueso ($t_{oxe} = 1.80\,\text{nm}$ en NMOS, $1.82\,\text{nm}$ en PMOS; $t_{oxp}=1.50\,\text{nm}$) y alto umbral ($V_{th0} \approx 0.62\,\text{V}$) suprimen fugas ($I_{leak} \sim 7\,\text{pA}$ a $85^\circ\text{C}$). Retiene $V_{dyn} > 1.125\,\text{V}$ y \textbf{cumple holgadamente sin keeper} ($t_{\text{hold}} > 1.0\,\mu\text{s}$, censurado en $1000\,\text{ns}$).
+  \item \textbf{130\,nm Bulk ($V_{DD}=1.3\,\text{V}$):} Con $W_n = 780\,\text{nm}$ y $C_L=2\,\text{fF}$, la elevada fuga subumbral cruza $0.90\,V_{DD}$ en $t_{\text{hold}} = \mathbf{318.31\,\text{ns}}$ ($27^\circ\text{C}$) y $\mathbf{167.53\,\text{ns}}$ ($85^\circ\text{C}$), requiriendo keeper $W_{kp} \ge 15\,\text{nm}$ para sostener el nivel.
+  \item \textbf{Efecto del Keeper en 45\,nm HP:} La adición del keeper sostiene $V_{dyn}(1\,\mu\text{s}) > 0.9999\,\text{V}$ en toda la malla ensayada ($10.5\text{--}180\,\text{nm}$). El valor $W_{kp} = 10.5\,\text{nm}$ es la cota inferior evaluada que converge; en el modelo PTM BSIM4, $W_{\text{int}} = 5\,\text{nm}$ impone $W_{\text{eff}} = W - 10\,\text{nm} > 0$, provocando aborto numérico si $W \le 10\,\text{nm}$.
+\end{itemize}
+
+\subsection{Evaluación de Contención y Penalización de Velocidad}
+Durante evaluación activa ($CLK=1, A=B=C=1$), el keeper encendido disputa corriente contra la PDN (\textit{keeper contention}), demorando la conmutación hacia masa. Se define la razón geométrica de dimensionamiento relativo:
+\begin{equation}
+  r \equiv \frac{(W/L)_{kp}}{(W/L)_{PDN,eq}} = \frac{W_{kp}/45\,\text{nm}}{67.5\,\text{nm}/45\,\text{nm}} = \frac{W_{kp}}{67.5\,\text{nm}}
+  \label{eq:ratio_r}
+\end{equation}
+donde $W_{PDN,eq} = 270\,\text{nm}/4 = 67.5\,\text{nm}$ modela la pila en serie de 4 NMOS. El criterio de diseño fija como límite admisible que la degradación en retardo de evaluación no exceda el 10\%:
+\begin{equation}
+  \Delta t_{pHL} \equiv \frac{t_{pHL,dyn}(W_{kp}) - t_{pHL,\text{base}}}{t_{pHL,\text{base}}} \times 100\% < 10.0\%
+\end{equation}
+donde $t_{pHL,\text{base}} = 31.80\,\text{ps}$ en 45\,nm HP y $105.74\,\text{ps}$ en 45\,nm LP a $85^\circ\text{C}$ (Tabla~\ref{tab:contencion} y Figura~\ref{fig:contencion_penalizacion}).
+
+\input{tablas/tabla_contencion_act3.tex}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[height=3.8cm,keepaspectratio]{figuras/fig3_act3_contencion_penalizacion.png}\hspace{0.04\linewidth}%
+  \includegraphics[height=3.8cm,keepaspectratio]{figuras/fig4_act3_ventana_viabilidad.png}
+  \caption[Compromiso de contención y ventana de viabilidad conjunta]{Compromiso en 45\,nm HP a $85^\circ\text{C}$: (a) Penalización de $t_{pHL}$ vs $W_{kp}$ y razón $r=W_{kp}/67.5\,\text{nm}$ (cota del 10\%); (b) Ventana de viabilidad conjunta $W_{kp} \in [10.5,\, 38.0]\,\text{nm}$.}
+  \label{fig:contencion_penalizacion}
+  \label{fig:ventana_viabilidad}
+\end{figure}
+
+\begin{itemize}[leftmargin=1.4em,itemsep=0.03em]
+  \item \textbf{Frontera en 45\,nm HP @ $85^\circ\text{C}$:} $W_{kp} = 38.0\,\text{nm}$ ($r = 0.563$) es el \textbf{máximo ancho ensayado que cumple la cota} ($t_{pHL} = 34.96\,\text{ps}$, $\Delta t_{pHL} = \mathbf{+9.94\%}$). $W_{kp} = 39.0\,\text{nm}$ ($r = 0.578$) incumple con $\mathbf{+10.35\%}$. Un keeper convencional unitario ($W=45\,\text{nm}$, $r=0.667$) induce una penalización inadmisible de $\mathbf{+12.90\%}$ ($I_{kp,\max} = 17.65\,\mu\text{A}$), y anchos excesivos ($180\,\text{nm}$) causan falla lógica catastrófica por pérdida de conmutación.
+  \item \textbf{Frontera en 45\,nm LP @ $85^\circ\text{C}$:} El límite admisible es $W_{kp} = 36.0\,\text{nm}$ ($r=0.533$, $\Delta t_{pHL} = \mathbf{+9.99\%}$), mientras $37\,\text{nm}$ supera la cota con $\mathbf{+10.45\%}$.
+\end{itemize}
+
+\subsection{Compromiso Retención/Velocidad y Ventana de Viabilidad Conjunta}
+La intersección de ambos requerimientos define la ventana de viabilidad conjunta $\mathcal{W}_{\text{viable}}$ (Figura~\ref{fig:contencion_penalizacion}(b)): $V_{dyn}(1\,\mu\text{s}) \ge 0.90\,V_{DD} \land \Delta t_{pHL} < 10.0\% \iff W_{kp} \in [10.5,\, 38.0]\,\text{nm}$ ($r \in [0.156,\, 0.563]$). Los extremos $10.5\,\text{nm}$ y $38.0\,\text{nm}$ cuentan con respaldo de simulación directa ($1\,\mu\text{s}$ y velocidad activa), verificando la especificación con penalización máxima de $+9.94\%$.
+
+\subsection{Alternativas de Diseño: Keeper Condicional con Línea de Retardo}
+Restringir el keeper al transistor unitario ($W = L = 45\,\text{nm}$) degrada la velocidad en $\Delta t_{pHL} = \mathbf{+12.90\%}$, superando la cota del 10\%. Para cumplirla, se implementó el \textbf{Keeper Condicional}, con dos PMOS serie ($W = 45\,\text{nm}$): $M_{k,fb}$ gobernado por $out$ (realimentación), y $M_{k,en}$ gobernado por $CLK_{\text{del}}$ retrasada por 3 inversores estáticos ($W_n = 90\,\text{nm}, W_p = 135\,\text{nm}$, $\tau_{\text{del}} \approx 16.15\,\text{ps}$).
+
+\begin{figure}[htbp]
+  \centering
+  \begin{minipage}[c]{0.28\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{figuras/fig5_act3_keeper_condicional.png}
+    \caption[Descomposición causal del keeper condicional]{Evaluación activa ($A=B=C=1$) en 45\,nm HP a $85^\circ\text{C}$ ($V(dyn)$, $I_{kp}(t)$ y $t_{pHL}$).}
+    \label{fig:keeper_condicional}
+  \end{minipage}\hfill
+  \begin{minipage}[c]{0.69\textwidth}
+    \footnotesize
+    \noindent\textbf{Comparación de cuatro arquitecturas activas (Figura~\ref{fig:keeper_condicional}):}
+    \begin{enumerate}[leftmargin=1.2em,itemsep=0.02em]
+      \item \textbf{A (Sin Keeper):} Referencia base ideal sin contención ($t_{pHL} = 31.80\,\text{ps}$).
+      \item \textbf{B (Keeper Convencional de 45\,nm):} Fuerte contención con pico $I_{kp,\max} = 17.65\,\mu\text{A}$, solapamiento de $50.0\,\text{ps}$ ($t \in [22, 72]\,\text{ps}$) y penalización de $\mathbf{+12.90\%}$ ($35.90\,\text{ps}$).
+      \item \textbf{C (Control 2 PMOS Serie Síncronos, $\tau=0\,\text{ps}$):} Resistencia duplicada abate pico a $9.38\,\mu\text{A}$ ($-46.9\%$), penalizando solo $\mathbf{+5.69\%}$ ($33.61\,\text{ps}$, solapamiento de $52\,\text{ps}$).
+      \item \textbf{D (Keeper Condicional con 3 Inversores):} Desfasa contención ($t_{\text{start}} = 22 \to 30\,\text{ps}$) y acorta solapamiento a $44.0\,\text{ps}$, penalizando $\mathbf{+5.11\%}$ ($33.43\,\text{ps}$).
+    \end{enumerate}
+  \end{minipage}
+\end{figure}
+
+En retención ($1\,\mu\text{s}$), sostiene $V_{dyn} = 1.0000\,\text{V}$, y ante charge sharing restaura a $0.9980\,\text{V}$ ($V_{out} < 0.18\,\text{mV}$). El inversor añade $C_g \approx 0.279\,\text{fF}$ al reloj ($\Delta C_{clk}/C_{clk,\text{base}} \approx \mathbf{+55.5\%}$), permitiendo usar transistores de $45\,\text{nm}$ cumpliendo retención de $1\,\mu\text{s}$ y velocidad ($<10\%$) en 45\,nm HP.
+
+\vspace{-0.4em}
+\subsection{Conclusiones de la Actividad 3}
+\begin{enumerate}[leftmargin=1.4em,itemsep=0.0em]
+  \item \textbf{Dominancia Térmica:} A $85^\circ\text{C}$ las fugas subumbral de la PDN se multiplican por $3.90\times$, reduciendo $t_{\text{hold}}$ a $608.17\,\text{ns}$ en 45\,nm HP e incumpliendo el criterio estricto de $1\,\mu\text{s}$ sin keeper.
+  \item \textbf{Inmunidad Tecnológica de LP:} 45\,nm LP no requiere keeper en $1\,\mu\text{s}$ por su óxido grueso y alto umbral, mientras 130\,nm Bulk drena rápido por su ancho de canal ($t_{\text{hold}} = 167.53\,\text{ns}$ a $85^\circ\text{C}$).
+  \item \textbf{Ventana Viable en 45\,nm HP:} La cota del 10\% restringe el keeper a $W_{kp} \in [10.5,\, 38.0]\,\text{nm}$ ($r \in [0.156,\, 0.563]$), quedando el ancho unitario de $45\,\text{nm}$ fuera de norma (+12.90\%).
+  \item \textbf{Viabilidad con Keeper Condicional:} Permite emplear transistores de $45\,\text{nm}$, mitigando la contención a $+5.11\%$ con retención plena durante $1.0\,\mu\text{s}$.
+\end{enumerate}

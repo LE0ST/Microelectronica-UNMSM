@@ -1,0 +1,25 @@
+LTspice 26.0.2 for Windows
+Circuit: G:\Proyectos\MicroNano\LD2_Arcila_Yactayo\act3\circuitos\dc_investigacion_gidl_45hp_85C.cir
+Start Time: Mon Sep 21 17:47:58 2026
+Options:gmin=1e-15 abstol=1e-14 reltol=1e-4 method=gear
+solver = Normal
+Maximum thread count: 4
+tnom = 27
+temp = 85
+method = Gear
+gmin = 1e-15
+abstol = 1e-14
+reltol = 0.0001
+Total elapsed time: 0.220 seconds.
+
+Files loaded:
+G:\Proyectos\MicroNano\LD2_Arcila_Yactayo\act3\circuitos\dc_investigacion_gidl_45hp_85C.cir
+G:\Proyectos\MicroNano\LD2_Arcila_Yactayo\modelos\ptm45hp.lib
+G:\Proyectos\MicroNano\LD2_Arcila_Yactayo\modelos\ptm45hp_aux.lib
+
+id_canon: Id(M_CANON) =1.7247327122e-08 at 1
+id_nogidl: Id(M_NOGIDL) =1.7247327122e-08 at 1
+delta_id_gidl: {Id_canon - Id_nogidl}=0
+ib_canon: Ib(M_CANON) =-9.98873496394e-14 at 1
+ib_nogidl: Ib(M_NOGIDL) =-9.98873225344e-14 at 1
+delta_ib_gidl: {Ib_canon - Ib_nogidl}=-2.71050543121e-20

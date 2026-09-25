@@ -1,0 +1,94 @@
+* Actividad 5 - EXP 2: Caracterizacion NTV de Velocidad, Contencion y Energia
+* Microelectronica y Sistemas Nanoelectronicos - UNMSM 2026-II
+.include ../../modelos/ptm45hp.lib
+
+.param Ln=45n Wn=90n Wp=135n
+.param CL=2f
+.param Tclk=10n
+
+.temp 27
+.options gmin=1e-15 abstol=1e-14 reltol=1e-4 method=gear
+
+Vdd vdd 0 {VDD}
+
+* Reloj con flancos de 20 ps; ciclo 10 ns (precarga en [0, 5ns], evaluacion en [5ns, 10ns])
+* Para medir desde t=0: reloj inicia en 0 y sube a VDD en 0.1ns
+Vclk clk 0 PULSE(0 {VDD} 0.1n 20p 20p {Tclk/2} {Tclk})
+
+* Entradas activas para evaluacion
+Va a 0 {VDD}
+Vb b 0 {VDD}
+Vc c 0 {VDD}
+
+* ==============================================================================
+* RAMA 1: SIN KEEPER (Base)
+* ==============================================================================
+Mp1 dyn1 clk vdd vdd pmos_45hp W={Wp} L={Ln}
+M11 dyn1 a n11 0 nmos_45hp W={Wn*3} L={Ln}
+M12 n11 b n12 0 nmos_45hp W={Wn*3} L={Ln}
+M13 n12 c n13 0 nmos_45hp W={Wn*3} L={Ln}
+Mf1 n13 clk 0 0 nmos_45hp W={Wn*3} L={Ln}
+CL1 dyn1 0 {CL}
+
+Mpi1 out1 dyn1 vdd vdd pmos_45hp W={Wp} L={Ln}
+Mni1 out1 dyn1 0 0 nmos_45hp W={Wn} L={Ln}
+
+* ==============================================================================
+* RAMA 2: CON KEEPER Wkp = 45 nm
+* ==============================================================================
+Mp2 dyn2 clk vdd vdd pmos_45hp W={Wp} L={Ln}
+M21 dyn2 a n21 0 nmos_45hp W={Wn*3} L={Ln}
+M22 n21 b n22 0 nmos_45hp W={Wn*3} L={Ln}
+M23 n22 c n23 0 nmos_45hp W={Wn*3} L={Ln}
+Mf2 n23 clk 0 0 nmos_45hp W={Wn*3} L={Ln}
+CL2 dyn2 0 {CL}
+
+Mpi2 out2 dyn2 vdd vdd pmos_45hp W={Wp} L={Ln}
+Mni2 out2 dyn2 0 0 nmos_45hp W={Wn} L={Ln}
+Mk2 dyn2 out2 vdd vdd pmos_45hp W=45n L={Ln}
+
+* ==============================================================================
+* RAMA 3: CON KEEPER Wkp = 90 nm
+* ==============================================================================
+Mp3 dyn3 clk vdd vdd pmos_45hp W={Wp} L={Ln}
+M31 dyn3 a n31 0 nmos_45hp W={Wn*3} L={Ln}
+M32 n31 b n32 0 nmos_45hp W={Wn*3} L={Ln}
+M33 n32 c n33 0 nmos_45hp W={Wn*3} L={Ln}
+Mf3 n33 clk 0 0 nmos_45hp W={Wn*3} L={Ln}
+CL3 dyn3 0 {CL}
+
+Mpi3 out3 dyn3 vdd vdd pmos_45hp W={Wp} L={Ln}
+Mni3 out3 dyn3 0 0 nmos_45hp W={Wn} L={Ln}
+Mk3 dyn3 out3 vdd vdd pmos_45hp W=90n L={Ln}
+
+.step param VDD list 1.0 0.8 0.6 0.5 0.45 0.4 0.35
+
+.tran 0 {Tclk*1.5} 0 2p
+
+* 1. Retardo de evaluacion de nodo dinamico (t_eval)
+.meas TRAN teval1 TRIG V(clk) VAL={VDD/2} RISE=1 TARG V(dyn1) VAL={VDD/2} FALL=1
+.meas TRAN teval2 TRIG V(clk) VAL={VDD/2} RISE=1 TARG V(dyn2) VAL={VDD/2} FALL=1
+.meas TRAN teval3 TRIG V(clk) VAL={VDD/2} RISE=1 TARG V(dyn3) VAL={VDD/2} FALL=1
+
+* 2. Retardo del inversor estatico receptor (tpLH)
+.meas TRAN tplh_inv1 TRIG V(dyn1) VAL={VDD/2} FALL=1 TARG V(out1) VAL={VDD/2} RISE=1
+.meas TRAN tplh_inv2 TRIG V(dyn2) VAL={VDD/2} FALL=1 TARG V(out2) VAL={VDD/2} RISE=1
+
+* 3. Retardo global clk -> out (t_pd)
+.meas TRAN tpd_eval1 TRIG V(clk) VAL={VDD/2} RISE=1 TARG V(out1) VAL={VDD/2} RISE=1
+.meas TRAN tpd_eval2 TRIG V(clk) VAL={VDD/2} RISE=1 TARG V(out2) VAL={VDD/2} RISE=1
+
+* 4. Corrientes maximas de PDN y de Keeper durante conmutacion (Contencion)
+.meas TRAN Ipdn_pk1 MAX -Id(M11) FROM=0.1n TO=5.0n
+.meas TRAN Ipdn_pk2 MAX -Id(M21) FROM=0.1n TO=5.0n
+.meas TRAN Ikp_pk2 MAX -Id(Mk2) FROM=0.1n TO=5.0n
+.meas TRAN Ikp_pk3 MAX -Id(Mk3) FROM=0.1n TO=5.0n
+
+* 5. Ratio de contencion Ikp/Ipdn a cada VDD
+.meas TRAN ratio_cont PARAM Ikp_pk2/Ipdn_pk2
+
+* 6. Calculo de fmax segun formula oficial de la guia (Sec. 9.2: fmax = 1 / [2*(teval + tpLH)])
+.meas TRAN fmax1 PARAM 1.0/(2.0*(teval1 + tplh_inv1))
+.meas TRAN fmax2 PARAM 1.0/(2.0*(teval2 + tplh_inv2))
+
+.end

@@ -86,14 +86,29 @@ def main():
     }
 
     # 4. Capacitancia de Entrada Cin(A)
-    log_cin = os.path.join(LOGS_DIR, "nand3_extraccion_cin.log")
-    res_cin = parse_log(log_cin, required_metrics=['qin_dyn', 'qin_stat', 'cin_dyn', 'cin_stat', 'ratio_cin'])
+    # 4a. Referencia Canonica Corregida (ENS-A1-HIG-01: Mni W=90nm)
+    log_cin_corr = os.path.join(LOGS_DIR, "nand3_extraccion_cin_corregido.log")
+    res_cin_corr = parse_log(log_cin_corr, required_metrics=['qin_dyn', 'qin_stat', 'cin_dyn', 'cin_stat', 'ratio_cin'])
+
+    # 4b. Historico Banco Original (ENS-A1-04: Mni W=270nm)
+    log_cin_hist = os.path.join(LOGS_DIR, "nand3_extraccion_cin.log")
+    res_cin_hist = parse_log(log_cin_hist, required_metrics=['qin_dyn', 'qin_stat', 'cin_dyn', 'cin_stat', 'ratio_cin'])
+
     metricas_totales['capacitancia_entrada'] = {
-        'qin_dyn_c': get_metric(res_cin, 'qin_dyn'),
-        'qin_stat_c': get_metric(res_cin, 'qin_stat'),
-        'cin_dyn_f': get_metric(res_cin, 'cin_dyn'),
-        'cin_stat_f': get_metric(res_cin, 'cin_stat'),
-        'ratio_cin': get_metric(res_cin, 'ratio_cin'),
+        'qin_dyn_c': get_metric(res_cin_corr, 'qin_dyn'),
+        'qin_stat_c': get_metric(res_cin_corr, 'qin_stat'),
+        'cin_dyn_f': get_metric(res_cin_corr, 'cin_dyn'),
+        'cin_stat_f': get_metric(res_cin_corr, 'cin_stat'),
+        'ratio_cin': get_metric(res_cin_corr, 'ratio_cin'),
+        'ensayo_referencia': "ENS-A1-HIG-01 (nand3_extraccion_cin_corregido.cir, Mni W=90nm)",
+        'historico_banco_original': {
+            'qin_dyn_c': get_metric(res_cin_hist, 'qin_dyn'),
+            'qin_stat_c': get_metric(res_cin_hist, 'qin_stat'),
+            'cin_dyn_f': get_metric(res_cin_hist, 'cin_dyn'),
+            'cin_stat_f': get_metric(res_cin_hist, 'cin_stat'),
+            'ratio_cin': get_metric(res_cin_hist, 'ratio_cin'),
+            'ensayo': "ENS-A1-04 (nand3_extraccion_cin.cir, Mni W=270nm)"
+        }
     }
 
     # 5. Retencion con PDN Abierta (Tclk = 2 ns vs 400 ns)
@@ -131,9 +146,11 @@ def main():
     print(f"tpLH Estatico (Mismo Estimulo) : {metricas_totales['estatica_mismo_estimulo']['tplh_stat_s']*1e12:.2f} ps")
     print(f"tpHL Estatico (Historico 500M) : {metricas_totales['estatica_base_historica']['tphl_stat_s']*1e12:.2f} ps")
     print(f"tpLH Estatico (Historico 500M) : {metricas_totales['estatica_base_historica']['tplh_stat_s']*1e12:.2f} ps")
-    print(f"Cin(A) Dinamica                : {metricas_totales['capacitancia_entrada']['cin_dyn_f']*1e15:.4f} fF")
+    print(f"Cin(A) Dinamica (Canonica)     : {metricas_totales['capacitancia_entrada']['cin_dyn_f']*1e15:.4f} fF")
     print(f"Cin(A) Estatica                : {metricas_totales['capacitancia_entrada']['cin_stat_f']*1e15:.4f} fF")
     print(f"Cociente Cin(A) (Dyn/Stat)     : {metricas_totales['capacitancia_entrada']['ratio_cin']:.4f}")
+    print(f"Cin(A) Dinamica (Historico)    : {metricas_totales['capacitancia_entrada']['historico_banco_original']['cin_dyn_f']*1e15:.4f} fF")
+    print(f"Cociente Historico (Dyn/Stat)  : {metricas_totales['capacitancia_entrada']['historico_banco_original']['ratio_cin']:.4f}")
     print(f"Pavg Dinamica (A conmutando)   : {metricas_totales['dinamica_base']['pavg_w']*1e6:.4f} uW")
     print(f"Pavg Estatica (Mismo Estimulo) : {metricas_totales['estatica_mismo_estimulo']['pavg_stat_sw_w']*1e6:.4f} uW")
     print(f"Pavg Estatica (Historico 500M) : {metricas_totales['estatica_base_historica']['pavg_stat_sw_w']*1e6:.4f} uW")

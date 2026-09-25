@@ -1,0 +1,24 @@
+LTspice 26.0.2 for Windows
+Circuit: G:\Proyectos\MicroNano\LD2_Arcila_Yactayo\act1\circuitos\nand3_estatica_base.cir
+Start Time: Wed Sep 16 23:28:06 2026
+Options:gmin=1e-15 abstol=1e-14 reltol=1e-4 method=gear
+solver = Normal
+Maximum thread count: 4
+tnom = 27
+temp = 27
+method = Gear
+gmin = 1e-15
+abstol = 1e-14
+reltol = 0.0001
+Direct Newton iteration succeeded in finding operating point.
+Total elapsed time: 0.372 seconds.
+
+Files loaded:
+G:\Proyectos\MicroNano\LD2_Arcila_Yactayo\act1\circuitos\nand3_estatica_base.cir
+G:\Proyectos\MicroNano\LD2_Arcila_Yactayo\modelos\ptm45hp.lib
+G:\Proyectos\MicroNano\LD2_Arcila_Yactayo\modelos\ptm45lp.lib
+G:\Proyectos\MicroNano\LD2_Arcila_Yactayo\modelos\ptm130.lib
+
+tphl_stat=9.76486715507e-12 FROM 2.5100000003e-09 TO 2.51976486746e-09
+tplh_stat=1.23840610615e-11 FROM 3.52999999991e-09 TO 3.54238406097e-09
+pavg_stat_sw: AVG(-I(Vdd)*V(vdd) )=8.20550428483e-07 FROM 4e-09 TO 1.6e-08

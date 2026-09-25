@@ -1,0 +1,36 @@
+* ==============================================================================
+* ENS-A3-DC-01B-85C: Investigacion Experimental de GIDL en NMOS 45nm HP @ 85C
+* Comparacion directa de DUTs paralelos en identico nodo (Canonico vs agidl=0)
+* ==============================================================================
+.include ../../modelos/ptm45hp.lib
+.include ../../modelos/ptm45hp_aux.lib
+
+.param Ln=45n Wn_pdn=270n
+.param Ad={Wn_pdn*90n} Pd={Wn_pdn+180n}
+.temp 85
+.options gmin=1e-15 abstol=1e-14 reltol=1e-4 method=gear
+
+* Fuentes comunes de polarizacion
+Vds d 0 1.0
+Vgs g 0 0.0
+
+* Transistor Canónico (agidl = 0.0002)
+M_CANON d g 0 0 nmos_45hp W={Wn_pdn} L={Ln} AS={Ad} AD={Ad} PS={Pd} PD={Pd}
+
+* Transistor de Control (agidl = 0.0)
+M_NOGIDL d g 0 0 nmos_45hp_nogidl W={Wn_pdn} L={Ln} AS={Ad} AD={Ad} PS={Pd} PD={Pd}
+
+* Barrido DC en rango nominal (0.01 a 1.0V)
+.dc Vds 0.01 1.0 0.01
+
+* Mediciones de drenaje a Vds = 1.0 V
+.meas DC Id_canon  FIND Id(M_CANON) AT=1.0
+.meas DC Id_nogidl FIND Id(M_NOGIDL) AT=1.0
+.meas DC Delta_Id_gidl PARAM {Id_canon - Id_nogidl}
+
+* Mediciones de sustrato (donde drena GIDL en BSIM4) a Vds = 1.0 V
+.meas DC Ib_canon  FIND Ib(M_CANON) AT=1.0
+.meas DC Ib_nogidl FIND Ib(M_NOGIDL) AT=1.0
+.meas DC Delta_Ib_gidl PARAM {Ib_canon - Ib_nogidl}
+
+.end

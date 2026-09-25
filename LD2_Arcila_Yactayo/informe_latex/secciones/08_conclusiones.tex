@@ -1,0 +1,19 @@
+% ==============================================================================
+% SECCION 8: CONCLUSIONES GENERALES DEL LABORATORIO DIRIGIDO N.o 2
+% ==============================================================================
+\clearpage
+\section{Conclusiones Generales}
+\label{sec:conclusiones}
+
+El desarrollo experimental del Laboratorio Dirigido N.\textsuperscript{o}~2 permite formular las siguientes conclusiones fundamentales de diseño en lógica CMOS dinámica submicrométrica (PTM 45\,nm):
+
+\begin{enumerate}[leftmargin=1.5em,itemsep=0.03em,parsep=0pt,topsep=0.05em]
+  \item \textbf{Asimetría Temporal y Capacitancia de Entrada:} La lógica dinámica suprime la red PMOS en datos, reduciendo la capacitancia de entrada medida en un $42.4\%$ ($0.3417\,\text{fF}$ vs $0.5936\,\text{fF}$ en SPICE). La celda dominó completa conmuta en $t_{\text{pd,eval}} = 35.89\,\text{ps}$ (disparada por reloj $CLK\uparrow$), frente a $9.61\,\text{ps}$ de la compuerta estática (disparada por dato $A\uparrow$), imponiendo la latencia fija del semiciclo de precarga.
+  \item \textbf{Factor de Actividad y Coste Energético de Reloj:} La precarga cíclica incondicional impone un factor de conmutación $\alpha = 1$ en el nodo dinámico ante datos evaluados, disipando potencia ($P = \alpha C_L (V_{DD})^2 f$) y consumiendo reloj continuamente aun cuando las entradas lógicas permanezcan estáticas ($2.73\,\mu\text{W}$ vs $1.70\,\text{nW}$ estático a $V_{DD}=1.0\,\text{V}$). La ventaja energética de la lógica dinámica se restringe a rutas críticas donde la tasa de transición efectiva compense la disipación del árbol de reloj y la recarga periódica.
+  \item \textbf{Mitigación No Lineal de Charge Sharing:} El modelo lineal clásico sobreestima la caída ($288.1\,\text{mV}$ vs $164.3\,\text{mV}$) por efecto de cuerpo y corte del NMOS. La precarga interna anula el droop ahorrando $66.7\%$ de potencia de reloj, mientras el keeper aporta la máxima robustez estática.
+  \item \textbf{Dominancia Térmica y Criterio de Keeper:} A $85^\circ\text{C}$, las fugas escalan $3.9\times$, degradando la retención a $t_{\text{hold}} = 305\text{--}440\,\text{ns}$ en HP. El keeper condicional relaja la penalización por contención a $+5.11\%$ (frente a $+12.90\%$ en keeper clásico), asegurando retención plena a $1.0\,\mu\text{s}$.
+  \item \textbf{Monotonicidad e Inmunidad al Skew:} El inversor intermedio garantiza transiciones crecientes ($0 \to 1$), evitando la descarga espuria en cascada ($\Delta V = 353.8\,\text{mV}$). Ante desfasajes de reloj, la celda Footed aísla cortocircuitos; Unfooted ahorra $13.9\%$ de retardo pero sufre picos de corriente ($+94.1\%$).
+  \item \textbf{Fronteras en Régimen NTV y Consumo:} En $V_{DD} \in [0.35, 1.00]\,\text{V}$, la ventana operable $[f_{\min}, f_{\max}]$ permanece abierta ($[1.14\,\text{MHz}, 162\,\text{MHz}]$ a $0.35\,\text{V}$, $85^\circ\text{C}$), cumpliendo $t_{\text{hold}} \gg 10 \cdot t_{\text{eval}}$ con ahorro energético por ciclo del $90.1\%$ ($10.1\times$).
+  \item \textbf{Compromiso Tecnológico HP vs LP:} El nodo LP presenta fugas $186\times$ menores y selectividad $I_{\text{on}}/I_{\text{off}}$ $3.75\times$ superior, reteniendo carga sin keeper, pero su penalización de retardo ($52.5\times$ más lento) limita su aplicación a frecuencias reducidas.
+  \item \textbf{Sensibilidad a Modelado Físico en BSIM4:} Omitir $AS/AD/PS/PD$ oculta $>80\%$ del \textit{charge sharing} al anular capacitancias de juntura ($C_{\text{diff}}=0$), mientras tolerancias laxas (\texttt{gmin=1e-12}) inyectan corrientes espurias que falsean la retención física en alta impedancia ($T\Omega$).
+\end{enumerate}

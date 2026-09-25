@@ -1,0 +1,164 @@
+LTspice 26.0.2 for Windows
+Circuit: G:\Proyectos\MicroNano\LD2_Arcila_Yactayo\act3\circuitos\nand3_retencion_con_keeper_85C.cir
+Start Time: Sun Sep 20 16:57:47 2026
+Options:gmin=1e-15 abstol=1e-14 reltol=1e-4 method=gear
+
+.step wkp=1.5e-08
+solver = Normal
+Maximum thread count: 4
+tnom = 27
+temp = 85
+method = Gear
+gmin = 1e-15
+abstol = 1e-14
+reltol = 0.0001
+Direct Newton iteration succeeded in finding operating point.
+
+.step wkp=3e-08
+Direct Newton iteration succeeded in finding operating point.
+
+.step wkp=4.5e-08
+Direct Newton iteration succeeded in finding operating point.
+
+.step wkp=6e-08
+Direct Newton iteration succeeded in finding operating point.
+
+.step wkp=9e-08
+Direct Newton iteration succeeded in finding operating point.
+
+.step wkp=1.35e-07
+Direct Newton iteration succeeded in finding operating point.
+
+.step wkp=1.8e-07
+Direct Newton iteration succeeded in finding operating point.
+Total elapsed time: 2.330 seconds.
+
+Files loaded:
+G:\Proyectos\MicroNano\LD2_Arcila_Yactayo\act3\circuitos\nand3_retencion_con_keeper_85C.cir
+G:\Proyectos\MicroNano\LD2_Arcila_Yactayo\modelos\ptm45hp.lib
+G:\Proyectos\MicroNano\LD2_Arcila_Yactayo\modelos\ptm45lp.lib
+G:\Proyectos\MicroNano\LD2_Arcila_Yactayo\modelos\ptm130.lib
+
+
+Measurement: vdyn_start
+  step	V(dyn) 	at
+     1	1.02376294136	5.2e-10
+     2	1.02261722088	5.2e-10
+     3	1.02063560486	5.2e-10
+     4	1.01891839504	5.2e-10
+     5	1.01608920097	5.2e-10
+     6	1.01293241978	5.2e-10
+     7	1.01065158844	5.2e-10
+
+Measurement: vdyn_end_1us
+  step	V(dyn) 	at
+     1	0.999971091747	1.00052e-06
+     2	0.999980688095	1.00052e-06
+     3	0.999988436699	1.00052e-06
+     4	0.99999165535	1.00052e-06
+     5	0.999994516373	1.00052e-06
+     6	0.999996304512	1.00052e-06
+     7	0.999997138977	1.00052e-06
+
+Measurement: vdyn_min
+  step	MIN(V(dyn) )	FROM	TO
+     1	0.998964846134	5.2e-10	1.00052e-06
+     2	0.9990478158	5.2e-10	1.00052e-06
+     3	0.999142169952	5.2e-10	1.00052e-06
+     4	0.999131143093	5.2e-10	1.00052e-06
+     5	0.999199986458	5.2e-10	1.00052e-06
+     6	0.999401330948	5.2e-10	1.00052e-06
+     7	0.999390363693	5.2e-10	1.00052e-06
+Measurement "t_cross_0p9vdd" FAIL'ed
+Measurement "t_cross_vdd2" FAIL'ed
+Measurement "t_cross_vm" FAIL'ed
+
+Measurement: isupply_avg
+  step	AVG(-I(Vdd) )	FROM	TO
+     1	2.56903769238e-09	1e-08	1.00052e-06
+     2	2.59246620576e-09	1e-08	1.00052e-06
+     3	2.61597370518e-09	1e-08	1.00052e-06
+     4	2.63967667204e-09	1e-08	1.00052e-06
+     5	2.68723178642e-09	1e-08	1.00052e-06
+     6	2.75867376571e-09	1e-08	1.00052e-06
+     7	2.83015398207e-09	1e-08	1.00052e-06
+
+Measurement: ileak_pdn_avg
+  step	AVG(Is(M1) )	FROM	TO
+     1	4.68060349735e-10	1e-08	1.00052e-06
+     2	4.68063760662e-10	1e-08	1.00052e-06
+     3	4.68066498922e-10	1e-08	1.00052e-06
+     4	4.68067626149e-10	1e-08	1.00052e-06
+     5	4.68068626848e-10	1e-08	1.00052e-06
+     6	4.68069247897e-10	1e-08	1.00052e-06
+     7	4.68069536551e-10	1e-08	1.00052e-06
+
+Measurement: ileak_mp_avg
+  step	AVG(Id(Mp) )	FROM	TO
+     1	-2.65976001044e-14	1e-08	1.00052e-06
+     2	-1.77484680958e-14	1e-08	1.00052e-06
+     3	-1.06179878214e-14	1e-08	1.00052e-06
+     4	-7.66821204672e-15	1e-08	1.00052e-06
+     5	-5.02620243706e-15	1e-08	1.00052e-06
+     6	-3.40850429017e-15	1e-08	1.00052e-06
+     7	-2.63767493117e-15	1e-08	1.00052e-06
+
+Measurement: ikp_d_avg
+  step	AVG(Id(Mk) )	FROM	TO
+     1	-5.97333161757e-10	1e-08	1.00052e-06
+     2	-5.9735831777e-10	1e-08	1.00052e-06
+     3	-5.97378215948e-10	1e-08	1.00052e-06
+     4	-5.97387191981e-10	1e-08	1.00052e-06
+     5	-5.97394441851e-10	1e-08	1.00052e-06
+     6	-5.97399152319e-10	1e-08	1.00052e-06
+     7	-5.97400614778e-10	1e-08	1.00052e-06
+
+Measurement: ikp_inj_avg
+  step	{-ikp_d_avg}
+     1	5.97333161757e-10
+     2	5.9735831777e-10
+     3	5.97378215948e-10
+     4	5.97387191981e-10
+     5	5.97394441851e-10
+     6	5.97399152319e-10
+     7	5.97400614778e-10
+
+Measurement: ikp_s_avg
+  step	AVG(Is(Mk) )	FROM	TO
+     1	6.0489132064e-10	1e-08	1.00052e-06
+     2	6.27591222813e-10	1e-08	1.00052e-06
+     3	6.50286124037e-10	1e-08	1.00052e-06
+     4	6.72970090427e-10	1e-08	1.00052e-06
+     5	7.18327268699e-10	1e-08	1.00052e-06
+     6	7.86356737396e-10	1e-08	1.00052e-06
+     7	8.54382790779e-10	1e-08	1.00052e-06
+
+Measurement: ig_inv_n_avg
+  step	AVG(Ig(Mni) )	FROM	TO
+     1	4.06769012564e-11	1e-08	1.00052e-06
+     2	4.06807159892e-11	1e-08	1.00052e-06
+     3	4.06837859416e-11	1e-08	1.00052e-06
+     4	4.06850565322e-11	1e-08	1.00052e-06
+     5	4.0686194872e-11	1e-08	1.00052e-06
+     6	4.06868940372e-11	1e-08	1.00052e-06
+     7	4.06872285452e-11	1e-08	1.00052e-06
+
+Measurement: ig_inv_p_avg
+  step	AVG(Ig(Mpi) )	FROM	TO
+     1	9.17343099733e-11	1e-08	1.00052e-06
+     2	9.17377927501e-11	1e-08	1.00052e-06
+     3	9.17405908454e-11	1e-08	1.00052e-06
+     4	9.17417302534e-11	1e-08	1.00052e-06
+     5	9.17427132783e-11	1e-08	1.00052e-06
+     6	9.17432635811e-11	1e-08	1.00052e-06
+     7	9.17434739159e-11	1e-08	1.00052e-06
+
+Measurement: dvd_dt
+  step	V(dyn) 	at
+     1	-59.6046447754	1e-08
+     2	0	1e-08
+     3	0	1e-08
+     4	0	1e-08
+     5	0	1e-08
+     6	0	1e-08
+     7	0	1e-08

@@ -1,0 +1,161 @@
+{
+  "descripcion": "Resultados cuantitativos y metricas de Actividad 4: Monotonicidad, Cascada Domino y Skew de Reloj",
+  "tecnologia": "PTM 45nm HP (VDD = 1.0 V)",
+  "temperatura_C": 27,
+  "evidencia_historica_marco": {
+    "tarea1_sin_inversor": {
+      "archivo_cir": "Tarea 1 Sin Inversor.cir",
+      "archivo_log": "Tarea 1 Sin Inversor.log",
+      "descripcion": "Cascada directa dyn1 -> etapa 2 sin inversor estatico (violacion de monotonicidad)",
+      "entradas": "Va = 1.0 V, Vb = 1.0 V, Vx = 1.0 V",
+      "tclk_ns": 2.0,
+      "ventana_medicion": "FROM 3.0 ns TO 4.0 ns (inicio de ciclo de precarga tras evaluacion)",
+      "vdyn2_min_V": 0.646235764027,
+      "delta_Vdyn2_mV": 353.764235973,
+      "margen_ruido_NMH_mV": 67.735764027,
+      "estado_logico_final": "Nodo dinamico dyn2 desciende a 0.6462 V durante la ventana de evaluacion debido a la activacion prematura de la PDN2 mientras dyn1=1. Se produce una degradacion del 84% en NMH respecto al margen nominal con VIH=0.5785 V; sin embargo, en esta celda aislada bajo condiciones nominales (sin ruido externo adicional), al ser 0.6462 V > VM=0.4797 V, no se produce una inversion logica en la salida receptora."
+    },
+    "paso2_con_inversor_conmutacion": {
+      "archivo_cir": "Paso 2 y 3 Con Inversor.cir",
+      "archivo_log": "Paso 2 y 3 Con Inversor.log",
+      "descripcion": "Cascada domino con inversor intermedio out1 bajo entradas activas A=B=X=1",
+      "entradas": "Va = 1.0 V, Vb = 1.0 V, Vx = 1.0 V",
+      "vdyn2_min_V": -0.00583851058036,
+      "interpretacion": "Descarga funcional legitima y esperada de la compuerta domino bajo vector activo A=B=X=1. Al cumplirse la condicion booleana (out1*X = 1*1 = 1), dyn2 descarga a 0 V y conmuta la salida out2 a nivel alto (~1 V). No constituye una falla ni descarga espuria."
+    },
+    "tarea4_cascada_3etapas_footed": {
+      "archivo_cir": "Tarea 4 Footed.cir",
+      "archivo_log": "Tarea 4 Footed.log",
+      "descripcion": "Cascada domino de 3 etapas footed bajo barrido de skew de reloj",
+      "nota_medicion_Ipk": "Ipk corresponde al valor maximo en modulo de -I(Vdd) en la ventana t in [0.5 ns, 4.5 ns], integrando transitorios de evaluacion y precarga.",
+      "pasos_tskew": [
+        {
+          "step": 1,
+          "tskew_ps": -50.0,
+          "t_delay_ps": 77.2033641305,
+          "Ipk_uA": 113.802838314
+        },
+        {
+          "step": 2,
+          "tskew_ps": 0.0,
+          "t_delay_ps": 77.2093787619,
+          "Ipk_uA": 318.852107739
+        },
+        {
+          "step": 3,
+          "tskew_ps": 50.0,
+          "t_delay_ps": 125.474001136,
+          "Ipk_uA": 110.563538328
+        },
+        {
+          "step": 4,
+          "tskew_ps": 100.0,
+          "t_delay_ps": 226.676478411,
+          "Ipk_uA": 110.563538328
+        },
+        {
+          "step": 5,
+          "tskew_ps": 200.0,
+          "t_delay_ps": 426.907715133,
+          "Ipk_uA": 110.563538328
+        }
+      ]
+    },
+    "paso5_cascada_3etapas_unfooted": {
+      "archivo_cir": "Paso 5 Unfooted.cir",
+      "archivo_log": "Paso 5 Unfooted.log",
+      "descripcion": "Cascada domino de 3 etapas unfooted (etapas 2 y 3 sin transistor footer)",
+      "nota_medicion_Ipk": "Ipk corresponde al valor maximo en modulo de -I(Vdd) en la ventana t in [0.5 ns, 4.5 ns]. A +200 ps, el incremento de 104.07 uA respecto a footed representa una diferencia de picos de corriente de alimentacion (no una medicion aislada de corriente de cortocircuito pura).",
+      "pasos_tskew": [
+        {
+          "step": 1,
+          "tskew_ps": -50.0,
+          "t_delay_ps": 66.4620478771,
+          "Ipk_uA": 326.303998008
+        },
+        {
+          "step": 2,
+          "tskew_ps": 0.0,
+          "t_delay_ps": 66.4662297065,
+          "Ipk_uA": 332.906958647
+        },
+        {
+          "step": 3,
+          "tskew_ps": 50.0,
+          "t_delay_ps": 95.1154412971,
+          "Ipk_uA": 110.571323603
+        },
+        {
+          "step": 4,
+          "tskew_ps": 100.0,
+          "t_delay_ps": 130.809034466,
+          "Ipk_uA": 160.573647008
+        },
+        {
+          "step": 5,
+          "tskew_ps": 200.0,
+          "t_delay_ps": 171.482978756,
+          "Ipk_uA": 214.630403207
+        }
+      ]
+    }
+  },
+  "controles_complementarios_g3_3": {
+    "control1_bloqueo_inversor": {
+      "archivo_cir": "act4/circuitos/a4_control1_bloqueo_inversor.cir",
+      "archivo_log": "act4/resultados/logs/a4_control1_bloqueo_inversor.log",
+      "descripcion": "Validacion del bloqueo correcto en la segunda etapa con inversor (A=B=1, X=0)",
+      "Vdyn1_eval_final_V": 3.65396022062e-06,
+      "Vout1_eval_final_V": 0.999998986721,
+      "Vdyn2_eval_final_V": 1.03894495964,
+      "Vout2_eval_final_V": 2.68173945272e-08,
+      "Vdyn2_eval_min_V": 0.99999922514,
+      "delta_Vdyn2_uV": 0.77486038208,
+      "estado_logico_obtenido": "dyn2 = 1.0389 V, out2 = 0.0 V. Bloqueo correcto de la segunda etapa con X=0. Funcion booleana domino: dyn2 = NOT(out1 * X) = NOT(1 * 0) = 1; out2 = out1 * X = 1 * 0 = 0.",
+      "conclusion": "Demuestra el bloqueo correcto de la segunda etapa y la retencion del nivel alto en dyn2 cuando X=0. El inversor intermedio garantiza que out1 parta de 0 V durante la precarga y conmute de forma monotona creciente (0 -> 1), previniendo la activacion prematura de la PDN2 mientras la etapa previa evalua. Se distinguen rigurosamente tres regimenes: (1) prevencion de activacion prematura por monotonicidad en out1; (2) descarga funcional legitima cuando out1=1 y X=1; y (3) bloqueo correcto de la PDN2 cuando X=0."
+    },
+    "control2_pulso_x_descendente": {
+      "archivo_cir": "act4/circuitos/a4_control2_pulso_x_descendente.cir",
+      "archivo_log": "act4/resultados/logs/a4_control2_pulso_x_descendente.log",
+      "descripcion": "Demostracion de violacion de monotonicidad por entrada externa X descendente (1 -> 0 a t = 2.50 ns)",
+      "instante_caida_x_ns": 2.50,
+      "Vclk_at_fall_V": 1.0,
+      "Vx_before_fall_V": 1.0,
+      "Vx_after_fall_V": 0.0,
+      "Vdyn1_before_fall_V": 3.65576238437e-06,
+      "Vout1_before_fall_V": 0.999994218349,
+      "Vdyn2_before_fall_V": 3.65576056538e-06,
+      "Vdyn2_at_fall_V": -0.0144843580201,
+      "Vdyn2_eval_final_V": -0.0265486706048,
+      "Vout2_eval_final_V": 0.999997258186,
+      "Vdyn2_eval_min_V": -0.026781456545,
+      "estado_logico_obtenido": "dyn2 = -0.0265 V (~0 V), out2 = 0.999997 V (~1 V)",
+      "estado_logico_esperado": "Para entradas finales out1=1 y X=0: dyn2_esperado = NOT(out1 * X) = NOT(1 * 0) = 1; out2_esperado = out1 * X = 1 * 0 = 0.",
+      "conclusion": "Error logico de la segunda etapa durante el ciclo de evaluacion por imposibilidad de recuperar carga despues de que X desciende. La descarga del nodo dinamico dyn2 ocurrio ANTES de la transicion descendente de X (mientras X=1 al inicio de evaluacion, donde dyn2 cayo a ~0 V en los primeros 60 ps). Al descender X a 0 en t=2.50 ns, la PDN2 se interrumpe, pero al estar el reloj en evaluacion (CLK=1), el PMOS de precarga permanece cortado y dyn2 no puede recargar su carga perdida dentro de ese ciclo. En consecuencia, out2 permanece en nivel alto (~1 V) en vez de 0 V durante ese ciclo de evaluacion (no es un fallo de celda de memoria estatica ni una falla permanente mas alla del ciclo, ya que en la siguiente precarga CLK=0 el nodo se restaurara a VDD)."
+    },
+    "control3_x_estatico_cero_referencia": {
+      "archivo_cir": "act4/circuitos/a4_control3_x_estatico_cero.cir",
+      "archivo_log": "act4/resultados/logs/a4_control3_x_estatico_cero.log",
+      "descripcion": "Control homologo de referencia con X=0 estatico durante toda la evaluacion",
+      "Vdyn2_before_fall_V": 1.04100120068,
+      "Vdyn2_eval_final_V": 1.03894495964,
+      "Vout2_eval_final_V": 2.68173945272e-08,
+      "Vdyn2_eval_min_V": 0.99999922514,
+      "conclusion": "Referencia correcta: cuando X se mantiene estable en 0 V, no ocurre descarga y out2 permanece en cero (26.8 nV), confirmando que la salida erronea en el Control 2 provino de la descarga previa con X=1."
+    },
+    "control4_sensibilidad_difusion": {
+      "archivo_cir": "act4/circuitos/a4_control4_difusion_sensibilidad.cir",
+      "archivo_log": "act4/resultados/logs/a4_control4_difusion_sensibilidad.log",
+      "descripcion": "Sensibilidad a parametros de difusion AS/AD/PS/PD en cascada de 3 etapas footed (Tskew = 0 ps)",
+      "t_delay_sin_difusion_ps": 77.2093787619,
+      "t_delay_con_difusion_ps": 89.895551829,
+      "delta_t_delay_ps": 12.6861730671,
+      "delta_t_delay_pct": 16.43,
+      "Ipk_sin_difusion_uA": 318.852107739,
+      "Ipk_con_difusion_uA": 312.660209602,
+      "delta_Ipk_uA": -6.191898137,
+      "delta_Ipk_pct": -1.94,
+      "conclusion": "El modelado explicito de capacitancias de difusion parasita (AS, AD, PS, PD) en la cascada footed de 3 etapas a Tskew = 0 ps incrementa el retardo total en 12.69 ps (+16.43%) debido a la carga capacitiva de union en los nodos dinamicos e internos. Este resultado cuantifica la sensibilidad del retardo extremo a extremo de la cascada footed bajo este control especifico, sin que se hayan medido retardos etapa por etapa ni deba extrapolarse directamente a la tolerancia de skew en compuertas unfooted."
+    }
+  }
+}

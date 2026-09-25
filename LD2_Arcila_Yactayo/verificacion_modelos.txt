@@ -1,0 +1,100 @@
+==============================================================================
+VERIFICACION AUTENTICA DE MODELOS TECNOLOGICOS PTM (BSIM4 / LEVEL = 54)
+Universidad Nacional Mayor de San Marcos - FIEE
+Curso: Microelectronica y Sistemas Nanoelectronicos (2026-II)
+Laboratorio Dirigido N.o 2: Logica CMOS Dinamica Submicrometrica
+Autores: Leonardo Sait Yactayo Tolentino & Marco Antonio Arcila Santander
+Docente: MsC. Luz Adanaque Infante
+==============================================================================
+
+1. RESUMEN DE MODELOS Y ARCHIVOS DE BIBLIOTECA (.lib)
+
+>>> ARCHIVO: modelos\ptm130.lib
+    Tamano: 10,086 bytes
+    Total de lineas: 146
+    Modelos definidos:
+      .model nmos_130 nmos  level = 54
+      .model pmos_130 pmos  level = 54
+    Parametros fisicos extraidos:
+      dtox     = 0.65e-9, 0.75e-9
+      k1       = 0.4, 0.4
+      k2       = 0.01, -0.01
+      lint     = 10.5e-009, 10.5e-009
+      tnom     = 27, 27
+      toxe     = 2.25e-9, 2.35e-009
+      toxp     = 1.6e-9, 1.6e-009
+      vth0     = 0.3782, -0.321
+      wint     = 5e-009, 5e-009
+
+>>> ARCHIVO: modelos\ptm45hp.lib
+    Tamano: 11,373 bytes
+    Total de lineas: 142
+    Modelos definidos:
+      .model nmos_45hp nmos  level = 54
+      .model pmos_45hp pmos  level = 54
+    Parametros fisicos extraidos:
+      dtox     = 2.5e-010, 3e-010
+      k1       = 0.4, 0.4
+      k2       = 0, -0.01
+      lint     = 3.75e-009, 3.75e-009
+      tnom     = 27, 27
+      toxe     = 1.25e-009, 1.3e-009
+      toxp     = 1e-009, 1e-009
+      vth0     = 0.46893, -0.49158
+      wint     = 5e-009, 5e-009
+
+>>> ARCHIVO: modelos\ptm45hp_aux.lib
+    Tamano: 5,768 bytes
+    Total de lineas: 71
+    Modelos definidos:
+      .model nmos_45hp_nogidl nmos  level = 54
+    Parametros fisicos extraidos:
+      dtox     = 2.5e-010
+      k1       = 0.4
+      k2       = 0
+      lint     = 3.75e-009
+      tnom     = 27
+      toxe     = 1.25e-009
+      toxp     = 1e-009
+      vth0     = 0.46893
+      wint     = 5e-009
+
+>>> ARCHIVO: modelos\ptm45lp.lib
+    Tamano: 11,332 bytes
+    Total de lineas: 140
+    Modelos definidos:
+      .model nmos_45lp nmos  level = 54
+      .model pmos_45lp pmos  level = 54
+    Parametros fisicos extraidos:
+      dtox     = 3e-010, 3.2e-010
+      k1       = 0.4, 0.4
+      k2       = 0, -0.01
+      lint     = 0, 0
+      tnom     = 27, 27
+      toxe     = 1.8e-009, 1.82e-009
+      toxp     = 1.5e-009, 1.5e-009
+      vth0     = 0.62261, -0.587
+      wint     = 5e-009, 5e-009
+
+==============================================================================
+2. TABLA COMPARATIVA DE PARAMETROS BSIM4 DE OXIDO Y UMBRAL
+==============================================================================
+Dispositivo       toxe (nm)   toxp (nm)   dtox (nm)   vth0 (V)    k1 (V^0.5)  wint (nm)
+------------------------------------------------------------------------------
+nmos_45hp (HP)    1.25        1.00        0.25        +0.46893    0.40        5.00
+pmos_45hp (HP)    1.30        1.00        0.30        -0.49158    0.40        5.00
+nmos_45lp (LP)    1.80        1.50        0.30        +0.62261    0.40        5.00
+pmos_45lp (LP)    1.82        1.50        0.32        -0.58700    0.40        5.00
+nmos_130  (Bulk)  2.25        1.60        0.65        +0.37820    0.40        5.00
+pmos_130  (Bulk)  2.35        1.60        0.75        -0.32100    0.40        5.00
+------------------------------------------------------------------------------
+Nota: En todas las tarjetas BSIM4 se verifica la relacion exacta: toxe = toxp + dtox.
+Nivel SPICE: Level = 54 (BSIM4 standard submicron model).
+
+==============================================================================
+3. VERIFICACION DE INTEGRIDAD Y AUSENCIA DE RUTAS ABSOLUTAS
+==============================================================================
+- Todas las librerias son completamente autocontenidas (sin directivas .include externas).
+- Todos los netlists (.cir) referencian las librerias mediante la ruta relativa: ../../modelos/<archivo>.lib
+- Compatible con LTspice para Windows en modo batch (-b) e interactivo.
+==============================================================================

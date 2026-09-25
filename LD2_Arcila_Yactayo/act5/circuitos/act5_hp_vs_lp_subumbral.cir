@@ -1,0 +1,93 @@
+* Actividad 5 - EXP 4: Comparacion HP vs LP en NTV (VDD = 0.5 V, Subumbral e Ion/Ioff)
+* Microelectronica y Sistemas Nanoelectronicos - UNMSM 2026-II
+.include ../../modelos/ptm45hp.lib
+.include ../../modelos/ptm45lp.lib
+
+.param Ln=45n Wn=90n Wp=135n
+.param CL=2f
+.param Tclk=50n
+
+.temp 27
+.options gmin=1e-15 abstol=1e-14 reltol=1e-4 method=gear
+
+Vdd vdd 0 0.5
+
+* Reloj a VDD = 0.5 V, evaluacion inicia en 0.5 ns
+Vclk clk 0 PULSE(0 0.5 0.5n 20p 20p {Tclk/2} {Tclk})
+
+* Entradas activas para medir Ion y teval (Rama 1 y Rama 2)
+Va a 0 0.5
+Vb b 0 0.5
+Vc c 0 0.5
+
+* Entradas bloqueadas para medir Ioff y thold (Rama 3 y Rama 4)
+Vablock ablock 0 0.5
+Vbblock bblock 0 0.5
+Vcblock cblock 0 0
+
+* ==============================================================================
+* RAMA 1: 45nm HP - EVALUACION ACTIVA (Ion y teval)
+* ==============================================================================
+Mp_hp dyn_hp clk vdd vdd pmos_45hp W={Wp} L={Ln}
+M1_hp dyn_hp a n1_hp 0 nmos_45hp W={Wn*3} L={Ln}
+M2_hp n1_hp b n2_hp 0 nmos_45hp W={Wn*3} L={Ln}
+M3_hp n2_hp c n3_hp 0 nmos_45hp W={Wn*3} L={Ln}
+Mf_hp n3_hp clk 0 0 nmos_45hp W={Wn*3} L={Ln}
+CL_hp dyn_hp 0 {CL}
+
+Mpi_hp out_hp dyn_hp vdd vdd pmos_45hp W={Wp} L={Ln}
+Mni_hp out_hp dyn_hp 0 0 nmos_45hp W={Wn} L={Ln}
+
+* ==============================================================================
+* RAMA 2: 45nm LP - EVALUACION ACTIVA (Ion y teval)
+* ==============================================================================
+Mp_lp dyn_lp clk vdd vdd pmos_45lp W={Wp} L={Ln}
+M1_lp dyn_lp a n1_lp 0 nmos_45lp W={Wn*3} L={Ln}
+M2_lp n1_lp b n2_lp 0 nmos_45lp W={Wn*3} L={Ln}
+M3_lp n2_lp c n3_lp 0 nmos_45lp W={Wn*3} L={Ln}
+Mf_lp n3_lp clk 0 0 nmos_45lp W={Wn*3} L={Ln}
+CL_lp dyn_lp 0 {CL}
+
+Mpi_lp out_lp dyn_lp vdd vdd pmos_45lp W={Wp} L={Ln}
+Mni_lp out_lp dyn_lp 0 0 nmos_45lp W={Wn} L={Ln}
+
+* ==============================================================================
+* RAMA 3: 45nm HP - RETENCION / FUGA (Ioff)
+* ==============================================================================
+Mp_hpf dyn_hpf clk vdd vdd pmos_45hp W={Wp} L={Ln}
+M1_hpf dyn_hpf ablock n1_hpf 0 nmos_45hp W={Wn*3} L={Ln}
+M2_hpf n1_hpf bblock n2_hpf 0 nmos_45hp W={Wn*3} L={Ln}
+M3_hpf n2_hpf cblock n3_hpf 0 nmos_45hp W={Wn*3} L={Ln}
+Mf_hpf n3_hpf clk 0 0 nmos_45hp W={Wn*3} L={Ln}
+CL_hpf dyn_hpf 0 {CL}
+
+* ==============================================================================
+* RAMA 4: 45nm LP - RETENCION / FUGA (Ioff)
+* ==============================================================================
+Mp_lpf dyn_lpf clk vdd vdd pmos_45lp W={Wp} L={Ln}
+M1_lpf dyn_lpf ablock n1_lpf 0 nmos_45lp W={Wn*3} L={Ln}
+M2_lpf n1_lpf bblock n2_lpf 0 nmos_45lp W={Wn*3} L={Ln}
+M3_lpf n2_lpf cblock n3_lpf 0 nmos_45lp W={Wn*3} L={Ln}
+Mf_lpf n3_lpf clk 0 0 nmos_45lp W={Wn*3} L={Ln}
+CL_lpf dyn_lpf 0 {CL}
+
+.tran 0 {Tclk} 0 10p
+
+* Medicion de retardo de evaluacion teval a VDD = 0.5 V
+.meas TRAN teval_hp TRIG V(clk) VAL=0.25 RISE=1 TARG V(dyn_hp) VAL=0.25 FALL=1
+.meas TRAN teval_lp TRIG V(clk) VAL=0.25 RISE=1 TARG V(dyn_lp) VAL=0.25 FALL=1
+.meas TRAN ratio_teval PARAM teval_lp/teval_hp
+
+* Medicion de corriente activa de conmutacion Ion (en el punto de cruce V(dyn)=0.25 V)
+.meas TRAN Ion_hp FIND -Id(M1_hp) AT=0.7n
+.meas TRAN Ion_lp FIND -Id(M1_lp) AT=9.0n
+
+* Medicion de corriente de fuga Ioff en retencion (a t = 2.0 ns durante evaluacion)
+.meas TRAN Ioff_hp FIND -Id(M1_hpf) AT=2.0n
+.meas TRAN Ioff_lp FIND -Id(M1_lpf) AT=2.0n
+
+* Ratio de conmutacion Ion / Ioff
+.meas TRAN ratio_on_off_hp PARAM Ion_hp/Ioff_hp
+.meas TRAN ratio_on_off_lp PARAM Ion_lp/Ioff_lp
+
+.end

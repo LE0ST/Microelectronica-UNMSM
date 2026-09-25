@@ -1,0 +1,25 @@
+% Tabla de consolidacion tecnologica de retencion - Actividad 3
+% Fuentes: act3_consolidacion_tecnologica.json, logs canonicos de retencion
+\begin{table}[htbp]
+\centering
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\caption[Consolidación tecnológica tri-nodo de retención sin keeper]{Consolidación tecnológica tri-nodo de retención en el nodo dinámico sin keeper ($T_{\text{stop}}=1.0\,\mu\text{s}$, $C_L=2.0\,\text{fF}$, reloj detenido en evaluación con PDN abierta $A=B=C=0$).}
+\label{tab:retencion_tecnologica}
+\begin{tabularx}{\linewidth}{@{}>{\RaggedRight\arraybackslash}p{2.3cm} c c c c c >{\RaggedRight\arraybackslash}X@{}}
+\toprule
+\textbf{Tecnología / Proceso} & \textbf{Temp.} & \textbf{$V_{DD}$} & \textbf{$V_{dyn}(1\,\mu\text{s})$} & \textbf{$t_{\text{hold}}$ [$t_{\text{cross}}$]\textsuperscript{*}} & \textbf{$W_{kp}$ mín. ensayado} & \textbf{Estado y Diagnóstico Físico} \\
+\midrule
+45\,nm HP & $27^\circ\text{C}$ & 1.0\,V & 0.9370\,V & $>1.0\,\mu\text{s}$ (Cens.) & No req. & \textbf{CUMPLE} ($V_{dyn} > 0.90\,V_{DD}$). Fuga subumbral moderada. \\
+45\,nm HP & $85^\circ\text{C}$ & 1.0\,V & 0.8309\,V & 608.17\,ns [608.69\,ns] & 10.5\,nm (malla fina) & \textbf{FALLA} criterio $0.90\,V_{DD}$; \textbf{CUMPLE} nivel lógico ($V_{dyn} > V_M \approx 0.50\,\text{V}$). \\
+\midrule
+45\,nm LP & $27^\circ\text{C}$ & 1.1\,V & 1.1275\,V & $>1.0\,\mu\text{s}$ (Cens.) & No req. & \textbf{CUMPLE}. Óxido grueso ($t_{oxe}=1.8\,\text{nm}$) y $V_{th}$ elevado suprimen fuga. \\
+45\,nm LP & $85^\circ\text{C}$ & 1.1\,V & 1.1257\,V & $>1.0\,\mu\text{s}$ (Cens.) & No req. & \textbf{CUMPLE}. Retención robusta sin keeper ($I_{leak} \sim 7\,\text{pA}$). \\
+\midrule
+130\,nm Bulk & $27^\circ\text{C}$ & 1.3\,V & 1.0178\,V & 318.31\,ns [318.83\,ns] & 15.0\,nm & \textbf{FALLA} criterio $0.90\,V_{DD}$ (1.17\,V); \textbf{CUMPLE} lógico ($V_{dyn} > V_M \approx 0.60\,\text{V}$). \\
+130\,nm Bulk & $85^\circ\text{C}$ & 1.3\,V & 0.8770\,V & 167.53\,ns [168.05\,ns] & 15.0\,nm & \textbf{FALLA} estricto; \textbf{CUMPLE} lógico. Requiere keeper por fuga de canal ancho. \\
+\midrule
+\multicolumn{7}{@{}p{\linewidth}@{}}{\scriptsize \textsuperscript{*} $t_{\text{hold}} \equiv t_{\text{cross}} - t_{\text{eval\_start}}$, con $t_{\text{eval\_start}} = 0.52\,\text{ns}$ y $t_{\text{cross}}$ medido desde el inicio del transitorio hasta el cruce con $0.90\,V_{DD}$. La duración neta de evaluación ensayada es de $T_{\text{ret}} = 1000.0\,\text{ns} = 1.0\,\mu\text{s}$ ($T_{\text{stop}} = 1000.52\,\text{ns}$). Casos sin cruce se reportan formalmente censurados ($t_{\text{hold}} > 1.0\,\mu\text{s}$). La ventana para el balance de corrientes y cálculo de $C_{\text{eff}}$ emplea el intervalo cuasi-estacionario $t \in [10.0\,\text{ns},\, 1000.52\,\text{ns}]$ ($\Delta t = 990.52\,\text{ns}$) para excluir el acoplamiento transitorio del reloj ($CLK: 0 \to 1\,\text{V}$). $W_{kp}$ corresponde al menor ancho evaluado en la malla de simulación que satisface retención, no a una regla DRC universal.} \\
+\bottomrule
+\end{tabularx}
+\end{table}

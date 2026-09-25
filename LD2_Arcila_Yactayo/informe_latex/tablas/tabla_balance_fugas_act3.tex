@@ -1,0 +1,28 @@
+% Tabla de balance nodal y corrientes terminales de fuga en dyn - Actividad 3
+% Fuentes: dc_fugas_nmos_pdn, dc_fugas_compuerta, raw/nand3_retencion_sin_keeper
+\begin{table}[htbp]
+\centering
+\scriptsize
+\setlength{\tabcolsep}{3.5pt}
+\caption[Balance nodal promedio de corrientes terminales en el nodo dinámico]{Balance nodal promedio de corrientes terminales en el nodo $dyn$ durante la ventana de retención ($t \in [10.0\,\text{ns},\, 1000.52\,\text{ns}]$, $\Delta t = 990.52\,\text{ns}$, 45\,nm HP).}
+\label{tab:balance_fugas}
+\begin{tabularx}{\linewidth}{@{}>{\RaggedRight\arraybackslash}p{3.2cm} c c c >{\RaggedRight\arraybackslash}X@{}}
+\toprule
+\textbf{Rama / Terminal de Conexión} & \textbf{$27^\circ\text{C}$} & \textbf{$85^\circ\text{C}$} & \textbf{Factor Térmico} & \textbf{Mecanismo y Rol Físico en el Nodo $dyn$} \\
+\midrule
+Drenaje hacia PDN Footed, $\langle I_s(M_1) \rangle$ & $+110.53\,\text{pA}$ & $+430.89\,\text{pA}$ & $3.90\times$ & Subumbral con DIBL y uniones reverse en la pila apilada ($V_{SB} \in [0.1, 0.25]\,\text{V}$). \\
+Inyección de Precarga, $\langle I_d(M_p) \rangle$ & $-12.26\,\text{pA}$ & $-56.08\,\text{pA}$ & $4.57\times$ & PMOS en corte ($V_{GS}=0\,\text{V}, V_{DS} \approx 0\,\text{V}$); inyecta carga reconstitutiva hacia $dyn$. \\
+Compuerta PMOS Inversor, $\langle I_g(M_{pi}) \rangle$ & $+76.31\,\text{pA}$ & $+49.86\,\text{pA}$ & $0.65\times$ & Túnel de compuerta directo ($V_{GD} \approx 1.0\,\text{V}$); drena portadores de $dyn$. \\
+Compuerta NMOS Inversor, $\langle I_g(M_{ni}) \rangle$ & $+16.44\,\text{pA}$ & $+0.61\,\text{pA}$ & $0.04\times$ & Túnel de compuerta NMOS ($V_{GS} \approx 1.0\,\text{V}$ en $t_0$, decae al polarizarse). \\
+\midrule
+\multicolumn{5}{@{}l@{}}{\textbf{Partición de Corriente Saliente de $dyn$ (Antes de Descontar Precarga $M_p$)}} \\
+Rama PDN / Inversor Dominó & 54.4\% / 45.6\% & 89.5\% / 10.5\% & --- & A $85^\circ\text{C}$, el crecimiento subumbral ($3.90\times$) domina sobre el túnel. \\
+\midrule
+Corriente Neta Demandada, $\langle I_{\text{net,dev}} \rangle$ & $+191.02\,\text{pA}$ & $+425.28\,\text{pA}$ & $2.23\times$ & Suma algebraica neta de semiconductores ($\sum I_{\text{terminales}}$). \\
+Corriente Capacitor Carga, $\langle I(C_L) \rangle$ & $-174.73\,\text{pA}$ & $-389.91\,\text{pA}$ & $2.23\times$ & Integración directa de $C_L=2.0\,\text{fF}$ en RAW; suministra el 91.5\% de la descarga. \\
+Remanente Parásito Dinámico & $+16.29\,\text{pA}$ & $+35.37\,\text{pA}$ & $2.17\times$ & Suministrado por la capacitancia parásita aparente ($C_{\text{par}} \approx 0.186\,\text{fF}$). \\
+\midrule
+Compuerta Externa NMOS $M_1$, $I_g(M_1)$ & $-41.604\,\text{pA}$ & $-41.604\,\text{pA}$ & $1.00\times$ & Corriente terminal supplied por la entrada externa $a$; no descarga el nodo $dyn$. \\
+\bottomrule
+\end{tabularx}
+\end{table}

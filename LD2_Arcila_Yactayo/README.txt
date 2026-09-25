@@ -1,81 +1,160 @@
-================================================================================
-UNIVERSIDAD NACIONAL MAYOR DE SAN MARCOS (UNMSM)
-Facultad de Ingeniería Electrónica y Eléctrica (FIEE)
-Curso: Microelectrónica y Sistemas Nanoelectrónicos (Semestre 2026-II)
-Docente: MsC. Luz Adanaqué Infante
+==============================================================================
+UNIVERSIDAD NACIONAL MAYOR DE SAN MARCOS
+FACULTAD DE INGENIERIA ELECTRONICA Y ELECTRICA
+ESCUELA PROFESIONAL DE INGENIERIA ELECTRONICA
+Curso: Microelectronica y Sistemas Nanoelectronicos (Semestre 2026-II)
+Docente: MsC. Luz Adanaque Infante
+==============================================================================
+LABORATORIO DIRIGIDO N.o 2: LOGICA CMOS DINAMICA SUBMICROMETRICA
+Entregable Oficial del Paquete de Simulacion y Reporte Tecnico
+Fecha de Entrega: Viernes 25 de septiembre de 2026
+Integrantes:
+- Leonardo Sait Yactayo Tolentino (Codigo: 23190214)
+- Marco Antonio Arcila Santander   (Codigo: 23190140)
+==============================================================================
 
-ENTREGABLE OFICIAL: LABORATORIO DIRIGIDO N.° 2 (LD2)
-TÍTULO: Lógica CMOS Dinámica: Dominó, Compartición de Carga, Keepers y Operación NTV
-================================================================================
-
-AUTORES:
-- Leonardo Sait Yactayo Tolentino (Código: 23190214)
-- Marco Antonio Arcila Santander   (Código: 23190140)
-
-FECHA DE ENTREGA: Viernes 25 de septiembre de 2026
-
---------------------------------------------------------------------------------
-1. ESTRUCTURA DEL PAQUETE REPRODUCIBLE
---------------------------------------------------------------------------------
-Este repositorio contiene la totalidad de los netlists de simulación, modelos
-PTM renombrados, scripts de extracción de datos, figuras de alta resolución
-y el código fuente del informe técnico final:
+1. CONTENIDO Y ESTRUCTURA DEL PAQUETE
+------------------------------------------------------------------------------
+El presente paquete contiene la totalidad de los archivos de simulacion fisica
+SPICE, modelos predictivos PTM BSIM4, post-procesamiento en Python, datos
+cuantitativos y el informe maestro oficial en formato IEEE:
 
 LD2_Arcila_Yactayo/
-├── README.txt                     # Este archivo informativo
+├── Informe_LD2_Arcila_Yactayo.pdf     -> Informe academico final (max. 20 paginas)
+├── README.txt                         -> Este archivo de instrucciones y guia de ejecucion
+├── verificacion_modelos.txt           -> Reporte de inspeccion y parametros BSIM4 (.lib)
+├── trazabilidad_figuras.txt           -> Mapeo biunivoco Figura -> Circuito -> Script
 │
-├── modelos/                       # Modelos predictivos BSIM4 (PTM)
-│   ├── originales/                # Tarjetas PTM originales intactas
-│   ├── ptm45hp.lib                # 45nm HP con nmos_45hp y pmos_45hp
-│   ├── ptm45lp.lib                # 45nm LP con nmos_45lp y pmos_45lp
-│   ├── ptm130.lib                 # 130nm bulk con nmos_130 y pmos_130
-│   └── README_modelos.md          # Bitácora de renombrado y verificación
+├── ptm45hp.lib                        -> Modelo PTM 45nm HP (renombrado en raiz segun Sec. 12)
+├── ptm45lp.lib                        -> Modelo PTM 45nm LP (renombrado en raiz segun Sec. 12)
+├── ptm130.lib                         -> Modelo PTM 130nm Bulk (renombrado en raiz segun Sec. 12)
 │
-├── documentacion/                 # Documentos de soporte y control de calidad
-│   ├── requisitos.md              # Matriz de requisitos vinculados a la guía
-│   ├── criterios_medicion.md      # Convenciones numéricas y opciones de solver
-│   ├── predicciones_analiticas.md # Deducciones matemáticas obligatorias (Pre-Lab)
-│   ├── ambiguedades.md            # Auditoría de discrepancias y resolución técnica
-│   └── registro_ensayos.csv       # Registro trazable de corridas de simulación
+├── modelos/                           -> Biblioteca centralizada de modelos predictivos
+│   ├── ptm45hp.lib                    -> Tarjeta BSIM4 High-Performance (Vdd = 1.0 V)
+│   ├── ptm45lp.lib                    -> Tarjeta BSIM4 Low-Power (Vdd = 1.1 V)
+│   ├── ptm130.lib                     -> Tarjeta BSIM4 130nm Bulk CMOS (Vdd = 1.3 V)
+│   ├── ptm45hp_aux.lib                -> Tarjeta auxiliar para ensayo de ablacion GIDL
+│   └── README_modelos.md              -> Descripcion tecnica de modelos PTM
 │
-├── auxiliares/                    # Circuitos de calibración y caracterización
-│   └── caracterizacion_inversor/  # Extracción de VM y parámetros del inversor
+├── act1/                              -> Actividad 1: Caracterizacion NAND3 y Comparacion Estatica
+│   ├── README_act1.md                 -> Memoria tecnica de fases domino y consumo
+│   ├── circuitos/                     -> Netlists ejecutables (.cir)
+│   ├── resultados/logs/               -> Registros de medicion SPICE (.log)
+│   ├── resultados/raw/                -> Formas de onda binarias transitorias (.raw)
+│   ├── resultados/datos/              -> Metricas extraidas estructuradas (.json)
+│   ├── scripts/                       -> Scripts generadores de figuras y metricas (.py)
+│   └── figuras/                       -> Curvas transitorias generadas (.png)
 │
-├── act1/                          # Actividad 1: NAND3 dinámica footed y asimetría
-├── act2/                          # Actividad 2: Compartición de carga y mitigaciones
-├── act3/                          # Actividad 3: Fugas, temperatura y keeper
-├── act4/                          # Actividad 4: Monotonicidad y skew de reloj
-├── act5/                          # Actividad 5: Clock feedthrough y régimen NTV
-├── act6/                          # Actividad 6 (Opcional): NP-domino (zipper)
+├── act2/                              -> Actividad 2: Comparticion de Carga (Charge Sharing)
+│   ├── README_act2.md                 -> Memoria tecnica de peor caso sincrono y mitigaciones
+│   ├── prediccion_analitica_act2.md   -> Memoria de calculo analitico a priori de Delta V
+│   ├── circuitos/                     -> Netlists SPICE con parametros AS/AD/PS/PD (.cir)
+│   ├── resultados/logs/               -> Logs de simulacion (.log)
+│   ├── resultados/raw/                -> Formas de onda transitorias (.raw)
+│   ├── resultados/datos/              -> Metricas de barrido de CL y mitigaciones (.json)
+│   ├── scripts/                       -> Scripts de evaluacion analitica y figuras (.py)
+│   └── figuras/                       -> Formas de onda y comparativas analiticas (.png)
 │
-├── scripts/                       # Automatización analítica en Python
-│   ├── lectura_resultados/        # Parsers robustos de registros .log de LTspice
-│   ├── extraccion_metricas/       # Procesamiento de métricas y tablas LaTeX
-│   └── figuras/                   # Generadores matplotlib a 300 DPI
+├── act3/                              -> Actividad 3: Fugas, Retencion y Keeper
+│   ├── README_act3.md                 -> Memoria tecnica de keeper, retencion y contencion
+│   ├── circuitos/                     -> Netlists de retencion, contencion y tri-nodo (.cir)
+│   ├── resultados/logs/               -> Logs a 27°C y 85°C (.log)
+│   ├── resultados/raw/                -> Formas de onda transitorias en 1.0 us (.raw)
+│   ├── resultados/datos/              -> Metricas consolidadas de contencion y retencion (.json)
+│   ├── scripts/                       -> Scripts generadores de figuras tri-nodo y viabilidad
+│   └── figuras/                       -> Curvas de retencion, contencion y compromiso (.png)
 │
-├── informe_latex/                 # Código fuente LaTeX del informe maestro
-│   ├── LD2.tex                    # Documento maestro (máximo 20 páginas)
-│   ├── figuras/                   # Figuras vectoriales / PNG rotuladas
-│   └── tablas/                    # Tablas numéricas generadas automáticamente
+├── act4/                              -> Actividad 4: Monotonicidad y Skew de Reloj en Cascada
+│   ├── README_act4.md                 -> Memoria tecnica de monotonicidad y skew dominó
+│   ├── circuitos/                     -> Netlists de cascada dominó de 2 y 3 etapas (.cir)
+│   ├── resultados/logs/               -> Logs de medicion de retardos y corrientes (.log)
+│   ├── resultados/raw/                -> Formas de onda de cascada y pulso descendente (.raw)
+│   ├── resultados/datos/              -> Metricas de skew y comparativa footed/unfooted (.json)
+│   ├── scripts/                       -> Script generador de graficas de cascada (.py)
+│   └── figuras/                       -> Formas de onda y curvas de skew (.png)
 │
-└── entregables/                   # Archivos comprimidos finales (.zip)
+├── act5/                              -> Actividad 5: Regimen NTV, Feedthrough y Escalado
+│   ├── README_act5.md                 -> Memoria tecnica de operacion NTV y feedthrough
+│   ├── circuitos/                     -> Netlists de evaluacion NTV (0.35 V a 1.0 V) (.cir)
+│   ├── resultados/logs/               -> Logs con mediciones de teval, thold, fmax, fmin (.log)
+│   ├── resultados/raw/                -> Formas de onda transitorias y energia (.raw)
+│   ├── resultados/datos/              -> Metricas de conmutacion y ventana de frecuencia (.json)
+│   ├── scripts/                       -> Script generador de ventanas de frecuencia y energia (.py)
+│   └── figuras/                       -> Graficas de feedthrough y ventana operable (.png)
+│
+└── act6/                              -> Actividad 6: Opcional (No desarrollada)
+    └── README.txt                     -> Nota indicativa formal
 
---------------------------------------------------------------------------------
-2. INSTRUCCIONES DE REPRODUCCIÓN (LTSPICE EN WINDOWS)
---------------------------------------------------------------------------------
-Para reproducir cualquier simulación en modo batch (silencioso):
-  & "G:\LTspice\LTspice.exe" -b "actN\circuitos\<archivo>.cir"
+------------------------------------------------------------------------------
+2. PROGRAMA UTILIZADO Y REQUISITOS DEL ENTORNO
+------------------------------------------------------------------------------
+- Simulador SPICE: Analog Devices LTspice (R) para Windows (64-bit).
+- Modelos de Transistores: Predictive Technology Model (PTM) BSIM4 Level 54.
+- Entorno de Post-Procesamiento: Python 3.10+ con librerias cientificas:
+  matplotlib, numpy, scipy.
 
-Para examinar las mediciones cuantitativas automáticas (.meas):
-  Inspeccionar el archivo .log correspondiente en "actN\resultados\logs\".
+------------------------------------------------------------------------------
+3. INSTRUCCIONES DE EJECUCION DE LOS CIRCUITOS SPICE
+------------------------------------------------------------------------------
+Todos los circuitos fueron concebidos con rutas relativas estandarizadas:
+    .include ../../modelos/ptm45hp.lib
+    .include ../../modelos/ptm45lp.lib
+    .include ../../modelos/ptm130.lib
 
---------------------------------------------------------------------------------
-3. INSTRUCCIONES DE POST-PROCESAMIENTO (PYTHON 3)
---------------------------------------------------------------------------------
-Todos los scripts emplean bibliotecas estándar (matplotlib, numpy):
-  python scripts/extraccion_metricas/<script>.py
-  python scripts/figuras/<script_figura>.py
+A. Modo Grafico (GUI):
+   1. Abrir LTspice en Windows.
+   2. Seleccionar File -> Open...
+   3. Navegar hacia la carpeta actX/circuitos/ y seleccionar el netlist .cir deseado.
+   4. Presionar el boton Run (icono del corredor) en la barra de herramientas.
+   5. Seleccionar los nodos a graficar (ej. V(clk), V(dyn), V(out)) o consultar
+      las mediciones cuantitativas en View -> SPICE Error Log (Ctrl+L).
 
-Todas las figuras y tablas se generan de manera trazable y automatizada,
-sin manipulación manual de datos.
-================================================================================
+B. Modo Consola (Batch Silencioso):
+   Desde la linea de comandos (PowerShell / CMD), ejecutar:
+   & "<Ruta_LTspice>\LTspice.exe" -b act1\circuitos\nand3_dinamica_base.cir
+   Esto generara directamente el archivo .log con todas las sentencias .meas y
+   el archivo .raw con las formas de onda completas.
+
+------------------------------------------------------------------------------
+4. REGENERACION DE FIGURAS DEL INFORME
+------------------------------------------------------------------------------
+Para regenerar las graficas cientificas presentadas en el documento maestro:
+- Actividad 1: python act1/scripts/generar_figuras_act1.py
+- Actividad 2: python act2/scripts/generar_figuras_act2.py
+- Actividad 3:
+    python act3/scripts/generar_figura8_editorial.py
+    python act3/scripts/regenerar_figura_consolidacion.py
+- Actividad 4: python act4/scripts/generar_figuras_act4.py
+- Actividad 5: python act5/scripts/generar_figuras_act5.py
+
+Las figuras generadas se guardan automaticamente en sus respectivas carpetas
+actX/figuras/ con una resolucion optima de 300 DPI y ejes plenamente rotulados.
+
+------------------------------------------------------------------------------
+5. NOTA SOBRE FORMATO DE ARCHIVOS: NETLISTS .CIR FRENTE A .ASC
+------------------------------------------------------------------------------
+La Seccion 12 de la guia solicita que cada figura indique el nombre del archivo
+.asc generador. Se precisa formalmente que, debido al nivel de profundidad y rigor
+fisico requerido para el modelado BSIM4 sub-45nm (donde resulta mandatario incluir
+parametros de difusion geometricos AS/AD/PS/PD en cada terminal, tolerancias de
+conductancia gmin=1e-15 y abstol=1e-14, asi como complejas sentencias de medicion
+en cascada), este proyecto implementa la totalidad de sus diseños mediante
+netlists SPICE puros (.cir).
+
+LTspice admite, reconoce y ejecuta de forma nativa los archivos .cir con total
+compatibilidad funcional. El documento auxiliar trazabilidad_figuras.txt
+establece la correspondencia exacta entre cada figura del informe academico y su
+netlist .cir asociado.
+
+------------------------------------------------------------------------------
+6. ESTADO DE LA ACTIVIDAD 6 (OPCIONAL)
+------------------------------------------------------------------------------
+Conforme a la estructura solicitada en la Seccion 12, la carpeta act6/ se
+encuentra incluida. La Actividad 6 ("Lógica CMOS Dinámica Multietapa Compleja"),
+siendo de caracter opcional (+2 puntos), no fue desarrollada, focalizando el
+esfuerzo integro del equipo en la conciliacion matematica rigurosa, medicion
+experimental sin keepers ideales y optimizacion editorial de las Actividades 1 a 5.
+
+==============================================================================
+Fin del archivo README.txt
+==============================================================================

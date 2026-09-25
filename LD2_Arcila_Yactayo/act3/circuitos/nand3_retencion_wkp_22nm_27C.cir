@@ -1,0 +1,59 @@
+* ==============================================================================
+* ENS-A3-RET-22NM-27C: Retencion Transitoria Wkp=22nm a 27C (45nm HP)
+* Verificacion del punto literal exigido por la Guia Oficial Sec. 7
+* ==============================================================================
+.include ../../modelos/ptm45hp.lib
+.include ../../modelos/ptm45lp.lib
+.include ../../modelos/ptm130.lib
+
+.param VDD=1.0 Ln=45n Wn=90n Wp=135n
+.param Wkp=22n
+.param CL=2f Cout=1f
+.param Teval_start=0.52n
+.param Tret=1.0u
+.param Tstop={Teval_start + Tret}
+.temp 27
+.options gmin=1e-15 abstol=1e-14 reltol=1e-4 method=gear
+
+Vdd vdd 0 {VDD}
+
+* Estimulo de reloj canonico (Precarga hasta 0.5ns, Retencion desde 0.52ns)
+Vclk clk 0 PWL(0 0 0.5n 0 0.52n {VDD} {Tstop} {VDD})
+
+Va a 0 0
+Vb b 0 0
+Vc c 0 0
+
+.param Ad={Wn*3*90n} Pd={Wn*3+180n}
+
+* Transistor de Precarga
+Mp dyn clk vdd vdd pmos_45hp W={Wp} L={Ln}
+
+* Red de Descenso (PDN) Footed canonica
+M1 n1 a dyn 0 nmos_45hp W={Wn*3} L={Ln} AS={Ad} AD={Ad} PS={Pd} PD={Pd}
+M2 n2 b n1 0 nmos_45hp W={Wn*3} L={Ln} AS={Ad} AD={Ad} PS={Pd} PD={Pd}
+M3 n3 c n2 0 nmos_45hp W={Wn*3} L={Ln} AS={Ad} AD={Ad} PS={Pd} PD={Pd}
+Mf 0 clk n3 0 nmos_45hp W={Wn*3} L={Ln} AS={Ad} AD={Ad} PS={Pd} PD={Pd}
+
+CL dyn 0 {CL}
+
+* Keeper Realimentado Wkp=22nm
+Mk dyn out vdd vdd pmos_45hp W={Wkp} L={Ln}
+
+* Inversor Domino de Salida
+Mpi out dyn vdd vdd pmos_45hp W={Wp} L={Ln}
+Mni out dyn 0 0 nmos_45hp W={Wn} L={Ln}
+Cout out 0 {Cout}
+
+.tran 0 {Tstop} 0 1n
+
+* Directivas .meas homogeneas con la campana canonica
+.meas TRAN vdyn_start FIND V(dyn) AT={Teval_start}
+.meas TRAN vdyn_end_1us FIND V(dyn) AT={Tstop}
+.meas TRAN vdyn_min MIN V(dyn) FROM={Teval_start} TO={Tstop}
+.meas TRAN t_cross_0p9vdd WHEN V(dyn)={0.90*VDD} FALL=1
+.meas TRAN isupply_avg AVG -I(Vdd) FROM=10n TO={Tstop}
+.meas TRAN ileak_pdn_avg AVG Is(M1) FROM=10n TO={Tstop}
+.meas TRAN ikp_inj_avg AVG {-Id(Mk)} FROM=10n TO={Tstop}
+
+.end

@@ -1,0 +1,41 @@
+* ==============================================================================
+* ENS-A3-DC-01A: Caracterizacion DC de NMOS PDN (W=270nm, L=45nm) @ 27C
+* Polarizaciones relativas desacopladas: VGS=0V estricto, VDS barrido, VSB stepped
+* ==============================================================================
+.include ../../modelos/ptm45hp.lib
+
+.param Ln=45n Wn_pdn=270n
+.param Ad={Wn_pdn*90n} Pd={Wn_pdn+180n}
+.param Vsb_val=0.0
+.temp 27
+.options gmin=1e-15 abstol=1e-14 reltol=1e-4 method=gear
+
+* Fuentes de polarizacion flotantes referenciadas a Source (s)
+Vsb s 0 {Vsb_val}
+Vgs g s 0.0
+Vds d s 1.0
+
+* NMOS DUT: D G S B
+M_DUT d g s 0 nmos_45hp W={Wn_pdn} L={Ln} AS={Ad} AD={Ad} PS={Pd} PD={Pd}
+
+* Barrido y escalonamiento
+.step param Vsb_val list 0.0 0.3 0.6
+.dc Vds 0.01 1.0 0.01
+
+* Mediciones de corrientes de terminal
+.meas DC Ids_vds0p05 FIND Id(M_DUT) AT=0.05
+.meas DC Ids_vds0p5  FIND Id(M_DUT) AT=0.50
+.meas DC Ids_vds1p0  FIND Id(M_DUT) AT=1.00
+.meas DC Ig_terminal FIND Ig(M_DUT) AT=1.00
+.meas DC Ib_terminal FIND Ib(M_DUT) AT=1.00
+.meas DC Is_terminal FIND Is(M_DUT) AT=1.00
+
+* Tensiones absolutas y relativas
+.meas DC vd_abs FIND V(d) AT=1.00
+.meas DC vg_abs FIND V(g) AT=1.00
+.meas DC vs_abs FIND V(s) AT=1.00
+.meas DC vds_eff FIND {V(d)-V(s)} AT=1.00
+.meas DC vgs_eff FIND {V(g)-V(s)} AT=1.00
+.meas DC vsb_eff FIND V(s) AT=1.00
+
+.end

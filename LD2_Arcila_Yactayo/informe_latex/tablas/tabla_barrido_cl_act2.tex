@@ -1,18 +1,19 @@
-% Tabla generada automaticamente por generar_tablas_latex.py
-% Fuente de datos: act2_metricas.json (Trazabilidad 100% verificada)
+% Tabla de barrido parametrico de capacitancia de carga en Actividad 2
+% Fuentes de datos: act2_metricas.json (g2b_sincrono_barrido_cl + series historicas)
 \begin{table}[htbp]
 \centering
-\footnotesize
-\caption[Barrido paramétrico de capacitancia de carga y caída por redistribución]{Barrido paramétrico de la capacitancia de carga $C_L$ en el nodo dinámico: contraste entre predicción analítica ($\Delta V_{\text{pred}}$) y simulación SPICE ($\Delta V_{\text{sim}}$ y $V_{dyn,\text{min}}$) para peor caso (PTM 45\,nm HP, $V_{DD}=1.0\,\text{V}$).}
+\scriptsize
+\caption[Barrido paramétrico de capacitancia de carga y caída por redistribución]{Barrido paramétrico de la capacitancia de carga $C_L$ en el nodo dinámico: contraste entre predicción analítica ($\Delta V_{\text{pred}}$), simulación del protocolo síncrono nominal ($\Delta V_{\text{sinc}}$) y protocolo alternativo con entradas anticipadas ($\Delta V_{\text{anticip}}$) bajo PTM 45\,nm HP ($V_{DD}=1.0\,\text{V}$).}
 \label{tab:barrido_cl_act2}
-\begin{tabularx}{\linewidth}{@{}>{\centering\arraybackslash}p{2.0cm} c c c c >{\RaggedRight\arraybackslash}X@{}}
+\begin{tabularx}{\linewidth}{@{}>{\centering\arraybackslash}p{1.2cm} c c c c c >{\RaggedRight\arraybackslash}X@{}}
 \toprule
-\textbf{$C_L$ (fF)} & \textbf{$\Delta V_{\text{pred}}$ (mV)} & \textbf{$\Delta V_{\text{sim}}$ (mV)} & \textbf{$V_{dyn,\text{min}}$ (V)} & \textbf{Sobreestimación} & \textbf{Estado Lógico / Margen} \\
+\textbf{$C_L$} & \textbf{$\Delta V_{\text{pred}}$ (Guía)} & \textbf{$\Delta V_{\text{pred}}$ (Total)} & \textbf{$\Delta V_{\text{sinc}}$ (Nominal)} & \textbf{$V_{dyn,\text{min}}$ (Sinc)} & \textbf{$\Delta V_{\text{anticip}}$} & \textbf{Estado Lógico / Margen} \\
+\textbf{(fF)} & \textbf{(mV)} & \textbf{(mV)} & \textbf{(mV)} & \textbf{(V)} & \textbf{(mV)} & \textbf{($V_{IH}=0.579\,\text{V}$, $V_M=0.480\,\text{V}$)} \\
 \midrule
-0.5 & 529.15 & \textbf{175.92} & 0.8241 & 3.01$\times$ (+200.8\%) & Seguro ($V_{dyn} > V_{IH} = 0.579\,\text{V}$) \\
-1.0 & 413.75 & \textbf{138.26} & 0.8617 & 2.99$\times$ (+199.3\%) & Seguro ($V_{dyn} > V_{IH} = 0.579\,\text{V}$) \\
-2.0 & 288.09 & \textbf{101.03} & 0.8990 & 2.85$\times$ (+185.1\%) & Seguro ($V_{dyn} > V_{IH} = 0.579\,\text{V}$) \\
-4.0 & 179.23 & \textbf{67.62} & 0.9324 & 2.65$\times$ (+165.0\%) & Seguro ($V_{dyn} > V_{IH} = 0.579\,\text{V}$) \\
+0.5 & 529.15 & 467.34 & \textbf{364.85} & 0.6351 & 175.92 & Seguro ($V_{dyn} > V_{IH} + 56\,\text{mV}$) \\
+1.0 & 413.75 & 374.97 & \textbf{265.93} & 0.7341 & 138.26 & Seguro ($V_{dyn} > V_{IH} + 155\,\text{mV}$) \\
+2.0 & 288.09 & 268.74 & \textbf{164.29} & 0.8357 & 101.03 & Seguro ($V_{dyn} > V_{IH} + 257\,\text{mV}$) \\
+4.0 & 179.23 & 171.54 & \textbf{92.60}  & 0.9074 & 67.62  & Seguro ($V_{dyn} > V_{IH} + 328\,\text{mV}$) \\
 \bottomrule
 \end{tabularx}
 \end{table}

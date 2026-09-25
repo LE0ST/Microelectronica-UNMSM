@@ -1,0 +1,214 @@
+==============================================================================
+MATRIZ DE TRAZABILIDAD CIENTIFICA: FIGURAS -> CIRCUITOS -> SCRIPTS -> INFORME
+Laboratorio Dirigido N.o 2: Logica CMOS Dinamica Submicrometrica (PTM 45nm BSIM4)
+Facultad de Ingenieria Electronica y Electrica - UNMSM (Semestre 2026-II)
+Autores: Leonardo Sait Yactayo Tolentino & Marco Antonio Arcila Santander
+Docente: MsC. Luz Adanaque Infante
+==============================================================================
+
+NOTA EXPLICATIVA SOBRE FORMATO DE CIRCUITOS (.CIR vs .ASC):
+Siguiendo las mejores practicas de diseño fisico nanoelectronico y verificacion
+submicrometrica profunda (PTM BSIM4 Level 54), todos los circuitos de este
+laboratorio fueron desarrollados y simulados como netlists SPICE estructurados
+(.cir), formato nativo estandar de la industria admitido por LTspice en modo batch
+(-b) y GUI. Este formato permite definir con precision micrometrica los parametros
+criticos de difusion (AS, AD, PS, PD), directivas avanzadas de convergencia
+(abstol=1e-14, gmin=1e-15) y sentencias de medicion automatizada (.meas), evitando
+las ambiguedades de conexion y tolerancias por defecto de los esquematicos .asc.
+A continuacion se presenta la correspondencia biunivoca exacta entre cada figura del
+informe academico y su netlist ejecutable generador.
+
+------------------------------------------------------------------------------
+FIGURA 1: Formas de onda transitorias de la NAND3 dinamica footed
+------------------------------------------------------------------------------
+- Actividad: Actividad 1 (Caracterizacion basica y fases dominó).
+- Pagina en PDF: Pagina 3.
+- Archivo de imagen: act1/figuras/fig1_act1_fases_formas_onda.png
+- Netlist generador: act1/circuitos/nand3_dinamica_base.cir
+- Estimulos y condiciones: CLK (T=2ns, D=50%), A=B=C conmutando a 1V tras precarga.
+- Log de mediciones: act1/resultados/logs/nand3_dinamica_base.log
+- Archivo RAW: act1/resultados/raw/nand3_dinamica_base.raw
+- Script generador: act1/scripts/generar_figuras_act1.py
+- Metricas extraidas: tpLH_dyn = 10.74 ps, tpHL_dyn = 31.80 ps, Cin = 0.3417 fF.
+
+------------------------------------------------------------------------------
+FIGURA 2: Comparacion temporal sincronizada entre NAND3 dinamica y estatica
+------------------------------------------------------------------------------
+- Actividad: Actividad 1 (Comparacion dinamica vs CMOS estatica).
+- Pagina en PDF: Pagina 4.
+- Archivo de imagen: act1/figuras/fig2_act1_dinamica_vs_estatica.png
+- Netlists generadores:
+    1. act1/circuitos/nand3_dinamica_base.cir (dominó footed)
+    2. act1/circuitos/nand3_estatica_mismo_estimulo.cir (estatica con identico estimulo)
+- Logs de mediciones:
+    - act1/resultados/logs/nand3_dinamica_base.log
+    - act1/resultados/logs/nand3_estatica_mismo_estimulo.log
+- Archivos RAW: act1/resultados/raw/*.raw correspondientes
+- Script generador: act1/scripts/generar_figuras_act1.py
+- Metricas contrastadas: tpd,eval = 35.89 ps (dinamica, CLK->out) vs 9.61 ps (estatica, A->out).
+
+------------------------------------------------------------------------------
+FIGURA 3: Formas de onda del peor caso de redistribucion de carga (Charge Sharing)
+------------------------------------------------------------------------------
+- Actividad: Actividad 2 (Comparticion de carga y caida de tension en dyn).
+- Pagina en PDF: Pagina 7.
+- Archivo de imagen: act2/figuras/fig1_act2_peor_caso_formas_onda.png
+- Netlist generador principal: act2/circuitos/nand3_cs_g2b_piloto_cl2f.cir
+  (Banco sincrono canonico de peor caso, aislamiento en precarga A=B=C=0,
+   conmutacion sincrona a 1V en t=3.00ns con flanco de subida del reloj)
+- Netlists auxiliares y comparativos:
+    - act2/circuitos/nand3_cs_peor_caso_fisico.cir (conmutacion anticipada)
+    - act2/circuitos/nand3_cs_peor_caso_oficial.cir (variante con A=B=1 estatico)
+- Log de mediciones: act2/circuitos/nand3_cs_g2b_piloto_cl2f.log
+- Archivo RAW: act2/circuitos/nand3_cs_g2b_piloto_cl2f.raw
+- Script generador: act2/scripts/generar_figuras_act2.py
+- Metricas extraidas: Delta_V = 164.29 mV (Vdyn,min = 0.8357 V, margen logico seguro).
+
+------------------------------------------------------------------------------
+FIGURA 4: Validacion parametrica de charge sharing vs CL (Analitico vs Simulado)
+------------------------------------------------------------------------------
+- Actividad: Actividad 2 (Validacion de modelo lineal vs modelo no lineal BSIM4).
+- Pagina en PDF: Pagina 8.
+- Archivo de imagen: act2/figuras/fig2_act2_dv_vs_cl_analitico_simulado.png
+- Netlist generador: act2/circuitos/nand3_cs_g2b_barrido_cl.cir (y nand3_cs_barrido_cl.cir)
+- Log de mediciones: act2/circuitos/nand3_cs_g2b_barrido_cl.log
+- Datos procesados: act2/resultados/datos/act2_metricas.json
+- Script generador: act2/scripts/generar_figuras_act2.py
+- Hallazgo clave: Modelo lineal sobreestima caida en 1.75x a CL=2fF por corte VGS < Vth y cuerpo.
+
+------------------------------------------------------------------------------
+FIGURA 5: Evaluacion de tecnicas de mitigacion de charge sharing y contencion
+------------------------------------------------------------------------------
+- Actividad: Actividad 2 (Tecnicas de mitigacion: precarga interna, reordenamiento, keeper).
+- Pagina en PDF: Pagina 8.
+- Archivo de imagen: act2/figuras/fig3_act2_comparacion_mitigaciones.png
+- Netlists generadores:
+    1. act2/circuitos/nand3_cs_g2b_piloto_cl2f.cir (caso base sincrono)
+    2. act2/circuitos/nand3_cs_g2c_precarga_w45.cir (precarga interna W=45nm)
+    3. act2/circuitos/nand3_cs_g2b_reord_cab_combA.cir (reordenamiento C-A-B vector A)
+    4. act2/circuitos/nand3_cs_g2b_reord_cab_combB.cir (reordenamiento C-A-B vector B)
+    5. act2/circuitos/nand3_cs_g2c_keeper_w45.cir (keeper PMOS W=45nm)
+    6. act2/circuitos/nand3_cs_g2c_contencion_sin_keeper.cir (contencion sin keeper)
+    7. act2/circuitos/nand3_cs_g2c_contencion_con_keeper.cir (contencion con keeper)
+- Logs y RAW: act2/circuitos/*.log y act2/circuitos/*.raw correspondientes
+- Script generador: act2/scripts/generar_figuras_act2.py
+
+------------------------------------------------------------------------------
+FIGURA 6: Retencion del nodo dinamico a 27°C y 85°C sin keeper vs con keeper
+------------------------------------------------------------------------------
+- Actividad: Actividad 3 (Fugas subumbral y retencion en 1.0 us).
+- Pagina en PDF: Pagina 11.
+- Archivo de imagen: act3/figuras/fig1_act3_retencion_formas_onda.png
+- Netlists generadores:
+    - act3/circuitos/nand3_retencion_sin_keeper_27C.cir
+    - act3/circuitos/nand3_retencion_sin_keeper_85C.cir
+    - act3/circuitos/nand3_retencion_con_keeper_27C.cir
+    - act3/circuitos/nand3_retencion_con_keeper_85C.cir
+- Logs y RAW: act3/resultados/logs/*.log y act3/resultados/raw/*.raw
+- Script generador: act3/scripts/ejecutar_retencion_act3.py
+- Metricas: thold = 608.17 ns a 85°C (sin keeper); con keeper retiene Vdyn > 0.9999 V.
+
+------------------------------------------------------------------------------
+FIGURA 7: Consolidacion tecnologica tri-nodo de retencion (HP vs LP vs 130nm)
+------------------------------------------------------------------------------
+- Actividad: Actividad 3 (Comparativa multitecnologia 45nm HP, 45nm LP, 130nm Bulk).
+- Pagina en PDF: Pagina 11.
+- Archivo de imagen: act3/figuras/fig2_act3_consolidacion_hp_lp_130.png
+- Netlists generadores:
+    - act3/circuitos/nand3_retencion_con_keeper_85C.cir (HP)
+    - act3/circuitos/nand3_retencion_lp_con_keeper_85C.cir (LP)
+    - act3/circuitos/nand3_retencion_130_con_keeper_85C.cir (130nm)
+- Datos estructurados: act3/resultados/datos/act3_consolidacion_tecnologica.json
+- Script generador: act3/scripts/regenerar_figura_consolidacion.py
+
+------------------------------------------------------------------------------
+FIGURA 8: Compromiso de contencion y ventana de viabilidad conjunta (45nm HP @ 85°C)
+------------------------------------------------------------------------------
+- Actividad: Actividad 3 (Dimensionamiento de keeper y cota estricta del 10%).
+- Pagina en PDF: Pagina 12.
+- Archivos de imagen:
+    - Subfigura (a): act3/figuras/fig3_act3_contencion_penalizacion.png
+    - Subfigura (b): act3/figuras/fig4_act3_ventana_viabilidad.png
+- Netlists generadores:
+    - act3/circuitos/nand3_contencion_refinamiento_85C.cir (malla fina Wkp in [10.5, 45] nm)
+    - act3/circuitos/nand3_contencion_con_keeper_85C.cir
+    - act3/circuitos/nand3_contencion_sin_keeper_85C.cir
+- Datos estructurados: act3/resultados/datos/act3_contencion_metricas.json
+- Script generador: act3/scripts/generar_figura8_editorial.py
+- Ventana viable: Wkp in [10.5, 38.0] nm (r in [0.156, 0.563]), Delta_tpHL <= +9.94%.
+
+------------------------------------------------------------------------------
+FIGURA 9: Descomposicion causal del keeper condicional con linea de retardo
+------------------------------------------------------------------------------
+- Actividad: Actividad 3 (Alternativa de mitigacion de contencion).
+- Pagina en PDF: Pagina 13.
+- Archivo de imagen: act3/figuras/fig5_act3_keeper_condicional.png
+- Netlists generadores:
+    - act3/circuitos/nand3_condicional_hp_contencion_pilot_85C.cir
+    - act3/circuitos/nand3_condicional_hp_control_sin_retardo_85C.cir
+- Logs y RAW: act3/resultados/logs/ y act3/resultados/raw/ correspondientes
+- Script generador: act3/scripts/ejecutar_piloto_condicional_a3_7_1.py
+- Metrica: Penalizacion de retardo reducida a solo +5.11% (vs +12.90% en keeper unitario).
+
+------------------------------------------------------------------------------
+FIGURA 10: Regimenes de operacion en cascada de 2 etapas NAND2
+------------------------------------------------------------------------------
+- Actividad: Actividad 4 (Regla de monotonicidad dominó).
+- Pagina en PDF: Pagina 14.
+- Archivo de imagen: act4/figuras/fig1_act4_monotonicidad_cascada.png
+- Netlists generadores: act4/circuitos/a4_control1_bloqueo_inversor.cir
+- Log de mediciones: act4/resultados/logs/a4_control1_bloqueo_inversor.log
+- Archivo RAW: act4/resultados/raw/a4_control1_bloqueo_inversor.raw
+- Script generador: act4/scripts/generar_figuras_act4.py
+- Demostracion: Cascada directa sin inversor sufre descarga espuria (Delta_V = 353.8 mV).
+
+------------------------------------------------------------------------------
+FIGURA 11: Impacto de entrada externa no monotona (Pulso descendente X)
+------------------------------------------------------------------------------
+- Actividad: Actividad 4 (Vulnerabilidad ante entradas externas no monotonas).
+- Pagina en PDF: Pagina 15.
+- Archivo de imagen: act4/figuras/fig2_act4_pulso_x_descendente.png
+- Netlists generadores:
+    - act4/circuitos/a4_control2_pulso_x_descendente.cir (pulso 1->0 durante eval)
+    - act4/circuitos/a4_control3_x_estatico_cero.cir (control estatico)
+- Logs y RAW: act4/resultados/logs/*.log y act4/resultados/raw/*.raw
+- Script generador: act4/scripts/generar_figuras_act4.py
+- Demostracion: Descarga irreversible de dyn2 que produce salida out2=1 erronea permanente.
+
+------------------------------------------------------------------------------
+FIGURA 12: Sensibilidad al skew de reloj en cascada de 3 etapas (Footed vs Unfooted)
+------------------------------------------------------------------------------
+- Actividad: Actividad 4 (Sensibilidad temporal y cortocircuito en unfooted).
+- Pagina en PDF: Pagina 16.
+- Archivo de imagen: act4/figuras/fig3_act4_footed_vs_unfooted_skew.png
+- Datos estructurados: act4/resultados/datos/act4_metricas.json
+- Script generador: act4/scripts/generar_figuras_act4.py
+- Hallazgo: Footed tolera Tskew > 0 aislando cortocircuitos; Unfooted sufre pico Ipk (+94.1%).
+
+------------------------------------------------------------------------------
+FIGURA 13: Clock feedthrough y escalado de energia en NTV
+------------------------------------------------------------------------------
+- Actividad: Actividad 5 (Efectos capacitivos y eficiencia energetica en NTV).
+- Pagina en PDF: Pagina 17.
+- Archivo de imagen: act5/figuras/fig1_act5_feedthrough_energia.png
+- Netlists generadores:
+    - act5/circuitos/act5_feedthrough_keeper.cir (feedthrough con y sin keeper)
+    - act5/circuitos/act5_energia_ntv.cir (barrido de energia vs VDD)
+- Logs y RAW: act5/resultados/logs/*.log y act5/resultados/raw/*.raw
+- Script generador: act5/scripts/generar_figuras_act5.py
+- Metricas: Sobreimpulso +64.31 mV amortiguado a +49.31 mV (-23.3%) con keeper; Esw reduce 90.1%.
+
+------------------------------------------------------------------------------
+FIGURA 14: Ventana de frecuencia operable en regimen Near-Threshold Voltage (NTV)
+------------------------------------------------------------------------------
+- Actividad: Actividad 5 (Fronteras fmin/fmax y operabilidad subumbral).
+- Pagina en PDF: Pagina 17.
+- Archivo de imagen: act5/figuras/fig2_act5_ventana_frecuencia_ntv.png
+- Netlists generadores:
+    - act5/circuitos/act5_ntv_teval_fmax.cir (evaluacion y fmax en 7 puntos de VDD)
+    - act5/circuitos/act5_ntv_thold_fmin.cir (retencion a 27°C)
+    - act5/circuitos/act5_ntv_thold_85c.cir (retencion a 85°C)
+- Datos estructurados: act5/resultados/datos/act5_metricas.json
+- Script generador: act5/scripts/generar_figuras_act5.py
+- Margen verificado: Ventana abierta en todo el rango [0.35, 1.00] V, thold/teval = 1109 >> 10.
+==============================================================================

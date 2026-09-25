@@ -47,3 +47,11 @@ Desktop.ini
 .DS_Store
 $RECYCLE.BIN/
 *.tmp
+
+# --- Paquetes locales pesados de entrega y planificación de trabajo ---
+entrega_final/
+planificacion_final/
+notas.md
+guia_seccion*.txt
+
+

@@ -1,0 +1,80 @@
+LTspice 26.0.2 for Windows
+Circuit: G:\Proyectos\MicroNano\LD2_Arcila_Yactayo\act3\circuitos\nand3_contencion_lp_sens_configB.cir
+Start Time: Sun Sep 20 23:25:07 2026
+Options:gmin=1e-15 abstol=1e-15 reltol=1e-5 method=gear
+
+.step wkp=3.4e-08
+solver = Normal
+Maximum thread count: 4
+tnom = 27
+temp = 85
+method = Gear
+gmin = 1e-15
+abstol = 1e-15
+reltol = 1e-05
+Direct Newton iteration failed to find operating point.
+Starting Gmin stepping
+Gmin stepping succeeded in finding the operating point.
+
+Warning: Simulation tolerance relaxed to achieve convergence from 5.0012206219809894e-18 to 5.0017206219809895e-18 seconds.
+Warning: Simulation tolerance relaxed to achieve convergence from 5.0027206219809897e-18 to 5.0032206219809899e-18 seconds.
+Warning: Simulation tolerance relaxed to achieve convergence from 5.0032206219809899e-18 to 5.0037206219809900e-18 seconds.
+Warning: Simulation tolerance relaxed to achieve convergence from 5.0052206219809903e-18 to 5.0057206219809904e-18 seconds.
+
+.step wkp=3.5e-08
+Direct Newton iteration failed to find operating point.
+Starting Gmin stepping
+Gmin stepping succeeded in finding the operating point.
+
+
+.step wkp=3.6e-08
+Direct Newton iteration failed to find operating point.
+Starting Gmin stepping
+Gmin stepping succeeded in finding the operating point.
+
+
+.step wkp=3.7e-08
+Direct Newton iteration succeeded in finding operating point.
+Total elapsed time: 8.570 seconds.
+
+Files loaded:
+G:\Proyectos\MicroNano\LD2_Arcila_Yactayo\act3\circuitos\nand3_contencion_lp_sens_configB.cir
+G:\Proyectos\MicroNano\LD2_Arcila_Yactayo\modelos\ptm45hp.lib
+G:\Proyectos\MicroNano\LD2_Arcila_Yactayo\modelos\ptm45lp.lib
+G:\Proyectos\MicroNano\LD2_Arcila_Yactayo\modelos\ptm130.lib
+
+
+Measurement: tphl_dyn
+  step	tphl_dyn	FROM	TO
+     1	1.15356050526e-10	1.01000000009e-09	1.12535605061e-09
+     2	1.15824728002e-10	1.00999999969e-09	1.12582472769e-09
+     3	1.16300692187e-10	1.01000000026e-09	1.12630069245e-09
+     4	1.16784178123e-10	1.01e-09	1.12678417812e-09
+
+Measurement: tplh_out
+  step	tplh_out	FROM	TO
+     1	2.0247295024e-10	1.01000000009e-09	1.21247295033e-09
+     2	2.03383811821e-10	1.00999999969e-09	1.21338381151e-09
+     3	2.04306410419e-10	1.01000000026e-09	1.21430641068e-09
+     4	2.05241185153e-10	1.01e-09	1.21524118516e-09
+
+Measurement: t_trig_clk
+  step	V(clk)={VDD/2} 
+     1	1.01000000009e-09
+     2	1.00999999969e-09
+     3	1.01000000026e-09
+     4	1.01e-09
+
+Measurement: t_targ_dyn
+  step	V(dyn)={VDD/2} 
+     1	1.12535605061e-09
+     2	1.12582472769e-09
+     3	1.12630069245e-09
+     4	1.12678417812e-09
+
+Measurement: t_targ_out
+  step	V(out)={VDD/2} 
+     1	1.21247295033e-09
+     2	1.21338381151e-09
+     3	1.21430641068e-09
+     4	1.21524118516e-09
