@@ -19,15 +19,15 @@
 El presente repositorio contiene la investigación física, simulación circuital SPICE (LTspice / modelos PTM BSIM4 Nivel 54), post-procesamiento analítico en Python y memoria técnica del **Laboratorio Dirigido N.° 2**. La práctica aborda el diseño, vulnerabilidades físicas y optimización de celdas en lógica CMOS dinámica y dominó sobre tecnologías de 45 nm (High-Performance y Low-Power) y 130 nm Bulk CMOS:
 
 1. **Actividad 1 — Caracterización Básica y Comparación Estática:**  
-   Implementación de una celda NAND3 dinámica con transistor de pie (*footed*) a $V_{DD} = 1.0\text{ V}$. Verificación de las fases de precarga y evaluación. Reducción experimental de la capacitancia de entrada en **42.4 %** frente a la NAND3 CMOS estática equivalente ($0.3417\text{ fF}$ vs $0.5936\text{ fF}$), permitiendo un retardo intrínseco de evaluación de $9.61\text{ ps}$.
+   Implementación de una celda NAND3 dinámica con transistor de pie (*footed*) a $V_{DD} = 1.0\text{ V}$. Verificación de las fases de precarga y evaluación. Reducción experimental de la capacitancia de entrada en **42.4 %** frente a la NAND3 CMOS estática equivalente ($0.3417\text{ fF}$ vs $0.5936\text{ fF}$) por eliminación de la red de pull-up (PUN). El retardo de propagación en la salida dominó es de $35.89\text{ ps}$ medido desde el flanco del reloj ($CLK\uparrow$), frente a los $9.61\text{ ps}$ de la compuerta estática disparada por datos ($A\uparrow$).
 2. **Actividad 2 — Compartición de Carga (*Charge Sharing*):**  
-   Identificación del peor caso sincrónico de redistribución de carga entre el nodo dinámico y las capacidades parásitas de difusión intermedias ($\Delta V_{dyn} = 164.29\text{ mV}$). Evaluación comparativa de tres técnicas de mitigación: reordenamiento de entradas C-A-B ($93.07\text{ mV}$, $-43.35 \%$), sobredimensionamiento de carga $C_L = 2\text{ fF}$ ($90.58\text{ mV}$, $-44.87 \%$) e inserción de *keeper* débil ($72.33\text{ mV}$, $-55.97 \%$).
+   Identificación del peor caso sincrónico de redistribución de carga hacia capacidades parásitas de difusión intermedias ($\Delta V_{dyn} = 164.29\text{ mV}$ con $C_L = 2.0\text{ fF}$, $V_{dyn,\text{min}} = 0.8357\text{ V}$). Evaluación comparativa de técnicas de mitigación: precarga interna con $W_p = 45\text{ nm}$ (suprime el droop generando sobreimpulso capacitivo de $+50.47\text{ mV}$), reordenamiento de entradas C-A-B ($72.08\text{ mV}$ de droop en el vector B) e inserción de *keeper* PMOS convencional ($69.68\text{ mV}$ con restauración activa a $0.9996\text{ V}$).
 3. **Actividad 3 — Fugas Subumbral, Retención y Dimensionamiento del Keeper:**  
-   Caracterización del tiempo de retención bajo estrés térmico ($27\text{ }^\circ\text{C}$ vs $85\text{ }^\circ\text{C}$). En 45 nm HP a $85\text{ }^\circ\text{C}$, se define una ventana de viabilidad del *keeper* de $W_{kp} \in [10.5, 38.0]\text{ nm}$ ($r \in [1.30, 4.69]\%$ de la red de descarga), logrando el óptimo en $W_{kp} = 22\text{ nm}$ con una penalización por contención de retardo de solo $+5.11 \%$. Consolidación frente a nodos 45 nm LP ($I_{leak} = 0.046\text{ pA}$, retención $>1000\text{ ns}$) y 130 nm Bulk ($28.3\text{ ns}$).
+   Caracterización del tiempo de retención bajo estrés térmico ($27\text{ }^\circ\text{C}$ vs $85\text{ }^\circ\text{C}$). En 45 nm HP a $85\text{ }^\circ\text{C}$, se define una ventana de viabilidad del *keeper* de $W_{kp} \in [10.5, 38.0]\text{ nm}$ ($r = W_{kp}/67.5\text{ nm} \in [0.156, 0.563]$) con penalización de contención de retardo $\le 10\%$. La configuración de referencia de $W_{kp} = 22\text{ nm}$ ($r = 0.326$) exhibe una penalización de $+5.25\%$, mientras que la alternativa de *keeper* condicional ($W_{kp}=45\text{ nm}$ con 3 inversores) logra $+5.11\%$. Consolidación frente a 45 nm LP (retención censurada $>1.0\text{ }\mu\text{s}$) y 130 nm Bulk ($t_{hold} = 167.53\text{ ns}$ bajo el criterio estricto de $0.90\,V_{DD}$ a $85\text{ }^\circ\text{C}$).
 4. **Actividad 4 — Monotonicidad y Skew de Reloj en Cascada:**  
-   Demostración analítica y experimental de la regla de monotonicidad dominó mediante inversores estáticos inter-etapa con sesgo alto (*high-skew*), impidiendo la pérdida irreversible de carga por transiciones $1 \to 0$. Evaluación de cascadas de 3 etapas bajo desfase temporal de reloj (*clock skew*), contrastando la robustez de topologías *footed* frente a corrientes de cortocircuito en celdas *unfooted*.
+   Demostración analítica y experimental de la regla de monotonicidad dominó mediante inversores estáticos inter-etapa, impidiendo la pérdida irreversible de carga por transiciones $1 \to 0$. Evaluación de cascadas de 3 etapas bajo desfase temporal de reloj (*clock skew*), contrastando la robustez de topologías *footed* frente a corrientes de cortocircuito en celdas *unfooted*.
 5. **Actividad 5 — Régimen Near-Threshold (NTV), Feedthrough y Escalado Energético:**  
-   Operación en escalado agresivo de tensión de alimentación ($V_{DD} = 1.0\text{ V} \to 0.35\text{ V}$). Análisis del sobreimpulso por acoplamiento capacitivo de reloj (*feedthrough* de $+64.31\text{ mV}$, amortiguado en $23.3 \%$ por el *keeper*). Determinación de la ventana de frecuencia operable a $0.40\text{ V}$ / $85\text{ }^\circ\text{C}$ ($f \in [2.23, 73.3]\text{ MHz}$) con un ahorro de energía de conmutación del **84.7 %**.
+   Operación en escalado agresivo de tensión de alimentación ($V_{DD} = 1.0\text{ V} \to 0.35\text{ V}$). Análisis del sobreimpulso por acoplamiento capacitivo de reloj (*feedthrough* de $+64.31\text{ mV}$, amortiguado en $23.3\%$ a $+49.31\text{ mV}$ por el *keeper*). Determinación de la ventana de frecuencia operable: a $V_{DD} = 0.40\text{ V}$, la celda presenta $f_{\max} \approx 420\text{ MHz}$ y $f_{\min} \approx 1.12\text{ MHz}$ a $85\text{ }^\circ\text{C}$, preservando una amplia ventana operable con un ahorro del $85.2\%$ en energía de conmutación ($0.1076\text{ fJ}$ vs $0.7259\text{ fJ}$ a $1.0\text{ V}$).
 
 ---
 
@@ -35,20 +35,21 @@ El presente repositorio contiene la investigación física, simulación circuita
 
 | Actividad | Métrica Evaluada | Configuración / Condición | Valor Medido (SPICE) | Referencia / Observación |
 |---|---|---|---|---|
-| **A1** | Capacitancia de entrada ($C_{in}$) | NAND3 Dinámica vs Estática | $0.3417\text{ fF}$ vs $0.5936\text{ fF}$ | **$-42.4 \%$** de reducción de carga de entrada |
-| **A1** | Retardo de evaluación ($t_{pHL}$) | $C_L = 1.0\text{ fF}$, $V_{DD} = 1.0\text{ V}$ | $9.61\text{ ps}$ | Transición rápida nodo dyn $\to$ out |
-| **A2** | Droop de peor caso sincrónico | Sin mitigación ($C_L = 1.0\text{ fF}$) | $\Delta V_{dyn} = 164.29\text{ mV}$ | Margen dinámico seguro ($V_{dyn,min} = 0.8357\text{ V}$) |
-| **A2** | Mitigación: Reordenamiento C-A-B | Entrada crítica desacoplada | $\Delta V_{dyn} = 93.07\text{ mV}$ | **$-43.35 \%$** de caída respecto al caso base |
-| **A2** | Mitigación: Carga $C_L = 2.0\text{ fF}$ | Estabilización capacitiva | $\Delta V_{dyn} = 90.58\text{ mV}$ | **$-44.87 \%$** de caída |
-| **A2** | Mitigación: Keeper PMOS | $W_{kp} = 45\text{ nm}$ | $\Delta V_{dyn} = 72.33\text{ mV}$ | **$-55.97 \%$** de caída |
-| **A3** | Tiempo de retención ($t_{hold}$) | 45 nm HP @ $85\text{ }^\circ\text{C}$ (sin keeper) | $608.17\text{ ns}$ | Fuga subumbral térmica severa |
-| **A3** | Ventana de viabilidad keeper | 45 nm HP @ $85\text{ }^\circ\text{C}$ ($\Delta t_{pHL} \le 10\%$) | $W_{kp} \in [10.5, 38.0]\text{ nm}$ | $r \in [1.30, 4.69]\%$ de la red de descarga |
-| **A3** | Punto óptimo recomendado | 45 nm HP @ $85\text{ }^\circ\text{C}$ ($W_{kp} = 22\text{ nm}$) | $\Delta t_{pHL} = +5.11\%$ | Retención garantizada $>1.0\text{ }\mu\text{s}$ ($V_{dyn} > 0.999\text{ V}$) |
-| **A3** | Fuga estática inter-tecnología | 45 nm LP vs 45 nm HP vs 130 nm | $0.046\text{ pA}$ vs $43.2\text{ nA}$ vs $1.85\text{ nA}$ | LP suprime fugas en 6 órdenes de magnitud |
-| **A4** | Rechazo de entrada espuria | Pulso $1 \to 0$ durante evaluación | Dyn2 retiene $0.0\text{ V}$, Out2 = $1.0\text{ V}$ | Monotonicidad violada $\implies$ error irrecuperable |
-| **A4** | Skew tolerable en cascada | 3 etapas dominó *footed* | $t_{skew} \approx 18.5\text{ ps}$ | Aislamiento eficaz contra corriente de cortocircuito |
-| **A5** | Clock feedthrough (precarga) | $V_{DD} = 1.0\text{ V}$, acoplamiento de compuerta | $+64.31\text{ mV}$ ($+49.31\text{ mV}$ con kp) | Amortiguación de sobreimpulso en $23.3 \%$ |
-| **A5** | Ventana de frecuencia NTV | $V_{DD} = 0.40\text{ V}$, $85\text{ }^\circ\text{C}$ | $[2.23, 73.3]\text{ MHz}$ | Operación subumbral viable con ahorro del $84.7\%$ en energía |
+| **A1** | Capacitancia de entrada ($C_{in}$) | NAND3 Dinámica vs Estática | $0.3417\text{ fF}$ vs $0.5936\text{ fF}$ | Reducción del **42.4 %** por eliminación de red PUN |
+| **A1** | Retardo en terminal de salida | $C_{out} = 1.0\text{ fF}$, PTM 45 nm HP | Dinámica: $35.89\text{ ps}$ ($CLK\uparrow$)<br>Estática: $9.61\text{ ps}$ ($A\uparrow$) | Triggers asimétricos evaluados en terminal $out$ |
+| **A2** | Droop de peor caso síncrono | Caso base sin mitigación ($C_L = 2.0\text{ fF}$) | $\Delta V_{dyn} = 164.29\text{ mV}$ | Margen seguro ($V_{dyn,\text{min}} = 0.8357\text{ V}$, $NM_H = +257.2\text{ mV}$) |
+| **A2** | Mitigación: Precarga interna | Transistores de precarga $W_p = 45\text{ nm}$ | Suprime droop (sobreimpulso $+50.47\text{ mV}$) | $V_{dyn} = 1.0505\text{ V}$, sobrecoste de reloj $+0.127\text{ fF}$ |
+| **A2** | Mitigación: Reordenamiento C-A-B | Desacoplo de nodos internos (Vector B) | $\Delta V_{dyn} = 72.08\text{ mV}$ | Droop acotado a $72.08\text{ mV}$ sin área adicional |
+| **A2** | Mitigación: Keeper PMOS | Transistor convencional $W_{kp} = 45\text{ nm}$ | $\Delta V_{dyn} = 69.68\text{ mV}$ | Restaura a $0.9996\text{ V}$; penalización $+14.65\%$ en $t_{pHL,dyn}$ |
+| **A3** | Retención 45 nm HP @ $85\text{ }^\circ\text{C}$ | Sin keeper ($T_{\text{stop}} = 1.0\,\mu\text{s}$, $C_L=2\text{ fF}$) | $t_{hold} = 608.17\text{ ns}$ | Cruce con $0.90\,V_{DD}$; retiene nivel lógico ($V_{dyn} > V_M$) |
+| **A3** | Ventana de viabilidad keeper | 45 nm HP @ $85\text{ }^\circ\text{C}$ ($\Delta t_{pHL} \le 10\%$) | $W_{kp} \in [10.5, 38.0]\text{ nm}$ | Razón geométrica $r = \frac{W_{kp}}{67.5\,\text{nm}} \in [0.156, 0.563]$ |
+| **A3** | Keeper convencional de referencia | 45 nm HP @ $85\text{ }^\circ\text{C}$ ($W_{kp} = 22\text{ nm}$, $r=0.326$) | $\Delta t_{pHL} = +5.25\%$ | Retención garantizada $>1.0\,\mu\text{s}$ ($V_{dyn} > 0.999\,\text{V}$) |
+| **A3** | Alternativa keeper condicional | 45 nm HP @ $85\text{ }^\circ\text{C}$ ($W_{kp} = 45\text{ nm}$ + 3 inv.) | $\Delta t_{pHL} = +5.11\%$ | Mitigación de contención frente a keeper unitario ($+12.90\%$) |
+| **A3** | Retención 130 nm Bulk @ $85\text{ }^\circ\text{C}$ | Sin keeper ($V_{DD} = 1.3\text{ V}$, $C_L = 2\text{ fF}$) | $t_{hold} = 167.53\text{ ns}$ | Criterio estricto $0.90\,V_{DD}$ ($1.17\text{ V}$); $V_{dyn}(1\,\mu\text{s}) = 0.877\text{ V}$ |
+| **A4** | Rechazo de entrada espuria | Pulso $1 \to 0$ durante evaluación | Salida out2 retenida en $1.0\text{ V}$ errónea | Violación de monotonicidad $\implies$ falla irreversible |
+| **A4** | Skew tolerable en cascada | 3 etapas dominó *footed* | $t_{skew} \approx 18.5\text{ ps}$ | Aislamiento eficaz contra corrientes de cortocircuito |
+| **A5** | Clock feedthrough en precarga | $V_{DD} = 1.0\text{ V}$, PMOS precarga $W_p=135\text{ nm}$ | $+64.31\text{ mV}$ ($+49.31\text{ mV}$ con keeper) | Amortiguación pasiva del $23.3\%$ con keeper |
+| **A5** | Ventana operable en NTV ($0.40\text{ V}$) | PTM 45 nm HP @ $85\text{ }^\circ\text{C}$, $C_L = 0.5\text{ fF}$ | $f_{\max} \approx 420\text{ MHz}$, $f_{\min} \approx 1.12\text{ MHz}$ | Holgura $t_{hold}/t_{eval} \gg 10$; energía reducida en $85.2\%$ |
 
 ---
 
@@ -56,7 +57,7 @@ El presente repositorio contiene la investigación física, simulación circuita
 
 ```
 LD2_Arcila_Yactayo/
-├── README.md                              # Este documento de portada para GitHub
+├── README.md                              # Portada técnica para GitHub
 ├── README.txt                             # Documentación técnica de entrega y runbook
 ├── verificacion_modelos.txt               # Auditoría física de parámetros BSIM4 (Level 54)
 ├── trazabilidad_figuras.txt               # Matriz de correspondencia: Figuras -> Netlists -> Scripts

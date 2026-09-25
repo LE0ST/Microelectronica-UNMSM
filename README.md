@@ -81,7 +81,7 @@ MicroNano/
 ---
 
 ### [Laboratorio Dirigido N.° 2: Lógica CMOS Dinámica Submicrométrica](LD2_Arcila_Yactayo/)
-* **Enfoque:** Análisis circuital, físico y cuantitativo de lógica CMOS dinámica y dominó en tecnologías nanométricas PTM BSIM4 (45 nm HP, 45 nm LP y 130 nm Bulk). Se investiga la reducción de capacitancia de entrada ($-42.4\%$), peor caso sincrónico de compartición de carga ($\Delta V_{dyn} = 164.29\text{ mV}$) y sus mitigaciones, compromiso de contención y ventana de viabilidad del *keeper* ($W_{kp} \in [10.5, 38.0]\text{ nm}$), regla de monotonicidad dominó ante entradas espurias, robustez frente al desfase de reloj (*skew*), amortiguación de *feedthrough* de reloj, y ventana de frecuencia en régimen Near-Threshold Voltage ($[2.23, 73.3]\text{ MHz}$ a $0.40\text{ V}$ / $85\text{ }^\circ\text{C}$).
+* **Enfoque:** Análisis circuital, físico y cuantitativo de lógica CMOS dinámica y dominó en tecnologías nanométricas PTM BSIM4 (45 nm HP, 45 nm LP y 130 nm Bulk). Se investiga la reducción de capacitancia de entrada ($-42.4\%$), peor caso sincrónico de compartición de carga ($\Delta V_{dyn} = 164.29\text{ mV}$ con $C_L = 2.0\text{ fF}$) y sus técnicas de mitigación, compromiso de contención y ventana de viabilidad del *keeper* ($W_{kp} \in [10.5, 38.0]\text{ nm}$), regla de monotonicidad dominó ante entradas no monótonas, robustez frente al desfase de reloj (*skew*), amortiguación de *feedthrough* de reloj, y caracterización de la ventana de frecuencia operable y energía en régimen Near-Threshold Voltage ($V_{DD} \in [0.35, 1.00]\text{ V}$).
 * **Informe Maestro Oficial:** [LD2_Arcila_Yactayo/informe_latex/main.pdf](LD2_Arcila_Yactayo/informe_latex/main.pdf) (20 páginas físicas exactas).
 * **Ejecución SPICE (Modo Batch):**
   ```powershell
