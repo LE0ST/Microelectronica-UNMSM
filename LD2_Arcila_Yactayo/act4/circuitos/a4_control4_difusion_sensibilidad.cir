@@ -1,0 +1,68 @@
+* ==============================================================================
+* ACTIVIDAD 4 - CONTROL 4: Sensibilidad a Parametros de Difusion (AS/AD/PS/PD)
+* Cascada Domino Footed de 3 Etapas a Tskew = 0 ps con capacitancias de difusion
+* Curso: Microelectronica y Sistemas Nanoelectronicos - UNMSM 2026-II
+* ==============================================================================
+
+.include ../../modelos/ptm45hp.lib
+
+.param VDD=1.0
+.param Ln=45n Wn=90n Wp=135n
+.param CL=2f
+.param Tclk=2n
+.param Tbase=500p
+.param Tskew=0p
+
+* Parametros geometricos de difusion (Ldiff = 2*Ln = 90nm)
+* Contacto extremo (W=180n): AS=AD=180n*90n=0.0162p, PS=PD=2*(180n+90n)=0.54u
+* Nodo interno compartido (W=180n): AS=AD=180n*45n=0.0081p, PS=PD=180n+90n=0.27u
+* PMOS (W=135n): AS=AD=135n*90n=0.01215p, PS=PD=2*(135n+90n)=0.45u
+* Inversor NMOS (W=90n): AS=AD=90n*90n=0.0081p, PS=PD=2*(90n+90n)=0.36u
+
+.temp 27
+.options gmin=1e-15 abstol=1e-14 reltol=1e-4 method=gear
+
+Vdd vdd 0 {VDD}
+
+* Fuentes de Reloj (Tskew = 0 ps)
+Vclk1 clk1 0 PULSE(0 {VDD} {Tbase} 20p 20p {Tclk/2} {Tclk})
+Vclk2 clk2 0 PULSE(0 {VDD} {Tbase+Tskew} 20p 20p {Tclk/2} {Tclk})
+Vclk3 clk3 0 PULSE(0 {VDD} {Tbase+Tskew*2} 20p 20p {Tclk/2} {Tclk})
+
+* Entradas logicas activas
+Va a 0 {VDD}
+Vb b 0 {VDD}
+
+* --- Etapa 1 ---
+Mp1 dyn1 clk1 vdd vdd pmos_45hp W={Wp} L={Ln} AS=0.01215p AD=0.01215p PS=0.45u PD=0.45u
+M11 m1 a dyn1 0 nmos_45hp W={Wn*2} L={Ln} AS=0.0081p AD=0.0162p PS=0.27u PD=0.54u
+M12 m2 b m1 0 nmos_45hp W={Wn*2} L={Ln} AS=0.0081p AD=0.0081p PS=0.27u PD=0.27u
+Mf1 0 clk1 m2 0 nmos_45hp W={Wn*2} L={Ln} AS=0.0162p AD=0.0081p PS=0.54u PD=0.27u
+C1 dyn1 0 {CL}
+Mpi1 out1 dyn1 vdd vdd pmos_45hp W={Wp} L={Ln} AS=0.01215p AD=0.01215p PS=0.45u PD=0.45u
+Mni1 out1 dyn1 0 0 nmos_45hp W={Wn} L={Ln} AS=0.0081p AD=0.0081p PS=0.36u PD=0.36u
+
+* --- Etapa 2 ---
+Mp2 dyn2 clk2 vdd vdd pmos_45hp W={Wp} L={Ln} AS=0.01215p AD=0.01215p PS=0.45u PD=0.45u
+M21 k1 out1 dyn2 0 nmos_45hp W={Wn*2} L={Ln} AS=0.0081p AD=0.0162p PS=0.27u PD=0.54u
+M22 k2 a k1 0 nmos_45hp W={Wn*2} L={Ln} AS=0.0081p AD=0.0081p PS=0.27u PD=0.27u
+Mf2 0 clk2 k2 0 nmos_45hp W={Wn*2} L={Ln} AS=0.0162p AD=0.0081p PS=0.54u PD=0.27u
+C2 dyn2 0 {CL}
+Mpi2 out2 dyn2 vdd vdd pmos_45hp W={Wp} L={Ln} AS=0.01215p AD=0.01215p PS=0.45u PD=0.45u
+Mni2 out2 dyn2 0 0 nmos_45hp W={Wn} L={Ln} AS=0.0081p AD=0.0081p PS=0.36u PD=0.36u
+
+* --- Etapa 3 ---
+Mp3 dyn3 clk3 vdd vdd pmos_45hp W={Wp} L={Ln} AS=0.01215p AD=0.01215p PS=0.45u PD=0.45u
+M31 j1 out2 dyn3 0 nmos_45hp W={Wn*2} L={Ln} AS=0.0081p AD=0.0162p PS=0.27u PD=0.54u
+M32 j2 b j1 0 nmos_45hp W={Wn*2} L={Ln} AS=0.0081p AD=0.0081p PS=0.27u PD=0.27u
+Mf3 0 clk3 j2 0 nmos_45hp W={Wn*2} L={Ln} AS=0.0162p AD=0.0081p PS=0.54u PD=0.27u
+C3 dyn3 0 {CL}
+Mpi3 out3 dyn3 vdd vdd pmos_45hp W={Wp} L={Ln} AS=0.01215p AD=0.01215p PS=0.45u PD=0.45u
+Mni3 out3 dyn3 0 0 nmos_45hp W={Wn} L={Ln} AS=0.0081p AD=0.0081p PS=0.36u PD=0.36u
+
+.tran 0 {Tclk*4} 0 2p
+
+.meas TRAN t_delay TRIG V(clk1) VAL={VDD/2} RISE=2 TARG V(out3) VAL={VDD/2} RISE=2
+.meas TRAN Ipk MAX -I(Vdd) FROM={Tbase} TO={Tbase+Tclk*2}
+
+.end

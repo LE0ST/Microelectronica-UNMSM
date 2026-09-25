@@ -1,0 +1,306 @@
+{
+  "clock_feedthrough": {
+    "condiciones": {
+      "CL_fF": 0.5,
+      "tr_tf_ps": 5.0,
+      "Tclk_ns": 2.0,
+      "temp_C": 27,
+      "VDD_V": 1.0
+    },
+    "sin_keeper": {
+      "Vdyn_prech_V": 0.999999,
+      "Vdyn_max_V": 1.064306,
+      "V_overshoot_mV": 64.31,
+      "Vdyn_min_prech_V": 0.988878,
+      "V_undershoot_mV": 11.12,
+      "Idiode_max_uA": 2.841,
+      "marco_comparacion": {
+        "V_overshoot_mV": 61.3,
+        "V_undershoot_mV": 9.47
+      }
+    },
+    "con_keeper_45nm": {
+      "Vdyn_prech_V": 0.999999,
+      "Vdyn_max_V": 1.049306,
+      "V_overshoot_mV": 49.31,
+      "reduccion_overshoot_pct": -23.3,
+      "Vdyn_min_prech_V": 0.960206,
+      "V_undershoot_mV": 39.79,
+      "Idiode_max_uA": 2.841
+    },
+    "analitico": {
+      "cgdo_F_per_m": 1.1e-10,
+      "cgdl_F_per_m": 2.653e-10,
+      "Wp_um": 0.135,
+      "Cgd_overlap_fF": 0.05067,
+      "Ctotal_aprox_fF": 0.95,
+      "DeltaV_teorico_mV": 53.3
+    }
+  },
+  "barrido_ntv_hp": {
+    "VDD_V": [
+      1.0,
+      0.8,
+      0.6,
+      0.5,
+      0.45,
+      0.4,
+      0.35
+    ],
+    "sin_keeper": {
+      "teval_ps": [
+        23.21,
+        33.31,
+        70.48,
+        162.34,
+        308.17,
+        686.1,
+        1739.95
+      ],
+      "tplh_inv_ps": [
+        4.52,
+        9.8,
+        34.92,
+        102.19,
+        212.3,
+        505.22,
+        1347.25
+      ],
+      "tpd_eval_ps": [
+        27.72,
+        43.11,
+        105.4,
+        264.52,
+        520.47,
+        1191.33,
+        3087.2
+      ],
+      "fmax_GHz": [
+        18.035,
+        11.599,
+        4.744,
+        1.89,
+        0.961,
+        0.42,
+        0.162
+      ],
+      "marco_teval_ps": [
+        33.56,
+        43.65,
+        81.17,
+        174.85,
+        323.39,
+        708.53,
+        1783.72
+      ]
+    },
+    "con_keeper_45nm": {
+      "teval_ps": [
+        26.55,
+        37.97,
+        80.07,
+        181.21,
+        338.44,
+        741.14,
+        1855.85
+      ],
+      "tplh_inv_ps": [
+        5.65,
+        12.35,
+        45.58,
+        134.36,
+        273.7,
+        628.08,
+        1612.96
+      ],
+      "tpd_eval_ps": [
+        32.2,
+        50.32,
+        125.65,
+        315.57,
+        612.13,
+        1369.22,
+        3468.8
+      ],
+      "fmax_GHz": [
+        15.527,
+        9.936,
+        3.979,
+        1.584,
+        0.817,
+        0.365,
+        0.144
+      ],
+      "Ikp_pk_uA": [
+        25.6,
+        14.9,
+        5.45,
+        1.93,
+        0.84,
+        0.28,
+        0.075
+      ],
+      "marco_teval_ps": [
+        36.83,
+        47.83,
+        90.94,
+        194.28,
+        354.43,
+        764.87,
+        1902.29
+      ]
+    },
+    "con_keeper_90nm": {
+      "teval_ps": [
+        34.68,
+        49.88,
+        103.69,
+        222.68,
+        399.38,
+        842.13,
+        2052.12
+      ],
+      "marco_teval_ps": [
+        44.74,
+        58.46,
+        114.52,
+        236.45,
+        416.53,
+        867.87,
+        2102.6
+      ],
+      "Ikp_pk_uA": [
+        54.85,
+        31.86,
+        11.06,
+        3.75,
+        1.64,
+        0.57,
+        0.16
+      ]
+    },
+    "retencion_27C": {
+      "thold_us": [
+        1.096,
+        1.429,
+        1.754,
+        1.874,
+        1.914,
+        1.935,
+        1.93
+      ],
+      "fmin_kHz": [
+        456.21,
+        349.93,
+        285.03,
+        266.74,
+        261.17,
+        258.37,
+        259.12
+      ],
+      "marco_thold_us": [
+        1.118,
+        1.458,
+        1.792,
+        1.916,
+        1.957,
+        1.979,
+        1.973
+      ],
+      "marco_fmin_kHz": [
+        447.23,
+        342.94,
+        279.02,
+        260.96,
+        255.49,
+        252.65,
+        253.42
+      ]
+    },
+    "retencion_85C": {
+      "thold_us": [
+        0.305,
+        0.375,
+        0.432,
+        0.448,
+        0.45,
+        0.448,
+        0.44
+      ],
+      "fmin_kHz": [
+        1638.94,
+        1334.82,
+        1157.19,
+        1117.0,
+        1110.68,
+        1115.75,
+        1136.28
+      ]
+    },
+    "retencion_con_keeper": {
+      "condicion": "PDN abierta (A=B=VDD, C=0), Tstop=15us, temp=27C",
+      "observacion_experimental": "No se observo cruce de umbral VDD/2 durante la ventana simulada de 15us",
+      "cota_inferior_thold_us": ">15.0",
+      "cota_superior_fmin_kHz": "<33.3",
+      "caida_maxima_15us_mV": {
+        "VDD_1_0V": 0.023,
+        "VDD_0_35V": 0.56
+      },
+      "mecanismo": "Equilibrio cuasi-estatico por compensacion de fuga subumbral (Ikp = Isub)"
+    },
+    "energia_conmutacion": {
+      "E_cycle_fJ": [
+        0.7259,
+        0.4533,
+        0.2876,
+        0.2018,
+        0.1533,
+        0.1076,
+        0.0719
+      ],
+      "P_avg_nW": [
+        72.59,
+        45.33,
+        28.76,
+        20.18,
+        15.33,
+        10.76,
+        7.19
+      ],
+      "I_peak_uA": [
+        37.29,
+        18.74,
+        6.44,
+        2.25,
+        0.99,
+        0.7,
+        0.62
+      ],
+      "ahorro_energia_pct": 90.09
+    }
+  },
+  "subumbral_hp_vs_lp_05V": {
+    "VDD_V": 0.5,
+    "HP": {
+      "Vth_V": 0.469,
+      "teval_ps": 161.57,
+      "Ion_uA": 4.898,
+      "Ioff_pA": 125.05,
+      "ratio_Ion_Ioff": 39168.5
+    },
+    "LP": {
+      "Vth_V": 0.623,
+      "teval_ps": 8488.41,
+      "Ion_uA": 0.09864,
+      "Ioff_pA": 0.671,
+      "ratio_Ion_Ioff": 146950.1,
+      "marco_teval_ps": 8647.61
+    },
+    "comparacion": {
+      "ratio_teval_LP_HP": 52.54,
+      "ratio_Ion_HP_LP": 49.65,
+      "ratio_Ioff_HP_LP": 186.36,
+      "ventaja_selectividad_LP": 3.75
+    }
+  }
+}

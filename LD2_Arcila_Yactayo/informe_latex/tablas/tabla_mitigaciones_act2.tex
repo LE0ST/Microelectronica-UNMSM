@@ -1,21 +1,20 @@
-% Tabla generada automaticamente por generar_tablas_latex.py
-% Fuente de datos: act2_metricas.json (Trazabilidad 100% verificada)
+% Tabla cuantitativa de tecnicas de mitigacion en Actividad 2
+% Fuentes de datos: act2_metricas.json (g2b_sincrono_piloto_cl2f, g2b_sincrono_reordenamiento, g2c_precarga, g2c_keeper, g2c_contencion)
 \begin{table}[htbp]
 \centering
-\footnotesize
-\caption[Evaluación cuantitativa de técnicas de mitigación de charge sharing]{Evaluación cuantitativa de técnicas de mitigación de compartición de carga en NAND3 dinámica footed ($C_L=2.0\,\text{fF}$, $T_{clk}=2\,\text{ns}$, PTM 45\,nm HP).}
+\fontsize{7pt}{8.3pt}\selectfont
+\caption[Evaluación cuantitativa y trade-offs de técnicas de mitigación]{Evaluación cuantitativa de técnicas de mitigación de compartición de carga en NAND3 dinámica footed ($C_L=2.0\,\text{fF}$, $T_{clk}=2\,\text{ns}$, PTM 45\,nm HP, $V_{DD}=1.0\,\text{V}$). Márgenes referidos a $V_{IH}=0.5785\,\text{V}$ del inversor ($NM_H \equiv V_{dyn,\text{min}} - V_{IH}$) y áreas referidas a $W_{\text{dyn,base}} = 1215\,\text{nm}$ ($W_{\text{celda,base}} = 1440\,\text{nm}$).}
 \label{tab:mitigaciones_act2}
-\begin{tabularx}{\linewidth}{@{}>{\RaggedRight\arraybackslash}p{3.2cm} c c c >{\RaggedRight\arraybackslash}X@{}}
+\begin{tabularx}{\linewidth}{@{}>{\RaggedRight\arraybackslash}p{2.3cm} >{\centering\arraybackslash}p{1.6cm} >{\centering\arraybackslash}p{1.7cm} >{\centering\arraybackslash}p{1.7cm} >{\centering\arraybackslash}p{1.3cm} >{\RaggedRight\arraybackslash}X@{}}
 \toprule
-\textbf{Configuración} & \textbf{$\Delta V_{\text{eval}}$} & \textbf{Transistores Extra} & \textbf{Carga $CLK$} & \textbf{Comportamiento y Trade-off} \\
+\textbf{Configuración} & \textbf{$\Delta V_{\text{eval}}$ / Extremo} & \textbf{Margen $NM_H$} & \textbf{Área Extra ($\Delta W$)} & \textbf{Carga $CLK$} & \textbf{Compromiso y Dinámica (Trade-off)} \\
 \midrule
-\textbf{Base (Sin Mitigación)} & 101.03\,mV & 0 (7 total) & Base & $V_{dyn,\text{min}} = 0.8990\,\text{V}$. Sin recuperación en evaluación; restauración en siguiente precarga. \\
-\midrule
-\textbf{Mitigación 1: Precarga} & $\le 0\,$mV & +2 PMOS ($135\,$nm) & +0.34\,fF (+67\%) & Elimina droop ($V_{dyn,\text{min}} = 1.0120\,\text{V}$). Overshoot transitorio por feedthrough capacitivo en compuertas de precarga interna. \\
-\midrule
-\textbf{Mitigación 2: Reordenamiento} & 14.1\,$\mu$V & 0 transistores & 0 fF & Supresión casi total ($V_{dyn} = 0.99999\,\text{V}$). Aísla difusión de $n_1, n_2$ ubicando $C$ al tope de la PDN; impacto en enrutamiento. \\
-\midrule
-\textbf{Mitigación 3: Keeper} & 42.18\,mV & +1 PMOS ($45\,$nm) & 0 fF & Atenúa caída en 58.2\% ($V_{dyn,\text{min}} = 0.9578\,\text{V}$) y restaura al 99\% en 80.30\,ps. Penalización de descarga: +14.6\% en $t_{pHL,dyn}$. \\
+\textbf{Caso Base Síncrono} & \textbf{164.29\,mV} ($0.8357\,\text{V}$) & \textbf{+257.2\,mV} ($V_M+356\,\text{mV}$) & 0 ($0.0\%$) & Base ($0.50\,\text{fF}$) & Sin recuperación en evaluación ($V_{dyn,\text{end}} = 0.8357\,\text{V}$). Salida dominó inmune ($V_{out,\text{max}} \le 0.13\,\text{mV} \ll V_{IL}$). \\
+\textbf{Precarga $W_p=45\,\text{nm}$} & \textbf{$-50.47$\,mV} ($1.0505\,\text{V}$) & \textbf{+472.0\,mV} & +2 PMOS ($90\,\text{nm}$, $+7.4\%$) & $+0.127\,\text{fF}$ ($63.7\,\text{nW}$) & Suprime droop; sobreimpulso capacitivo $+50.5\,\text{mV}$. Variante óptima en consumo de reloj. \\
+\textbf{Precarga $W_p=135\,\text{nm}$} & \textbf{$-50.47$\,mV} ($1.0505\,\text{V}$) & \textbf{+472.0\,mV} & +2 PMOS ($270\,\text{nm}$, $+22.2\%$) & $+0.382\,\text{fF}$ ($191.1\,\text{nW}$) & Idéntica eficacia nominal que $45\,\text{nm}$, pero con $3.0\times$ sobrecoste capacitivo y de potencia en reloj. \\
+\textbf{Reordenamiento C-B-A} & V.A: $\le 0$ / V.B: \textbf{164.3\,mV} & V.A: $+443.5$ / V.B: $+257.2$ & 0 transistores ($0.0\%$) & 0 fF en $CLK$ & Eficaz para Vect A ($C=0$ en tope bloquea $dyn$); vulnerable a Vect B ($A=0$ en base reproduce caída base). \\
+\textbf{Reordenamiento C-A-B} & V.A: $\le 0$ / V.B: \textbf{72.08\,mV} & V.A: $+443.5$ / V.B: $+349.4$ & 0 transistores ($0.0\%$) & 0 fF en $CLK$ & Suprime Vect A y acota Vect B a $72.1\,\text{mV}$ (droop $-56.1\%$) al aislar $n_2$. Coste en complejidad de ruteo. \\
+\textbf{Keeper $W_{kp}=45\,\text{nm}$} & \textbf{69.68\,mV} ($0.9303\,\text{V}$) & \textbf{+351.8\,mV} (mín.) & +1 PMOS ($45\,\text{nm}$, $+3.7\%$) & 0 fF en $CLK$ & Caída en $69.7\,\text{mV}$; restaura en $92.9\,\text{ps}$ y finaliza en $0.9996\,\text{V}$ ($99.96\%$). Contención: $+14.65\%$ en $t_{pHL,dyn}$. \\
 \bottomrule
 \end{tabularx}
 \end{table}

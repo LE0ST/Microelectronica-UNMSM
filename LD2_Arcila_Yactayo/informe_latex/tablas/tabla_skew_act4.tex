@@ -1,0 +1,20 @@
+% Tabla de caracterizacion de cascada domino de 3 etapas Footed vs Unfooted bajo barrido de skew de reloj
+% Fuente primaria: Tarea 4 Footed.log y Paso 5 Unfooted.log (PTM 45nm HP, VDD = 1.0 V, T = 27 C)
+\begin{table}[htbp]
+\centering
+\fontsize{7.5pt}{8.8pt}\selectfont
+\caption[Caracterización de cascada dominó de 3 etapas Footed vs Unfooted]{Respuesta temporal y picos de corriente de alimentación en cascada dominó de 3 etapas (NAND2) bajo barrido de skew de reloj ($T_{\text{skew}} \in [-50, 200]\,\text{ps}$): contraste entre arquitecturas Footed y Unfooted.}
+\label{tab:skew_act4}
+\begin{tabularx}{\linewidth}{@{}>{\centering\arraybackslash}p{1.2cm} c c c c c c >{\RaggedRight\arraybackslash}X@{}}
+\toprule
+\textbf{$T_{\text{skew}}$} & \textbf{$t_{\text{del}}$ (Foot)} & \textbf{$t_{\text{del}}$ (Unfoot)} & \textbf{$\Delta t_{\text{del}}$} & \textbf{$I_{\text{pk}}$ (Foot)} & \textbf{$I_{\text{pk}}$ (Unfoot)} & \textbf{$\Delta I_{\text{pk}}$} & \textbf{Diagnóstico Físico / Condición de Operación} \\
+\textbf{(ps)} & \textbf{(ps)} & \textbf{(ps)} & \textbf{(\%)} & \textbf{($\mu\text{A}$)} & \textbf{($\mu\text{A}$)} & \textbf{($\mu\text{A}$)} & \textbf{(Ventana de medición: $t \in [0.5, 4.5]\,\text{ns}$)} \\
+\midrule
+$-50$ & 77.20 & 66.46 & $-13.9\%$ & 113.80 & 326.30 & $+212.50$ & Precarga adelantada en etapas 2 y 3 drena a través de la PDN en conducción. \\
+$0$   & 77.21 & 66.47 & $-13.9\%$ & 318.85 & 332.91 & $+14.06$  & Sincronismo pleno: las 3 etapas precargan simultáneamente en paralelo. \\
+$+50$ & 125.47 & 95.12 & $-24.2\%$ & 110.56 & 110.57 & $+0.01$   & Desacoplo de precargas; corriente limitada al pico capacitivo de una etapa. \\
+$+100$& 226.68 & 130.81& $-42.3\%$ & 110.56 & 160.57 & $+50.01$  & Incremento de corriente en unfooted por conducción simultánea PMOS/PDN. \\
+$+200$& 426.91 & 171.48& $-59.8\%$ & 110.56 & 214.63 & $+104.07$ & Elevación de pico de alimentación ($+94.1\%$); Footed inmune a corto. \\
+\bottomrule
+\end{tabularx}
+\end{table}

@@ -1,6 +1,7 @@
 % ==============================================================================
 % SECCION 2: ACTIVIDAD 1 - NAND3 DINAMICA FOOTED
 % ==============================================================================
+\needspace{6\baselineskip}
 \section{Actividad 1: NAND3 CMOS Dinámica Footed (Fases, Asimetría y Consumo)}
 \label{sec:actividad1}
 
@@ -8,7 +9,7 @@
 La compuerta NAND3 dinámica analizada se implementa en configuración \textit{footed} complementada por un inversor dominó restaurador, operando bajo tecnología PTM de 45\,nm HP ($V_{DD} = 1.0\,\text{V}$, $T = 27^\circ\text{C}$). 
 
 \begin{itemize}[leftmargin=1.4em,itemsep=0.15em]
-  \item \textbf{Red de Descarga (PDN) y Footer ($M_f$):} Cuatro transistores NMOS en serie ($M_1, M_2, M_3$ para las entradas lógicas $A, B, C$, y $M_f$ para $CLK$). Conforme a la guía, los tres NMOS lógicos y el footer adoptan $W_n = 3 \times 90\,\text{nm} = 270\,\text{nm}$ ($L = 45\,\text{nm}$); la aproximación geométrica de cuatro dispositivos en serie establece una anchura efectiva de $W_{PDN,eq} = 270\,\text{nm}/4 = 67.5\,\text{nm}$ (consistente con el modelado de contención en la Actividad~3), en lugar de equiparar exactamente a un NMOS unitario de $90\,\text{nm}$.
+  \item \textbf{Red de Descarga (PDN) y Footer ($M_f$):} Cuatro transistores NMOS en serie ($M_1, M_2, M_3$ para las entradas lógicas $A, B, C$, y $M_f$ para $CLK$). Los tres NMOS lógicos y el footer adoptan $W_n = 3 \times 90\,\text{nm} = 270\,\text{nm}$ ($L = 45\,\text{nm}$); la aproximación geométrica de cuatro dispositivos en serie establece una anchura efectiva de $W_{PDN,eq} = 270\,\text{nm}/4 = 67.5\,\text{nm}$ (consistente con el modelado de contención en la Actividad~3), en lugar de equiparar exactamente a un NMOS unitario de $90\,\text{nm}$.
   \item \textbf{Transistor de Precarga ($M_p$):} Dispositivo PMOS ($W_p = 135\,\text{nm}$, $L = 45\,\text{nm}$) conectado a $V_{DD}$, gobernado por $CLK$ en nivel bajo ($\beta = 1.5$ respecto al NMOS de $90\,\text{nm}$).
   \item \textbf{Inversor Dominó de Salida:} Etapa restauradora no inversora con $M_{pi}$ ($W_p = 135\,\text{nm}$) y $M_{ni}$ ($W_n = 90\,\text{nm}$).
   \item \textbf{Condiciones de Carga:} Capacitancia concentrada explícita $C_L = 2\,\text{fF}$ en el nodo interno $dyn$ y capacitancia de carga $C_{out} = 1\,\text{fF}$ en el terminal de salida $out$.
@@ -22,12 +23,12 @@ Para caracterizar el ciclo secuencial, se aplicó reloj a $500\,\text{MHz}$ ($T_
 
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=0.72\linewidth]{figuras/fig1_act1_fases_formas_onda.png}
+  \includegraphics[width=0.44\linewidth]{figuras/fig1_act1_fases_formas_onda.png}
   \caption[Formas de onda transitorias de la NAND3 dinámica footed]{Formas de onda transitorias de la NAND3 dinámica footed ($CLK$, $A$, nodo interno $dyn$ y salida $out$), identificando las cuatro fases de operación dominó.}
   \label{fig:fases_formas_onda}
 \end{figure}
 
-\begin{enumerate}[leftmargin=1.4em,itemsep=0.18em]
+\begin{enumerate}[leftmargin=1.4em,itemsep=0.12em]
   \item \textbf{Fase I: Evaluación con PDN Abierta ($t \in [0.0,\, 1.0\,\text{ns}]$):} Con $CLK = 1$, $M_p$ corta y $M_f$ conduce. Al estar $A = 0$, $M_1$ bloquea la ruta a tierra; el nodo $dyn$ queda \textbf{flotante en nivel alto} ($V_{DD} = 1.0\,\text{V}$) con un sobreimpulso a $1.022\,\text{V}$ por acoplamiento capacitivo (\textit{clock feedthrough} en $C_{gd}(M_p)$). La salida $out$ permanece en $0\,\text{V}$.
   \item \textbf{Fase II: Precarga con $A=1$ ($t \in [1.0,\, 2.0\,\text{ns}]$):} Con $CLK = 0$, $M_p$ conduce y $M_f$ corta. Aunque $A$ conmuta a 1 en $t = 1.1\,\text{ns}$, el footer apagado impide el paso a tierra. El nodo $dyn$ se mantiene rígidamente fijado a $V_{DD}$.
   \item \textbf{Fase III: Evaluación con Descarga Completa ($t \in [2.0,\, 3.0\,\text{ns}]$):} Con $CLK=1$ y $A=B=C=1$, los 4 NMOS conducen. El nodo $dyn$ se descarga a tierra en $t_{pHL,dyn} = 22.17\,\text{ps}$, haciendo que el inversor dominó conmute monótonamente en su salida $out$ con $t_{pd,\text{eval}} = 35.89\,\text{ps}$.
@@ -37,7 +38,7 @@ Para caracterizar el ciclo secuencial, se aplicó reloj a $500\,\text{MHz}$ ($T_
 \subsection{Asimetría Temporal y Rol de \texorpdfstring{$t_{pLH}$}{tpLH} en Lógica Dominó}
 En lógica dominó, el cómputo combinacional ocurre exclusivamente durante la evaluación ($CLK = 1$), con salidas conmutando monótonamente ($0 \to 1$). El tiempo de precarga medido en el nodo dinámico ($t_{pLH,dyn} = 25.13\,\text{ps}$) corresponde estrictamente al retardo de transición al 50\% ($CLK\downarrow$ al 50\% hasta $dyn\uparrow$ al 50\%) durante el semi-periodo inactivo ($CLK = 0$), fuera de la ruta crítica de datos; por consiguiente, \textbf{no contribuye al retardo lógico de evaluación}.
 
-Es metodológicamente necesario precisar que dicho retardo al 50\% no debe equipararse directamente al tiempo de asentamiento casi completo del nodo ($V_{dyn} \ge 0.99\,V_{DD}$). Como referencia analítica, en un circuito $RC$ ideal inicialmente descargado ($V(t) = V_{DD}(1 - e^{-t/\tau_{\text{pre}}})$), el tiempo requerido para alcanzar el 99\% de $V_{DD}$ es $t_{99} = -\tau_{\text{pre}} \ln(0.01) \approx 4.605\,\tau_{\text{pre}}$ (mientras que $3\,\tau_{\text{pre}}$ restaura el 95.0\% y $4\,\tau_{\text{pre}}$ el 98.2\%). Aunque la compuerta dinámica real involucra la respuesta no lineal del transistor PMOS de precarga ($M_p$ transitando de saturación a triodo), esta referencia analítica justifica que el semi-periodo bajo de reloj deba satisfacer holgadamente $T_{clk}/2 \ge t_{\text{precarga}}$ para garantizar restauración plena, constituyendo una estimación orientativa y no un barrido experimental de frecuencia máxima ejecutado en este punto.
+Es metodológicamente necesario precisar que dicho retardo al 50\% no debe equipararse directamente al tiempo de asentamiento casi completo del nodo ($V_{dyn} \ge 0.99\,V_{DD}$). Como referencia analítica, en un circuito $RC$ ideal inicialmente descargado ($V(t) = V_{DD}(1 - e^{-t/\tau_{\text{pre}}})$), el tiempo requerido para alcanzar el 99\% de $V_{DD}$ es $t_{99} = -\tau_{\text{pre}} \ln(0.01) \approx 4.605\,\tau_{\text{pre}}$ (mientras que $3\,\tau_{\text{pre}}$ restaura el 95.0\% y $4\,\tau_{\text{pre}}$ el 98.2\%). Aunque la compuerta dinámica real involucra la respuesta no lineal del PMOS de precarga ($M_p$ de saturación a triodo), esta referencia analítica justifica que el semi-periodo bajo de reloj deba satisfacer holgadamente $T_{clk}/2 \ge t_{\text{precarga}}$ para garantizar restauración plena.
 
 \subsection{Comparación Cuantitativa: Lógica Dinámica vs Estática}
 La Tabla~\ref{tab:comparativa_act1} resume las métricas cuantitativas extraídas, contrastando la estructura dinámica con la estática equivalente.
@@ -46,65 +47,25 @@ La Tabla~\ref{tab:comparativa_act1} resume las métricas cuantitativas extraída
 
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=0.72\linewidth]{figuras/fig2_act1_dinamica_vs_estatica.png}
+  \includegraphics[width=0.42\linewidth]{figuras/fig2_act1_dinamica_vs_estatica.png}
   \caption[Comparación temporal entre NAND3 dinámica y estática]{Comparación temporal sincronizada entre la NAND3 dinámica footed y la NAND3 CMOS estática bajo el mismo estímulo de entrada $V(a)$ ($T_A=8\,\text{ns}$).}
   \label{fig:dinamica_vs_estatica}
 \end{figure}
 
-\noindent\textbf{Retardo de Evaluación y Triggers Asimétricos:} En los terminales de salida con carga nominal $C_{out} = 1\,\text{fF}$:
-\begin{itemize}[leftmargin=1.4em,itemsep=0.1em]
-  \item En compuerta dominó: $\text{retardo de evaluación desde } CLK\uparrow \text{ hasta } OUT\uparrow = \mathbf{35.89\,\text{ps}}$ (disparo sincrónico con $A=1$).
-  \item En compuerta estática: $\text{retardo de propagación desde } A\uparrow \text{ hasta } OUT\_STAT\downarrow = \mathbf{9.61\,\text{ps}}$ (disparo asíncrono de dato).
-\end{itemize}
-\noindent\textbf{Precisión Metodológica:} Ambos tiempos se extraen en terminales lógicos externos con carga idéntica, pero sus eventos de disparo difieren en naturaleza física ($CLK\uparrow$ vs $A\uparrow$). Por ende, el cociente ($3.734\times$) es descriptivo de la respuesta transitoria y no representa un retardo idéntico de camino de datos (\textit{data-to-output}). Asimismo, la capacitancia impuesta por la guía ($C_L = 2\,\text{fF}$) en el nodo interno $dyn$ penaliza la etapa dinámica.
+\noindent\textbf{Retardo de Evaluación y Triggers Asimétricos:} En los terminales de salida con carga nominal $C_{out} = 1\,\text{fF}$, la compuerta dominó registra un retardo de evaluación de $\mathbf{35.89\,\text{ps}}$ desde el disparo sincrónico $CLK\uparrow$ con $A=1$, mientras que la compuerta estática presenta $\mathbf{9.61\,\text{ps}}$ desde el dato asíncrono $A\uparrow$ (cociente descriptivo de $3.733\times$). Al suprimir la carga artificial concentrada (con carga concentrada desacoplada, $C_L = 0\,\text{fF}$), el retardo en $dyn$ cae a $t_{pHL,dyn} = 11.26\,\text{ps}$ y la salida conmuta en $t_{pd,\text{eval}} = 21.27\,\text{ps}$, reteniendo únicamente las capacitancias parásitas de difusión y compuerta del inversor.
 
-\vspace{0.4em}
-\noindent\textbf{Control de Retardo Sin Carga Externa $C_L$ (ENS-A1-08):} Al suprimir la capacitancia concentrada artificial en el nodo dinámico ($C_L = 0\,\text{fF}$), el retardo de descarga en $dyn$ se reduce a $t_{pHL,dyn} = 11.26\,\text{ps}$ y la salida conmuta en $t_{pd,\text{eval}} = 21.27\,\text{ps}$. Este ensayo representa un control sin carga concentrada externa; el nodo conserva intactas las capacidades de difusión de $M_p$ y $M_1$, solapamientos MOS y la capacitancia de entrada del inversor dominó ($M_{pi}, M_{ni}$).
-
-\vspace{0.4em}
-\noindent\textbf{Capacitancia de Entrada ($C_{in}$):} En el ensayo corregido de referencia (ENS-A1-HIG-01, con $M_{ni}$ dimensionado en $W=90\,\text{nm}$ en estricta conformidad con la compuerta base), la integración de la corriente de entrada ante una rampa de $50\,\text{ps}$ ($Q_{in} = \int_{90\,\text{ps}}^{170\,\text{ps}} -I(V_a)\,dt$, $C_{in} = Q_{in}/V_{DD}$) arrojó $C_{in,\text{dyn}} = \mathbf{0.3417\,\text{fF}}$ frente a $C_{in,\text{stat}} = \mathbf{0.5936\,\text{fF}}$ en la compuerta estática, logrando una reducción del \textbf{42.4\%} (cociente de $0.5756$). En el ensayo preliminar histórico (ENS-A1-04, donde $M_{ni}$ adoptaba $270\,\text{nm}$), la medición registró $0.3415\,\text{fF}$ (reducción de $42.5\%$), corroborando que la carga vista desde la entrada $A$ está dominada por la compuerta de $M_1$.
-
-Frente a la medición SPICE en gran señal, la estimación analítica geométrica de placas paralelas considerando por separado los parámetros de óxido de \texttt{ptm45hp.lib} ($C_{ox,n} \approx 27.63\,\text{fF/}\mu\text{m}^2$ para $t_{oxe,n}=1.25\,\text{nm}$ y $C_{ox,p} \approx 26.56\,\text{fF/}\mu\text{m}^2$ para $t_{oxe,p}=1.30\,\text{nm}$) predice valores orientativos de $C_{in,\text{dyn,geom}} \approx C_{ox,n} W_n L \approx \mathbf{0.336\,\text{fF}}$ ($M_1$, $W_n=270\,\text{nm}$) y $C_{in,\text{stat,geom}} \approx C_{ox,n} W_n L + C_{ox,p} W_p L \approx 0.3356\,\text{fF} + 0.1614\,\text{fF} \approx \mathbf{0.497\,\text{fF}}$ ($W_p=135\,\text{nm}$, $L=45\,\text{nm}$). La diferencia respecto a la simulación dinámica responde a que la integración de corriente en gran señal captura la formación de canal en inversión fuerte, capacidades de solapamiento compuerta-difusión ($C_{ov}$) y campos marginales (\textit{fringing}), no contemplados en el cálculo geométrico 1D elemental.
+\noindent\textbf{Capacitancia de Entrada ($C_{in}$):} En la caracterización dinámica de entrada, la integración de la corriente de entrada ante una rampa de $50\,\text{ps}$ ($Q_{in} = \int -I(V_a)\,dt$, $C_{in} = Q_{in}/V_{DD}$) arrojó $C_{in,\text{dyn}} = \mathbf{0.3417\,\text{fF}}$ frente a $C_{in,\text{stat}} = \mathbf{0.5936\,\text{fF}}$ en la estática, logrando una reducción del \textbf{42.4\%} ($0.5756\times$) debida a la eliminación de la red PMOS de pull-up en los datos. El modelo analítico de placas paralelas ($C_{ox,n} W_n L \approx 0.336\,\text{fF}$ y $C_{ox,n} W_n L + C_{ox,p} W_p L \approx 0.497\,\text{fF}$) concuerda con esta tendencia, reflejando la simulación en gran señal los aportes de solapamiento ($C_{ov}$) e inversión fuerte.
 
 \subsection{Análisis de Potencia y la ``Trampa de Potencia''}
+Bajo estímulo periódico en $A$ a $125\,\text{MHz}$ ($T_A=8\,\text{ns}$), la compuerta dinámica consume $P_{\text{dyn}} = 1.2393\,\mu\text{W}$ frente a $P_{\text{stat}} = 0.2692\,\mu\text{W}$ ($4.604\times$), integradas entre $4$ y $16\,\text{ns}$. Sin embargo, la manifestación crítica de la \textit{trampa de potencia} se evidencia con entradas fijas en alto ($A=B=C=1$): mientras que la compuerta estática permanece en reposo disipando únicamente fugas ($P_{\text{stat}} = \mathbf{1.7004\,\text{nW}}$ para $\alpha=0$), la compuerta dinámica cicla continuamente a $500\,\text{MHz}$ ($\alpha=1$), consumiendo $P_{\text{dyn}} = \mathbf{2.7255\,\mu\text{W}}$ (\textbf{1602.9 veces superior}). La disipación total medida de la fuente ($2.7255\,\mu\text{W}$) supera a la potencia dinámica analítica de carga externa ($P_{\text{ext}} = C_L V_{DD}^2 f = 1.000\,\mu\text{W}$) y del nodo dinámico ($P_{\text{nodo,geom}} \approx 1.325\,\mu\text{W}$ para $C_{dyn} \approx 2.65\,\text{fF}$) debido a la conmutación periódica del inversor dominó cargando $C_{out}=1\,\text{fF}$, transiciones de cortocircuito y difusiones.
 
-\noindent\textbf{Potencia bajo Estímulo Idéntico de Datos:} Con la entrada $A$ conmutando a $125\,\text{MHz}$ ($T_A = 8\,\text{ns}$), la compuerta dinámica consume $P_{\text{dyn}} = 1.2393\,\mu\text{W}$ frente a $P_{\text{stat}} = 0.2692\,\mu\text{W}$ en la estática (cociente de $4.604\times$), integradas en la ventana canónica de promediado de $4\,\text{ns}$ a $16\,\text{ns}$. La diferencia reside en que la dinámica es conmutada periódicamente por el reloj a $500\,\text{MHz}$, incurriendo en ciclos periódicos de precarga aun con menor actividad en los datos.
-
-\vspace{0.4em}
-\noindent\textbf{Manifestación de la Trampa con Entradas Fijas en Alto:} Con $A=B=C=1$:
-\begin{itemize}[leftmargin=1.4em,itemsep=0.1em]
-  \item En compuerta estática, sin transiciones lógicas ($\alpha = 0$), el consumo se reduce a fugas en reposo: $P_{\text{stat}} = \mathbf{1.7004\,\text{nW}}$.
-  \item En compuerta dinámica, el reloj a $500\,\text{MHz}$ alterna precarga y evaluación, forzando conmutación en cada ciclo ($\alpha = 1$). Consumo: $P_{\text{dyn}} = \mathbf{2.7255\,\mu\text{W}}$ (\textbf{1602.9 veces superior}), promediado en el intervalo canónico local de $4\,\text{ns}$ a $16\,\text{ns}$.
-\end{itemize}
-
-\vspace{0.4em}
-\noindent\textbf{Alcance de la Interpretación Analítica de Potencia:} Con entradas fijas en nivel alto ($\alpha = 1$, $V_{DD} = 1.0\,\text{V}$, $f = 500\,\text{MHz}$), es metodológicamente riguroso distinguir tres magnitudes:
-\begin{enumerate}[leftmargin=1.4em,itemsep=0.1em]
-  \item \textbf{Potencia de carga explícita ($P_{\text{ext}} = 1.000\,\mu\text{W}$):} Estimación analítica correspondiente a la potencia dinámica ideal asociada a la carga y descarga de $C_L = 2.0\,\text{fF}$ ($P_{\text{ext}} = C_L V_{DD}^2 f$).
-  \item \textbf{Potencia estimada del nodo dinámico ($P_{\text{nodo,geom}} \approx 1.325\,\mu\text{W}$):} Estimación analítica que incorpora la capacitancia parásita geométrica en pequeña señal ($C_{\text{par,geom}} \approx 0.65\,\text{fF} \implies C_{dyn,\text{geom}} \approx 2.65\,\text{fF}$). Esta magnitud no debe confundirse con la capacitancia aparente de gran señal inferida bajo condiciones de retención.
-  \item \textbf{Potencia total medida desde la fuente ($P_{\text{avg},V_{DD}} = \mathbf{2.7255\,\mu\text{W}}$):} Medición SPICE integral de la corriente entregada por la fuente de alimentación.
-\end{enumerate}
-La diferencia entre la estimación analítica del nodo ($1.325\,\mu\text{W}$) y la potencia total de la fuente ($2.7255\,\mu\text{W}$) obedece a la conmutación periódica del inversor dominó cargando $C_{out} = 1.0\,\text{fF}$ a $500\,\text{MHz}$, corrientes de cortocircuito durante transiciones de flanco finito, disipación en difusiones de la PDN y fugas; dicha brecha describe cualitativamente estos aportes y no constituye una descomposición aditiva desacoplada experimentalmente.
-
-\subsection{Retención con PDN Abierta y Fugas a 27°C}
-Fijando $V_c = 0\,\text{V}$ (bloqueo en $M_3$ con $A=B=V_{DD}$), se evaluó la degradación del nodo flotante (Figura~\ref{fig:retencion_pdn}):
-
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[width=0.72\linewidth]{figuras/fig3_act1_retencion_pdn_abierta.png}
-  \caption[Degradación de tensión en el nodo dinámico por fugas]{Degradación de tensión en el nodo dinámico $dyn$ por corrientes de fuga con PDN abierta a $T = 27^\circ\text{C}$ para periodos de reloj de $2\,\text{ns}$ (nominal) y $400\,\text{ns}$ (evaluación prolongada).}
-  \label{fig:retencion_pdn}
-\end{figure}
-
-\begin{itemize}[leftmargin=1.4em,itemsep=0.15em]
-  \item \textbf{Frecuencia Nominal ($T_{clk} = 2\,\text{ns}$, 1\,ns evaluación):} $V(dyn)_{\text{min}} = 0.9936\,\text{V}$ ($\Delta V = \mathbf{6.41\,\text{mV}}$), salida en reposo ($V_{out,\text{max}} = 0.31\,\text{mV}$). Las fugas son inocuas en la escala del nanosegundo.
-  \item \textbf{Baja Frecuencia ($T_{clk} = 400\,\text{ns}$, 200\,ns evaluación continua):} Las fugas subumbral de la PDN drenan la carga hasta $V(dyn)_{\text{final}} = \mathbf{0.8837\,\text{V}}$ ($\Delta V = \mathbf{116.28\,\text{mV}}$). A $27^\circ\text{C}$, el potencial aún supera $V_M \approx 0.48\,\text{V}$ del inversor, pero constata la pérdida continua de carga que exige una frecuencia mínima de operación ($f_{\text{min}}$) y el empleo de circuitos \textit{keeper}.
-\end{itemize}
+\subsection{Comportamiento de Retención Preliminar con PDN Abierta}
+Fijando $V_c = 0\,\text{V}$ (bloqueo en $M_3$ con $A=B=V_{DD}$), el nodo dinámico queda flotante en nivel alto. En la escala nominal ($T_{clk} = 2\,\text{ns}$, 1\,ns de evaluación), la caída por fugas es inocua: $V(dyn)_{\text{min}} = 0.9936\,\text{V}$ ($\Delta V = 6.41\,\text{mV}$, $V_{out,\text{max}} = 0.31\,\text{mV}$). Sin embargo, al extender la evaluación continua a baja frecuencia ($T_{clk} = 400\,\text{ns}$, evaluación de $200\,\text{ns}$), las corrientes de fuga subumbral drenan la carga hasta $V(dyn)_{\text{final}} = \mathbf{0.8837\,\text{V}}$ ($\Delta V = \mathbf{116.28\,\text{mV}}$). Aunque a $27^\circ\text{C}$ el potencial aún supera $V_M \approx 0.48\,\text{V}$, esta degradación evidencia la volatilidad de la carga en nodos flotantes y fundamenta la necesidad de una frecuencia mínima ($f_{\text{min}}$) y de circuitos keeper, fenómeno que se caracteriza en profundidad en la Actividad~3.
 
 \subsection{Conclusiones de la Actividad 1}
-\begin{enumerate}[leftmargin=1.4em,itemsep=0.15em]
-  \item La lógica dominó reduce la capacitancia de entrada en 42.4\% ($0.3417\,\text{fF}$ vs $0.5936\,\text{fF}$) al eliminar la red PMOS de pull-up en los datos (ENS-A1-HIG-01).
-  \item El semi-periodo de precarga no retrasa la evaluación pero su duración de transición al 50\% ($t_{pLH,dyn} = 25.13\,\text{ps}$) y el tiempo de asentamiento completo acotan analíticamente la frecuencia de reloj ($T_{clk}/2 \ge t_{\text{precarga}}$) para garantizar restauración plena.
-  \item La actividad de reloj periódico incrementa la potencia; con entradas fijas en alto, la dinámica disipa $1602.9\times$ más potencia que la estática en reposo.
-  \item La pérdida de $116.28\,\text{mV}$ en $200\,\text{ns}$ bajo retención con $A=B=1, C=0$ constata la volatilidad de la carga en nodos flotantes y fundamenta la necesidad de keepers.
+\begin{enumerate}[leftmargin=1.4em,itemsep=0.12em]
+  \item La lógica dominó reduce la capacitancia de entrada en 42.4\% ($0.3417\,\text{fF}$ vs $0.5936\,\text{fF}$), mejorando la velocidad de excitación de etapas previas.
+  \item El semi-periodo de precarga no retrasa la evaluación pero su constante de tiempo acota la frecuencia máxima ($T_{clk}/2 \ge t_{\text{precarga}}$).
+  \item Con entradas estáticas en nivel alto, la alternancia forzada de precarga y evaluación genera un consumo dinámico $1602.9\times$ superior al reposo estático.
+  \item La pérdida de $116.28\,\text{mV}$ en $200\,\text{ns}$ con PDN abierta ratifica la naturaleza cuasi-estática de la compuerta y exige mecanismos activos de retención.
 \end{enumerate}

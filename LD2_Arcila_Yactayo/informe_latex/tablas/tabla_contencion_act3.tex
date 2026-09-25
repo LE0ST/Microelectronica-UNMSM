@@ -2,7 +2,8 @@
 % Fuentes: act3_contencion_metricas.json, act3_conciliacion_a3_5_1.json, act3_descomposicion_causal.json
 \begin{table}[htbp]
 \centering
-\footnotesize
+\scriptsize
+\setlength{\tabcolsep}{3.5pt}
 \caption[Penalización de velocidad por contención del keeper en evaluación activa]{Penalización de velocidad en evaluación activa ($A=B=C=1$) bajo peor caso térmico ($85^\circ\text{C}$, $C_L=2.0\,\text{fF}$, $C_{out}=1.0\,\text{fF}$).}
 \label{tab:contencion}
 \begin{tabularx}{\linewidth}{@{}>{\RaggedRight\arraybackslash}p{3.2cm} c c c c >{\RaggedRight\arraybackslash}X@{}}
@@ -12,7 +13,7 @@
 \multicolumn{6}{@{}l@{}}{\textbf{Tecnología 45\,nm HP ($V_{DD}=1.0\,\text{V}$, $t_{pHL,\text{base}} = 31.80\,\text{ps}$)}} \\
 Sin Keeper (Referencia) & --- & --- & 31.80\,ps & 0.00\% & Referencia base inalterada. \\
 Keeper Convencional (Mín. Malla) & 10.5\,nm & 0.156 & 32.96\,ps & +3.64\% & \textbf{CUMPLE}. Mínimo ensayado en la malla de simulación. \\
-Keeper Convencional (Punto Guía §7) & 22.0\,nm & 0.326 & 33.47\,ps & +5.25\% & \textbf{CUMPLE}. Cumple holgadamente velocidad y retención. \\
+Keeper Convencional (Referencia 22\,nm) & 22.0\,nm & 0.326 & 33.47\,ps & +5.25\% & \textbf{CUMPLE}. Cumple holgadamente velocidad y retención. \\
 Keeper Convencional (Frontera Máx.) & 38.0\,nm & 0.563 & 34.96\,ps & \textbf{+9.94\%} & \textbf{CUMPLE}. Máximo ancho ensayado que cumple velocidad (+9.96\% Config B). \\
 Keeper Convencional (Primer Fallo) & 39.0\,nm & 0.578 & 35.09\,ps & \textbf{+10.35\%} & \textbf{FALLA}. Excede la cota estricta del 10.0\%. \\
 Keeper Convencional Unitario & 45.0\,nm & 0.667 & 35.90\,ps & +12.90\% & \textbf{FALLA}. Inadmisible ($I_{kp,\max} = 17.65\,\mu\text{A}$). \\

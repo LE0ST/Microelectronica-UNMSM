@@ -65,50 +65,52 @@ Sin embargo, en simulación SPICE real con modelos BSIM4, la caída real es sign
 
 ## 4. Barrido Paramétrico de Carga $C_L$ y Márgenes de Ruido
 
-A continuación se contrastan las predicciones analíticas con las mediciones reales transitorias para el barrido $C_L \in [0.5, 1.0, 2.0, 4.0]\text{ fF}$ (referencia: umbrales del inversor dominó de Fase 2: $V_M = 0.4797\text{ V}$, $V_{IH} = 0.5785\text{ V}$, $NM_H = 0.4215\text{ V}$, $\Delta V_{crit,M} = 0.5203\text{ V}$):
+Se evalúa el barrido de carga $C_L \in [0.5, 1.0, 2.0, 4.0]\text{ fF}$ contrastando los modelos analíticos con el **Banco Síncrono Canónico de Referencia** (`nand3_cs_g2b_piloto_cl2f.cir`) y las series históricas (referencia: umbrales del inversor dominó: $V_M = 0.4797\text{ V}$, $V_{IH} = 0.5785\text{ V}$, $NM_H = 0.4215\text{ V}$, $\Delta V_{crit,M} = 0.5203\text{ V}$):
 
-| $C_L$ (fF) | $\Delta V_{pred}$ (Guía) | $\Delta V_{pred}$ (Full) | $\Delta V_{sim}$ (eval max) | $V_{dyn,min}$ (V) | $V_{out,max}$ (mV) | Margen Lógico | Error Teórico (%) |
+| $C_L$ (fF) | $\Delta V_{pred}$ (Guía) | $\Delta V_{pred}$ (Total) | $\Delta V_{\text{sinc}}$ (Ref. Síncrona) | $V_{dyn,min}$ (Sinc) | $\Delta V_{\text{Leo}}$ (Hist) | $\Delta V_{\text{Marco}}$ (Hist) | Margen Lógico ($V_{IH}=0.579\,\text{V}$) |
 | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| **0.5** | 529.15 mV | 467.34 mV | **175.92 mV** | **0.8241 V** | 0.678 mV | Seguro ($V_{dyn} > V_{IH}$) | +200.8% |
-| **1.0** | 413.75 mV | 374.97 mV | **138.26 mV** | **0.8617 V** | 0.389 mV | Seguro ($V_{dyn} > V_{IH}$) | +199.3% |
-| **2.0** | 288.09 mV | 268.74 mV | **101.03 mV** | **0.8990 V** | 0.149 mV | Seguro ($V_{dyn} > V_{IH}$) | +185.1% |
-| **4.0** | 179.23 mV | 171.54 mV | **67.62 mV** | **0.9324 V** | 0.008 mV | Seguro ($V_{dyn} > V_{IH}$) | +165.0% |
+| **0.5** | 529.15 mV | 467.34 mV | **364.85 mV** | **0.6351 V** | 175.92 mV | --- | Seguro ($V_{dyn} > V_{IH} + 56\,\text{mV}$) |
+| **1.0** | 413.75 mV | 374.97 mV | **265.93 mV** | **0.7341 V** | 138.26 mV | --- | Seguro ($V_{dyn} > V_{IH} + 155\,\text{mV}$) |
+| **2.0** | 288.09 mV | 268.74 mV | **164.29 mV** | **0.8357 V** | 101.03 mV | 176.57 mV | Seguro ($V_{dyn} > V_{IH} + 257\,\text{mV}$) |
+| **4.0** | 179.23 mV | 171.54 mV | **92.60 mV** | **0.9074 V** | 67.62 mV | --- | Seguro ($V_{dyn} > V_{IH} + 328\,\text{mV}$) |
 
-### Diagnóstico de Fallo Lógico:
-* En ningún caso del barrido se produce conmutación errónea en la salida dominó ($V_{out,max} \le 0.68\text{ mV} \ll V_{IL} = 0.3675\text{ V}$).
-* Si la redistribución hubiese seguido la fórmula analítica pura sin corte de umbral, para $C_L = 0.5\text{ fF}$ la caída predicha ($\Delta V_{pred} = 529.2\text{ mV}$) habría llevado $V(dyn)$ a $0.4708\text{ V} < V_M$, provocando un fallo lógico espurio masivo. El corte subumbral intrínseco del NMOS protege a la compuerta.
+### Diagnóstico Físico y Trazabilidad Histórica:
+* **Inmunidad lógica total:** En ningún caso del banco síncrono se produce conmutación espuria en la salida dominó ($V_{out,max} \le 15.6\text{ mV} \ll V_{IL} = 0.3675\text{ V}$).
+* **Protección subumbral:** Si la redistribución hubiese seguido la fórmula ideal sin corte de umbral, para $C_L = 0.5\text{ fF}$ la caída predicha ($\Delta V_{pred} = 529.2\text{ mV}$) habría llevado $V(dyn)$ a $0.4708\text{ V} < V_M$, provocando un fallo lógico espurio masivo. El corte subumbral intrínseco de $M_2$ protege la integridad del circuito.
+* **Trazabilidad:** El resultado histórico preliminar ($101.03\text{ mV}$ nominal para $C_L=2\text{ fF}$) procede de `nand3_cs_peor_caso_fisico.cir` y `nand3_cs_barrido_cl.cir` (`dv_eval_max: 0.101034 V`), donde las entradas $A$ y $B$ eran **anticipadas** (conmutaban en $[2.98, 3.00]\text{ ns}$, solapando $20\text{ ps}$ con precarga activa $CLK=0$). En el análisis de causalidad temporal, al contrastar dicha condición frente al banco síncrono canónico (`nand3_cs_g2b_piloto_cl2f.cir` / `nand3_cs_g2b_barrido_cl.cir`, conmutación en $[3.00, 3.02]\text{ ns}$ bajo idéntica topología y geometrías), la supresión de la precarga asistida explicó el incremento a $164.29\text{ mV}$ ($+63.26\text{ mV}$). Por su parte, la discrepancia residual de $12.28\text{ mV}$ frente al ensayo histórico alternativo ($176.5718\text{ mV}$ a $t=2.90\text{ ns}$, $C_L=2\text{ fF}$) coexiste con diferencias documentadas en los estados nodales previos (sesgo inicial en $n_2$ de $-160.8\text{ mV}$ vs $-126.8\text{ mV}$) e instantes de medición ($t=2.90\text{ ns}$ a $900\text{ ps}$ de evaluación frente al mínimo de ventana síncrona), corroborando ambas simulaciones el mismo régimen físico dominado por corte subumbral.
 
 ---
 
-## 5. Evaluación Cuantitativa de las Tres Técnicas de Mitigación
+## 5. Evaluación Cuantitativa de Técnicas de Mitigación
 
-Se implementaron y compararon las tres técnicas de mitigación bajo la condición nominal de peor caso ($C_L = 2.0\text{ fF}$, $T_{clk} = 2\text{ ns}$):
+Se implementaron y caracterizaron las técnicas de mitigación bajo la condición nominal del banco síncrono ($C_L = 2.0\text{ fF}$, $T_{clk} = 2\text{ ns}$, PTM 45 nm HP). Denominadores de área activa declarados: etapa dinámica base $W_{\text{dyn,base}} = 1215\text{ nm}$ ($A=0.0547\,\mu\text{m}^2$), celda completa base $W_{\text{celda,base}} = 1440\text{ nm}$ ($A=0.0648\,\mu\text{m}^2$).
 
-| Configuración | Ensayo | $\Delta V_{eval}$ Máx | $V_{dyn,min}$ | $V_{out,max}$ | Tiempo Rest. ($t_{rec}$) | Coste en Área | Sobrecarga de Reloj |
+| Configuración | Descripción | $\Delta V_{eval}$ / Extremo | $V_{dyn,min}$ | $V_{out,max}$ | Tiempo Rest. ($t_{rec}$) | Área Activa Extra | Sobrecarga Reloj |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| **Base (Sin Mitigación)** | `ENS-A2-02` | **101.03 mV** | 0.8990 V | 0.149 mV | Sin recup. en eval. | Base (7 transistores) | $C_{clk} = C_{g,Mp} + C_{g,Mf}$ |
-| **Mitigación 1: Precarga Nodos $n_1, n_2$** | `ENS-A2-04` | **$\le 0\,$mV** | 1.0120 V | 0.267 mV | Inmediato ($t=0$) | +2 PMOS ($W_p=135\,$nm) | $\Delta C_{clk,gate} \approx 0.34\,$fF (+67% comp.) |
-| **Mitigación 2: Reordenamiento PDN ($C$ tope)** | `ENS-A2-05` | **0.014 mV** | 0.99999 V | 0.294 mV | Intransitorio | **0 transistores** (solo routing) | **0 fF** (idéntica a base) |
-| **Mitigación 3: Keeper $W_{kp} = 45\,$nm** | `ENS-A2-06` | **42.18 mV** | 0.9578 V | 0.384 mV | **80.30 ps** | +1 PMOS ($W=45\,$nm) | 0 fF en $CLK$ |
+| **Base Síncrono (Sin Mitigación)** | Ref. Síncrona | **164.29 mV** | 0.8357 V | 0.134 mV | Sin recup. en eval. | Base (5 dyn / 7 celda) | Base ($C_g \approx 0.50\,\text{fF}$) |
+| **Mitigación 1a: Precarga $W=45\,$nm** | Precarga Interna | **$-50.47\,$mV** (overshoot) | 1.0505 V | 0.267 mV | Inmediato | +2 PMOS (+7.4% dyn) | $+0.1274\,$fF ($63.7\,$nW) |
+| **Mitigación 1b: Precarga $W=135\,$nm**| Precarga Interna | **$-50.47\,$mV** (overshoot) | 1.0505 V | 0.267 mV | Inmediato | +2 PMOS (+22.2% dyn) | $+0.3821\,$fF ($191.1\,$nW) |
+| **Mitigación 2: Reordenamiento C-B-A** | Reordenamiento | Vect A: $\le 0\,$ / Vect B: **164.3 mV** | 0.8357 V | 0.134 mV | Depende vector | **0 transistores** (0 nm) | **0 fF** (idéntica a base) |
+| **Mitigación 2: Reordenamiento C-A-B** | Reordenamiento | Vect A: $\le 0\,$ / Vect B: **72.1 mV** | 0.9279 V | 0.134 mV | Depende vector | **0 transistores** (0 nm) | **0 fF** (idéntica a base) |
+| **Mitigación 3: Keeper $W_{kp} = 45\,$nm** | Keeper PMOS | **69.68 mV** (droop inicial) | 0.9303 V | 0.356 mV | **92.92 ps** (desde mín) | +1 PMOS (+3.7% dyn) | 0 fF en $CLK$ |
 
-### Análisis Comparativo de Mitigaciones:
+### Análisis Detallado de Mecanismos Físicos:
 
-0. **Caso Base (Sin Mitigación):**
-   * **Dinámica de Recuperación:** En la configuración base (`ENS-A2-02`), **no existe recuperación durante la ventana de evaluación; el nodo se restaura en la siguiente fase de precarga** cuando el transistor $M_p$ se enciende ($CLK=0$). Durante toda la fase de evaluación, el nodo dinámico permanece degradado en $V(dyn) = 0.899\text{ V}$.
-1. **Mitigación 1 (Precarga Interna):**
-   * **Mecanismo:** Precarga $n_1$ y $n_2$ a $V_{DD}$ durante la fase de precarga ($CLK=0$). Al iniciar la evaluación, la diferencia de potencial entre `dyn`, $n_1$ y $n_2$ es nula ($\Delta V = 0$), suprimiendo la fuerza electromotriz de redistribución.
-   * **Sobrecarga de Línea de Reloj:** La adición de dos PMOS ($W_p = 135\text{ nm}$, $L = 45\text{ nm}$) gobernados por $CLK$ introduce una capacitancia de compuerta adicional estimada en $\Delta C_{clk,gate} = 2 \times (W_p \cdot L \cdot C_{ox}) = 2 \times (135\text{ nm} \times 45\text{ nm} \times 27.62\text{ fF}/\mu\text{m}^2) \approx 0.336\text{ fF} \approx 0.34\text{ fF}$. Comparada con la carga base de compuerta en $CLK$ ($C_{g,Mp} + C_{g,Mf} \approx 0.168\text{ fF} + 0.335\text{ fF} = 0.503\text{ fF}$), esto representa un incremento relativo de compuerta del $+66.8\% \approx +67\%$. Cabe precisar que esta cifra corresponde estrictamente a la estimación de carga intrínseca de compuerta (*gate-only*); la inclusión de las capacitancias parásitas de solapamiento compuerta-drenaje/fuente ($C_{gdo}, C_{gso}$) incrementaría ligeramente la capacitancia efectiva total.
-   * **Observación de Overshoot / Clock Feedthrough:** En la simulación `ENS-A2-04`, las tensiones nodales exhiben un ligero sobreimpulso por encima de $V_{DD}$ ($V(dyn)_{eval,min} = 1.012\text{ V}$, $V(n_1) \approx 1.069\text{ V}$, $V(n_2) \approx 1.062\text{ V}$, con $\Delta V_{eval} \le 0$). Este fenómeno se atribuye prudentemente a un *overshoot* transitorio debido al acoplamiento capacitivo asociado a la transición de reloj (*clock feedthrough / bootstrap-like behavior*). Si bien en este ensayo dicho sobreimpulso no ocasionó ningún fallo funcional ni conmutación espuria ($V_{out,max} \le 0.27\text{ mV}$), constituye un efecto no ideal relevante a considerar en diseño.
-   * **¿Por qué no se precarga $n_3$?** El nodo $n_3$ está conectado directamente al drenaje del transistor footer $M_f$. Al entrar en evaluación ($CLK \rightarrow 1$), $M_f$ conmuta inmediatamente a conducción. Si $n_3$ se encontrara precargado a $V_{DD}$, descargaría a tierra en cada ciclo de evaluación sin importar las entradas, provocando una disipación dinámica parásita $C_{n3} V_{DD}^2 f_{clk}$ inútil, ya que cuando $C=0$, $M_3$ está en corte y $n_3$ nunca interactúa con `dyn`.
-2. **Mitigación 2 (Reordenamiento de Entradas en la PDN):**
-   * **Mecanismo:** Al colocar la entrada crítica tardía o nula ($C=0$) en el transistor superior ($M_3$ adyacente a `dyn`), el canal de $M_3$ se mantiene abierto en el propio contorno del nodo dinámico. Como consecuencia, las capacitancias parásitas de $n_1$ y $n_2$ quedan físicamente desconectadas de `dyn`. La caída es prácticamente nula ($14\ \mu\text{V}$).
-   * **Decisión en Dominó vs Estática:** En lógica estática, el orden de transistores en la PDN no modifica la función lógica ni los niveles lógicos estáticos finales en corriente continua. En lógica dominó, el nodo dinámico es una **memoria capacitiva flotante** durante la evaluación; por ello, la ubicación de las entradas en la pila determina directamente qué nodos parásitos pueden drenar carga desde $C_{dyn}$, convirtiendo el apilamiento en un parámetro de diseño primordial de integridad de señal.
-3. **Mitigación 3 (Transistor Keeper $W_{kp} = 45\text{ nm}$ y Contención):**
-   * **Mecanismo:** El keeper realimentado detecta el estado dinámico y suministra corriente de reposición desde $V_{DD}$. Amortigua la caída transitoria de $101.03\text{ mV}$ a $42.18\text{ mV}$ (reducción del **$58.2\%$**) y restaura activamente $V(dyn)$ al $99\%$ de $V_{DD}$ en **$80.30\text{ ps}$**.
-   * **Compromiso de Contención (`ENS-A2-07`):** Cuando la compuerta evalúa una transición legítima a "0" ($A=B=C=1$), la PDN debe descargar $C_{dyn}$ venciendo la corriente del keeper hasta que la salida dominó supere el umbral y desconecte el PMOS.
-     * Retardo sin keeper: $t_{pHL,dyn} = 23.95\text{ ps}$, $t_{pLH,out} = 37.58\text{ ps}$.
-     * Retardo con keeper ($W_{kp}=45\text{ nm}$): $t_{pHL,dyn} = 27.46\text{ ps}$, $t_{pLH,out} = 43.09\text{ ps}$.
-     * **Penalización de contención:** $\Delta t_{pHL} = +3.51\text{ ps}$ (**$+14.65\%$**); $\Delta t_{pLH,out} = +5.52\text{ ps}$ (**$+14.69\%$**).
+1. **Precarga Interna ($W_p = 45\text{ nm}$ vs $135\text{ nm}$):**
+   * Ambos anchos anulan la caída de tensión estática ($V_{dyn,min} = 1.0505\text{ V}$) en la ventana nominal de precarga ($1\text{ ns} \gg 5\tau$).
+   * La variante de ancho mínimo ($45\text{ nm}$) reduce en un $66.7\%$ la sobrecarga capacitiva de compuerta sobre el reloj ($0.1274\text{ fF}$ vs $0.3821\text{ fF}$) y su disipación dinámica asociada ($63.69\text{ nW}$ vs $191.07\text{ nW}$ a $500\text{ MHz}$).
+   * Ambas introducen un sobreimpulso de $+50.47\text{ mV}$ por acoplamiento capacitivo (*clock feedthrough*).
+   * El nodo $n_3$ no se precarga porque el encendido inmediato del footer $M_f$ en evaluación disiparía innecesariamente $C_{n3} V_{DD}^2 f$ a tierra sin aportar protección lógica.
+2. **Reordenamiento de Entradas en la PDN (Análisis de Vectores de Entrada):**
+   * Bajo el Vector A ($A=B=1, C=0$), ubicar $C=0$ en el transistor superior (adyacente a $dyn$) aísla completamente los nodos internos, anulando el droop.
+   * Sin embargo, bajo el Vector B ($A=0, B=C=1$), la topología C-B-A vuelve a conectar dos nodos internos descargados a $dyn$, sufriendo la misma caída del peor caso base ($164.29\text{ mV}$). La topología C-A-B acota la caída a $72.08\text{ mV}$ al colocar $A=0$ en el centro (aislando $n_2$). En los ensayos exploratorios preliminares (con entradas conmutando a $2.98\text{ ns}$), estas caídas fueron de $100.37\text{ mV}$ y $31.26\text{ mV}$.
+   * Por tanto, el reordenamiento **no es universal** y acarrea compromisos de enrutamiento y capacitancias parásitas de cableado en layout.
+3. **Keeper PMOS ($W_{kp} = 45\text{ nm}$) y Compromiso de Contención Dinámica:**
+   * El inversor dominó de salida ya existe en la celda base, por lo que solo se añade un transistor PMOS ($\Delta W = +45\text{ nm}$, $+3.70\%$ en área activa dinámica).
+   * Amortigua la caída transitoria a $69.68\text{ mV}$ ($V_{dyn,min} = 0.9303\text{ V}$ a $t=3.0271\text{ ns}$), restaura el nodo al $99\%$ de $V_{DD}$ en $92.92\text{ ps}$ tras el mínimo ($110.02\text{ ps}$ desde el cruce de $0.50\text{ V}$ del reloj; $120.02\text{ ps}$ desde inicio de rampa de reloj) y alcanza $0.9996\text{ V}$ ($99.96\%$ de $V_{DD}$) al final de la fase.
+   * **Compromiso de contención dinámica:** Evaluando ambos retardos al $50\%$ de tensión ($V_{in}=0.5\text{ V} \to V_{dyn}=0.5\text{ V}$ y $V_{out}=0.5\text{ V}$):
+     * $t_{pHL,dyn}$: pasa de $23.95\text{ ps}$ a $27.46\text{ ps}$ ($\Delta t = +3.51\text{ ps}$, penalización del **$+14.65\%$**).
+     * $t_{pLH,out}$: pasa de $37.58\text{ ps}$ a $43.09\text{ ps}$ ($\Delta t = +5.52\text{ ps}$, penalización del **$+14.69\%$**).
 
 ---
 

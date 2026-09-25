@@ -1,0 +1,80 @@
+* ==============================================================================
+* ACTIVIDAD 2 - LD2: Protocolo G2.2b - Original (A-B-C) Vector B (A=0, B=1, C=1)
+* Control Riguroso Sincrono (t = 3.00 ns - 3.02 ns)
+* Microelectronica y Sistemas Nanoelectronicos - UNMSM 2026-II
+* ==============================================================================
+
+.include ../../modelos/ptm45hp.lib
+
+.param VDD=1.0
+.param Ln=45n Wn=90n Wp=135n
+.param CL=2f
+.param Tclk=2n
+.temp 27
+.options gmin=1e-15 abstol=1e-14 reltol=1e-4 method=gear
+
+* --- Fuentes de Alimentacion y Reloj ---
+Vdd vdd 0 {VDD}
+Vclk clk 0 PULSE(0 {VDD} {Tclk/2} 20p 20p {Tclk/2} {Tclk})
+
+* --- Estimulos Sincronos: Vector B (A=0, B=1, C=1) ---
+* Ciclo 1 (t in [1n, 2n]): Descarga completa de dyn y nodos internos a 0V
+* Precarga 2 (t in [2n, 3n]): CLK=0 -> dyn a VDD; A=B=C=0 hasta t=3.00n (aislamiento estricto)
+* Evaluacion 2 (t in [3n, 4n]): CLK=1 a t=3.00n; B y C conmutan a 1.0V a t=3.00n a 3.02n (sincrono), A=0
+Va a 0 PWL(0 {VDD} 2.0n {VDD} 2.02n 0)
+Vb b 0 PWL(0 {VDD} 2.0n {VDD} 2.02n 0 3.00n 0 3.02n {VDD})
+Vc c 0 PWL(0 {VDD} 2.0n {VDD} 2.02n 0 3.00n 0 3.02n {VDD})
+
+* --- Parametros de Geometria de Difusion ---
+.param Ad={Wn*3*90n} Pd={Wn*3+180n}
+
+* --- Transistor de Precarga ---
+Mp dyn clk vdd vdd pmos_45hp W={Wp} L={Ln}
+
+* --- Red de Descenso (PDN) Original (A-Top, B-Mid, C-Bot) ---
+M1 n1 a dyn 0 nmos_45hp W={Wn*3} L={Ln} AS={Ad} AD={Ad} PS={Pd} PD={Pd}
+M2 n2 b n1  0 nmos_45hp W={Wn*3} L={Ln} AS={Ad} AD={Ad} PS={Pd} PD={Pd}
+M3 n3 c n2  0 nmos_45hp W={Wn*3} L={Ln} AS={Ad} AD={Ad} PS={Pd} PD={Pd}
+Mf 0 clk n3 0 nmos_45hp W={Wn*3} L={Ln} AS={Ad} AD={Ad} PS={Pd} PD={Pd}
+
+* --- Carga Capacitiva Externa ---
+CL dyn 0 {CL}
+
+* --- Inversor Domino de Salida ---
+Mpi out dyn vdd vdd pmos_45hp W={Wp} L={Ln}
+Mni out dyn 0   0   nmos_45hp W={Wn} L={Ln}
+Cout out 0 1f
+
+* --- Analisis Transitorio ---
+.tran 0 {Tclk*3} 0 2p
+
+* --- Mediciones del Protocolo G2.2b ---
+* 1. Estado previo inmediato a la conmutacion (t = 2.99 ns)
+.meas TRAN Vdyn_pre FIND V(dyn) AT=2.99n
+.meas TRAN Vn1_pre  FIND V(n1)  AT=2.99n
+.meas TRAN Vn2_pre  FIND V(n2)  AT=2.99n
+.meas TRAN Vn3_pre  FIND V(n3)  AT=2.99n
+.meas TRAN Vout_pre FIND V(out) AT=2.99n
+
+* 2. Instante de conmutacion y fin de transicion (t = 3.02 ns y 3.05 ns)
+.meas TRAN Vdyn_t302 FIND V(dyn) AT=3.02n
+.meas TRAN Vdyn_t305 FIND V(dyn) AT=3.05n
+.meas TRAN Vn1_t305  FIND V(n1)  AT=3.05n
+.meas TRAN Vn2_t305  FIND V(n2)  AT=3.05n
+
+* 3. Extremos en la ventana de evaluacion [3.02 ns, 3.95 ns]
+.meas TRAN Vdyn_min MIN V(dyn) FROM=3.02n TO=3.95n
+.meas TRAN Vout_max MAX V(out) FROM=3.02n TO=3.95n
+
+* 4. Caidas de tension
+.meas TRAN dV_vdd PARAM {VDD}-Vdyn_min
+.meas TRAN dV_pre PARAM Vdyn_pre-Vdyn_min
+
+* 5. Estado final de evaluacion (t = 3.95 ns)
+.meas TRAN Vdyn_end FIND V(dyn) AT=3.95n
+.meas TRAN Vn1_end  FIND V(n1)  AT=3.95n
+.meas TRAN Vn2_end  FIND V(n2)  AT=3.95n
+.meas TRAN Vn3_end  FIND V(n3)  AT=3.95n
+.meas TRAN Vout_end FIND V(out) AT=3.95n
+
+.end

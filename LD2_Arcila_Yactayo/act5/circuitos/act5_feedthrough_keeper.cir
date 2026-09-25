@@ -1,0 +1,75 @@
+* Actividad 5 - EXP 1: Clock Feedthrough, Keeper y Recorte por Diodo
+* Microelectronica y Sistemas Nanoelectronicos - UNMSM 2026-II
+.include ../../modelos/ptm45hp.lib
+
+.param VDD=1.0
+.param Ln=45n Wn=90n Wp=135n
+.param CL=0.5f
+.param Tclk=2n
+
+.temp 27
+.options gmin=1e-15 abstol=1e-14 reltol=1e-4 method=gear
+
+Vdd vdd 0 {VDD}
+
+* Reloj con flancos de 5 ps segun indicacion expresa de la guia (Sec. 9.1)
+* Tclk = 2 ns: Precarga en [1ns, 2ns] (CLK=0), Evaluacion en [2ns, 3ns] (CLK=1)
+Vclk clk 0 PULSE(0 {VDD} 0 5p 5p {Tclk/2} {Tclk})
+
+* PDN Abierta (Entradas en 0 V)
+Va a 0 0
+Vb b 0 0
+Vc c 0 0
+
+* ==============================================================================
+* RAMA A: CELDA BASE SIN KEEPER (Homologa a Marco)
+* ==============================================================================
+Mpa dyna clk vdd vdd pmos_45hp W={Wp} L={Ln}
+M1a dyna a n1a 0 nmos_45hp W={Wn*3} L={Ln}
+M2a n1a b n2a 0 nmos_45hp W={Wn*3} L={Ln}
+M3a n2a c n3a 0 nmos_45hp W={Wn*3} L={Ln}
+Mfa n3a clk 0 0 nmos_45hp W={Wn*3} L={Ln}
+CLa dyna 0 {CL}
+
+Mpia outa dyna vdd vdd pmos_45hp W={Wp} L={Ln}
+Mnia outa dyna 0 0 nmos_45hp W={Wn} L={Ln}
+
+* ==============================================================================
+* RAMA B: CELDA CON KEEPER (Wkp = 45 nm)
+* ==============================================================================
+Mpb dynb clk vdd vdd pmos_45hp W={Wp} L={Ln}
+M1b dynb a n1b 0 nmos_45hp W={Wn*3} L={Ln}
+M2b n1b b n2b 0 nmos_45hp W={Wn*3} L={Ln}
+M3b n2b c n3b 0 nmos_45hp W={Wn*3} L={Ln}
+Mfb n3b clk 0 0 nmos_45hp W={Wn*3} L={Ln}
+CLb dynb 0 {CL}
+
+Mpib outb dynb vdd vdd pmos_45hp W={Wp} L={Ln}
+Mnib outb dynb 0 0 nmos_45hp W={Wn} L={Ln}
+
+* Keeper PMOS Wkp = 45 nm
+Mkb dynb outb vdd vdd pmos_45hp W=45n L={Ln}
+
+.tran 0 {Tclk*2.5} 0 0.5p
+
+* Medicion de sobreimpulso al inicio de la segunda evaluacion (t = 2.0 ns)
+.meas TRAN Vdyna_prech FIND V(dyna) AT=1.99n
+.meas TRAN Vdyna_max MAX V(dyna) FROM=1.99n TO=2.10n
+.meas TRAN Vovershoot_a PARAM Vdyna_max-Vdyna_prech
+
+.meas TRAN Vdynb_prech FIND V(dynb) AT=1.99n
+.meas TRAN Vdynb_max MAX V(dynb) FROM=1.99n TO=2.10n
+.meas TRAN Vovershoot_b PARAM Vdynb_max-Vdynb_prech
+
+* Medicion de subimpulso al inicio de la precarga (t = 1.0 ns)
+.meas TRAN Vdyna_min MIN V(dyna) FROM=0.99n TO=1.10n
+.meas TRAN Vundershoot_a PARAM 1.0-Vdyna_min
+
+.meas TRAN Vdynb_min MIN V(dynb) FROM=0.99n TO=1.10n
+.meas TRAN Vundershoot_b PARAM 1.0-Vdynb_min
+
+* Corriente por el diodo sustrato-drenador del PMOS de precarga
+.meas TRAN I_diode_max_a MAX -Ib(Mpa) FROM=1.99n TO=2.10n
+.meas TRAN I_diode_max_b MAX -Ib(Mpb) FROM=1.99n TO=2.10n
+
+.end

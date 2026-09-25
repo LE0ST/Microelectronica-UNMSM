@@ -12,6 +12,7 @@ referencia formal a los netlists generadores:
 
 import os
 import sys
+import shutil
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -32,6 +33,7 @@ SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 ACT1_DIR = os.path.dirname(SCRIPT_DIR)
 RAW_DIR = os.path.join(ACT1_DIR, "resultados", "raw")
 FIG_DIR = os.path.join(ACT1_DIR, "figuras")
+INFORME_FIG_DIR = os.path.abspath(os.path.join(ACT1_DIR, "..", "informe_latex", "figuras"))
 
 PARSER_DIR = os.path.abspath(os.path.join(ACT1_DIR, "..", "scripts", "lectura_resultados"))
 sys.path.insert(0, PARSER_DIR)
@@ -120,10 +122,12 @@ def generar_figura_1():
     axes[3].legend(loc='upper right')
     axes[3].set_xlim(0, 4.0)
 
-    fig.suptitle('Comportamiento Temporal y Fases de la NAND3 Dinámica Footed (45nm HP, 500 MHz)\nNetlist: nand3_dinamica_base.cir', y=0.98)
+    fig.suptitle('Comportamiento Temporal y Fases de la NAND3 Dinámica Footed (PTM 45nm HP, 500 MHz)', y=0.98)
     out_file = os.path.join(FIG_DIR, "fig1_act1_fases_formas_onda.png")
     fig.savefig(out_file, dpi=300, bbox_inches='tight')
     plt.close(fig)
+    if os.path.exists(INFORME_FIG_DIR):
+        shutil.copy2(out_file, os.path.join(INFORME_FIG_DIR, "fig1_act1_fases_formas_onda.png"))
     print(f"[OK] Generada Figura 1: {out_file}")
 
 def generar_figura_2():
@@ -180,11 +184,13 @@ def generar_figura_2():
     ax2.set_ylim(-0.05, 1.15)
     ax2.set_xlim(0.8, 3.2)
 
-    fig.suptitle('Comparación Temporal Sincronizada: NAND3 Dinámica Dominó vs Estática Equivalente (45nm HP)\nNetlists: nand3_dinamica_base.cir (ENS-A1-01) y nand3_estatica_mismo_estimulo.cir (ENS-A1-07)', y=0.98)
+    fig.suptitle('Comparación Temporal Sincronizada: NAND3 Dinámica Dominó vs Estática Equivalente (PTM 45nm HP)', y=0.98)
     fig.tight_layout()
     out_file = os.path.join(FIG_DIR, "fig2_act1_dinamica_vs_estatica.png")
     fig.savefig(out_file, dpi=300, bbox_inches='tight')
     plt.close(fig)
+    if os.path.exists(INFORME_FIG_DIR):
+        shutil.copy2(out_file, os.path.join(INFORME_FIG_DIR, "fig2_act1_dinamica_vs_estatica.png"))
     print(f"[OK] Generada Figura 2: {out_file}")
 
 def generar_figura_3():
@@ -236,11 +242,13 @@ def generar_figura_3():
                  xy=(199.0, 0.884), xytext=(70.0, 0.65),
                  arrowprops=dict(facecolor='black', arrowstyle='->', lw=0.8), fontsize=8.5)
 
-    fig.suptitle('Estudio de Retención con PDN Abierta ($V_c=0$): Impacto de la Frecuencia de Reloj\nNetlists: nand3_dinamica_pdn_abierta_tclk2n.cir y tclk400n.cir', y=0.98)
+    fig.suptitle('Estudio de Retención con PDN Abierta ($V_c=0$): Impacto de la Frecuencia de Reloj (PTM 45nm HP)', y=0.98)
     fig.tight_layout()
     out_file = os.path.join(FIG_DIR, "fig3_act1_retencion_pdn_abierta.png")
     fig.savefig(out_file, dpi=300, bbox_inches='tight')
     plt.close(fig)
+    if os.path.exists(INFORME_FIG_DIR):
+        shutil.copy2(out_file, os.path.join(INFORME_FIG_DIR, "fig3_act1_retencion_pdn_abierta.png"))
     print(f"[OK] Generada Figura 3: {out_file}")
 
 def main():

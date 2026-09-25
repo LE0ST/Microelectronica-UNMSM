@@ -15,7 +15,7 @@ Se emplean tarjetas de modelo predictivas BSIM4 (\textit{Predictive Technology M
 \end{itemize}
 
 \subsection{Parámetros Numéricos del Solver SPICE}
-De acuerdo con las directrices de diseño submicrométrico para lógica dinámica, se estableció como directiva mandatoria en todos los archivos de netlist (\texttt{.cir}):
+En la simulación física de lógica dinámica submicrométrica, se fijaron en los netlists (\texttt{.cir}) las siguientes opciones numéricas del solver:
 \begin{lstlisting}[style=spice]
 .options gmin=1e-15 abstol=1e-14 reltol=1e-4 method=gear
 \end{lstlisting}

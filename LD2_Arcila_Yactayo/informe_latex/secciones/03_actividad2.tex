@@ -1,117 +1,118 @@
 % ==============================================================================
 % SECCION 3: ACTIVIDAD 2 - COMPARTICION DE CARGA (CHARGE SHARING) EN NAND3
 % ==============================================================================
-\clearpage
+\needspace{6\baselineskip}
 \section{Actividad 2: Compartición de Carga (Charge Sharing) en NAND3 Dinámica}
 \label{sec:actividad2}
 
 \subsection{Fundamento Físico y Predicción Analítica Previa}
-En una compuerta NAND3 dinámica \textit{footed} con inversor dominó de salida, la red de descenso serie (PDN) posee nodos intermedios con capacitancias parásitas de difusión: $n_1$ (entre $M_1$ y $M_2$) y $n_2$ (entre $M_2$ y $M_3$). Tras un ciclo previo donde todos los nodos descargaron a $0\,\text{V}$ ($A=B=C=1$), si en la evaluación subsiguiente la compuerta conmuta a una condición donde la PDN permanece bloqueada a tierra pero los transistores superiores entran en conducción ($A=B=1, C=0$ con $CLK=1$):
-\begin{enumerate}[leftmargin=1.4em,itemsep=0.15em]
+En una compuerta NAND3 CMOS dinámica \textit{footed} con inversor dominó de salida (PTM 45\,nm HP, $V_{DD} = 1.0\,\text{V}$, $T = 27\,^\circ\text{C}$), la red de descenso serie (PDN) contiene tres nodos internos intermedios: $n_1$ (entre $M_1$ y $M_2$), $n_2$ (entre $M_2$ y $M_3$) y $n_3$ (entre $M_3$ y el footer $M_f$). El dimensionamiento geométrico de canal adoptado es: $L = 45\,\text{nm}$, transistor de precarga $M_p$ ($W_p = 135\,\text{nm}$), transistores de la PDN y footer ($W_{\text{PDN}} = 3W_n = 270\,\text{nm}$) e inversor dominó estático de salida ($W_{pi} = 135\,\text{nm}$, $W_{ni} = 90\,\text{nm}$). El ancho total activo de compuerta de la etapa dinámica base es $W_{\text{dyn,base}} = W_p + 4 W_{\text{PDN}} = 1215\,\text{nm}$ ($A_{\text{dyn,base}} = 0.0547\,\mu\text{m}^2$), mientras que la celda completa incluyendo el inversor totaliza $W_{\text{celda,base}} = 1440\,\text{nm}$ ($A_{\text{celda,base}} = 0.0648\,\mu\text{m}^2$).
+
+Tras un ciclo previo donde todos los nodos descargaron a $0\,\text{V}$ ($A=B=C=1$), si en la evaluación subsiguiente la compuerta conmuta a una condición donde la PDN permanece bloqueada hacia tierra pero los transistores superiores conducen ($A=B=1, C=0$ con $CLK=1$):
+\begin{enumerate}[leftmargin=1.4em,itemsep=0.12em]
   \item El transistor de precarga $M_p$ se apaga, dejando al nodo dinámico $dyn$ \textbf{flotante} cargado a $V_{DD} = 1.0\,\text{V}$.
-  \item $M_3$ permanece en corte ($C=0$), manteniendo abierto el camino conductivo hacia el footer $M_f$ y tierra.
-  \item $M_1$ y $M_2$ conducen ($A=B=1$), conectando el nodo $dyn$ con las capacitancias parásitas descargadas de $n_1$ y $n_2$.
+  \item El dispositivo $M_3$ permanece en corte ($C=0$), manteniendo abierto el camino hacia el footer $M_f$ y masa.
+  \item Los dispositivos $M_1$ y $M_2$ conducen ($A=B=1$), conectando el nodo $dyn$ con las capacitancias parásitas descargadas de $n_1$ y $n_2$.
   \item La carga electrostática almacenada en $C_{dyn}$ se redistribuye hacia $C_{n1}$ y $C_{n2}$, provocando una caída transitoria de potencial $\Delta V$ (\textit{charge sharing droop}).
 \end{enumerate}
 
-\noindent\textbf{Deducción de Capacitancias de Difusión ($C_a$):} Conforme a las geometrías de la guía ($L_{\text{diff}} = 90\,\text{nm}$, $W_{\text{PDN}} = 270\,\text{nm}$), el área de difusión es $Ad = W \times L_{\text{diff}} = 0.0243\,\mu\text{m}^2$ y el perímetro exterior $Pd = W + 2L_{\text{diff}} = 0.450\,\mu\text{m}$. Empleando los parámetros de unión de \texttt{ptm45hp.lib} ($c_j = 0.50\,\text{fF}/\mu\text{m}^2$, $c_{jsw} = 0.50\,\text{fF}/\mu\text{m}$), la capacitancia por contacto de difusión a cero sesgo resulta:
+\noindent\textbf{Deducción de Capacitancias de Difusión ($C_a$):} Considerando las dimensiones de difusión del proceso ($L_{\text{diff}} = 90\,\text{nm}$, $W_{\text{PDN}} = 270\,\text{nm}$), el área de difusión es $Ad = W \times L_{\text{diff}} = 0.0243\,\mu\text{m}^2$ y el perímetro exterior $Pd = W + 2L_{\text{diff}} = 0.450\,\mu\text{m}$. Empleando los parámetros de unión de \texttt{ptm45hp.lib} ($c_j = 0.500\,\text{fF}/\mu\text{m}^2$, $c_{jsw} = 0.500\,\text{fF}/\mu\text{m}$), la capacitancia por contacto de difusión a cero sesgo resulta:
 \begin{equation}
   C_{\text{diff},1} = c_j \cdot Ad + c_{jsw} \cdot Pd = 0.01215\,\text{fF} + 0.22500\,\text{fF} = 0.23715\,\text{fF}
 \end{equation}
-donde el efecto tridimensional perimetral (\textit{sidewall}) concentra el $94.9\%$ de la capacidad total. Dado que cada nodo interno $n_1$ y $n_2$ comparte dos difusiones adyacentes ($C_{n1} = C_{n2} = 2\,C_{\text{diff},1} = 0.4743\,\text{fF}$), la capacitancia agregada descargada es:
+donde el efecto tridimensional de borde (\textit{sidewall}) concentra el $94.9\%$ de la capacidad neta. Dado que cada nodo interno $n_1$ y $n_2$ comparte dos difusiones adyacentes ($C_{n1} = C_{n2} = 2\,C_{\text{diff},1} = 0.4743\,\text{fF}$), la capacitancia agregada descargada conectada a la red es:
 \begin{equation}
   C_a \equiv C_{n1} + C_{n2} = 0.9486\,\text{fF}
 \end{equation}
 
-\noindent\textbf{Modelo Analítico Ideal de Conservación de Carga:} Asumiendo transistores ideales como conmutadores perfectos sin caída de umbral, el reparto puro de carga predice:
+\noindent\textbf{Modelos Analíticos de Conservación de Carga:} Asumiendo transistores ideales como interruptores bilaterales sin caída de umbral, el balance electrostático estipula:
 \begin{equation}
   Q_{\text{inicial}} = C_{dyn} V_{DD} = (C_{dyn} + C_a) V_{dyn,\text{final}} \implies \Delta V_{\text{pred}} = V_{DD} \cdot \frac{C_a}{C_a + C_{dyn}}
   \label{eq:charge_sharing}
 \end{equation}
-Para la condición nominal ($C_L = 2.0\,\text{fF}$) y considerando las parásitas fijas en $dyn$ según la guía ($C_{\text{extra}} = C_{gd}(M_p) + C_g(\text{inversor}) \approx 0.3441\,\text{fF} \implies C_{dyn} \approx 2.3441\,\text{fF}$), la caída teórica predicha es:
-\begin{equation}
-  \Delta V_{\text{pred}} = 1.0\,\text{V} \cdot \frac{0.9486\,\text{fF}}{0.9486\,\text{fF} + 2.3441\,\text{fF}} = \mathbf{288.09\,\text{mV}} \implies V_{dyn,\text{pred}} = 0.7119\,\text{V}
-\end{equation}
-\textit{Nota metodológica:} Esta formulación de primer orden es idealizada: omite componentes del modelo BSIM4 (como la capacitancia de borde compuerta-difusión $c_{jswgs}$) y no contempla la dinámica de conducción no lineal ni el corte progresivo del stack.
+Para cuantificar $C_{dyn}$ frente a la carga externa $C_L$, se concilian dos modelos de referencia bien definidos:
+\begin{enumerate}[leftmargin=1.4em,itemsep=0.12em]
+  \item \textbf{Modelo 2 (Solapamiento y Compuerta):} Incluye solapamiento de $M_p$ y compuerta del inversor: $C_{\text{extra}} = C_{gd}(M_p) + C_g(\text{inversor}) \approx 0.0149\,\text{fF} + 0.3292\,\text{fF} = 0.3441\,\text{fF} \implies C_{dyn} = C_L + 0.3441\,\text{fF}$ ($2.3441\,\text{fF}$ nominal a $C_L=2\,\text{fF}$).
+  \item \textbf{Modelo 3 (Carga Total Completa):} Agrega la difusión del terminal de drenaje de $M_1$ en $dyn$ ($C_{\text{diff},M1} = 0.2372\,\text{fF}$): $C_{dyn,\text{total}} = C_L + 0.5813\,\text{fF}$ ($2.5813\,\text{fF}$ nominal).
+\end{enumerate}
+Bajo la condición nominal ($C_L = 2.0\,\text{fF}$), el Modelo 2 predice $\Delta V_{\text{pred}} = 288.09\,\text{mV}$ ($V_{dyn,\text{pred}} = 0.7119\,\text{V}$), mientras que el Modelo 3 arroja $\Delta V_{\text{pred}} = 268.74\,\text{mV}$ ($V_{dyn,\text{pred}} = 0.7313\,\text{V}$).
 
-\subsection{Estímulo Literal de la Guía vs Benchmark Físico Controlado}
-Con el estímulo literal de la guía oficial, el instante temporal especificado ($t = 1.95\,T_{clk} = 3.9\,\text{ns}$) coincide con la fase de precarga para la temporización empleada a $500\,\text{MHz}$ ($CLK=0$), provocando que la conducción activa de $M_p$ recargue continuamente el nodo dinámico y enmascare la redistribución hacia los nodos internos. Por ello, se conservó dicha corrida oficial de referencia y se implementó un ensayo de benchmark físico controlado (\texttt{ENS-A2-02}) que garantiza:
-\begin{enumerate}[leftmargin=1.4em,itemsep=0.15em]
-  \item Descarga completa previa de $dyn, n_1, n_2, n_3$ a $0\,\text{V}$ durante un primer ciclo de evaluación ($A=B=C=1$).
-  \item Precarga exclusiva de $dyn$ a $V_{DD}$ en el semi-periodo bajo subsiguiente ($CLK=0$), manteniendo $n_1$ y $n_2$ descargados.
-  \item Entrada en evaluación ($CLK=1, M_p$ en corte) con transición $A=B=1, C=0$, aislando con total fidelidad el fenómeno de \textit{charge sharing}.
+\subsection{Protocolo de Evaluación y Condiciones de Medición}
+La caracterización experimental del peor caso de redistribución de carga exige analizar el impacto del alineamiento temporal de las entradas respecto a las fases del reloj:
+\begin{enumerate}[leftmargin=1.4em,itemsep=0.12em]
+  \item \textbf{Protocolo Canónico de Referencia (Síncrono):} Las entradas $A$ y $B$ conmutan síncronamente con el flanco ascendente de reloj ($t \in [3.00,\, 3.02]\,\text{ns}$), garantizando una precarga completa previa y nodos internos inicialmente descargados ($dyn=V_{DD}$, $V(n_1, n_2, n_3) \approx 0\,\text{V}$). Al aislar la redistribución electrostática pura sin asistencia de la fuente de alimentación, el nodo dinámico desciende hasta $V_{dyn,\text{min}} = \mathbf{0.8357\,\text{V}}$, registrando una caída neta de $\Delta V = \mathbf{164.29\,\text{mV}}$ ($C_L=2\,\text{fF}$, PTM 45\,nm HP, $V_{DD}=1.0\,\text{V}$, $T=27^\circ\text{C}$).
+  \item \textbf{Protocolo Alternativo con Entradas Anticipadas:} Si las entradas conmutan de forma anticipada durante la fase de precarga ($CLK=0$, $t \in [2.98,\, 3.00]\,\text{ns}$), el transistor PMOS de precarga $M_p$ conduce activamente y recarga parcialmente los nodos internos intermedios a través de $M_1$ y $M_2$. Esta precarga parásita suministrada por $V_{DD}$ atenúa la redistribución en la fase subsiguiente de evaluación a $\Delta V = \mathbf{101.03\,\text{mV}}$ ($V_{dyn,\text{min}} = 0.8990\,\text{V}$).
+  \item \textbf{Descomposición Causal del Solapamiento:} La comparación cuantitativa demuestra que la conmutación sincrónica con el reloj incrementa la severidad de la caída en $+63.26\,\text{mV}$ ($101.03\,\text{mV} \to 164.29\,\text{mV}$), evidenciando que el solapamiento anticipado con la precarga enmascara la magnitud real del peor caso físico.
 \end{enumerate}
 
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=0.68\linewidth]{figuras/fig1_act2_peor_caso_formas_onda.png}
-  \caption[Formas de onda sincronizadas del peor caso de charge sharing]{Formas de onda sincronizadas del peor caso de charge sharing en la NAND3 dinámica footed (control $CLK, A, C$, nodos internos $n_1, n_2, n_3$, nodo $dyn$ y salida $out$).}
+  \includegraphics[width=0.48\linewidth]{figuras/fig1_act2_peor_caso_formas_onda.png}
+  \caption[Formas de onda transitorias del peor caso de redistribución de carga]{Formas de onda transitorias del peor caso de redistribución de carga en la compuerta NAND3 dinámica footed ($C_L=2.0\,\text{fF}$, PTM 45\,nm HP, $V_{DD}=1.0\,\text{V}$). Se exhibe el control de reloj, la evolución de $dyn$, los nodos internos $n_1, n_2, n_3$, y la inmunidad de la salida $out$.}
   \label{fig:peor_caso_formas_onda}
 \end{figure}
 
-\subsection{Resultados del Caso Base y Discrepancia Física}
-La simulación del caso base nominal ($C_L = 2.0\,\text{fF}$, Figura~\ref{fig:peor_caso_formas_onda}) registra una caída de $\Delta V_{\text{sim}} = \mathbf{101.03\,\text{mV}}$, alcanzando un mínimo de $V_{dyn,\text{min}} = \mathbf{0.8990\,\text{V}}$, sin inducir conmutación espuria en la salida dominó ($V_{out,\text{max}} = 0.149\,\text{mV} \ll V_{IL} = 0.3675\,\text{V}$). 
-
-La caída simulada es $2.85\times$ menor a la predicción teórica ($\Delta V_{\text{pred}} = 288.09\,\text{mV}$). Esta discrepancia no obedece a un error de cálculo, sino a la física intrínseca del transistor MOS:
-\begin{enumerate}[leftmargin=1.4em,itemsep=0.15em]
-  \item \textbf{Corte Subumbral del Transistor Pasante ($M_2$):} $M_2$ opera como transistor de paso con compuerta en $V_B = 1.0\,\text{V}$. Al transferirse carga hacia $n_2$, la tensión $V(n_2)$ se eleva. Debido a que el sustrato está polarizado a masa ($0\,\text{V}$), se desarrolla un efecto de cuerpo severo ($V_{SB2} = V(n_2) > 0$). Evaluando analíticamente la elevación de umbral mediante la formulación clásica $\Delta V_{th} \approx k_1 (\sqrt{2\phi_F + V_{SB}} - \sqrt{2\phi_F})$ con los parámetros de la tarjeta PTM ($k_1 = 0.4\,\text{V}^{1/2}$, $2\phi_F \approx 0.8\,\text{V}$), se obtiene una \textbf{estimación analítica aproximada} de $V_{th,\text{eff}} \approx 0.55\text{ a } 0.60\,\text{V}$ (frente a $V_{th0} = 0.469\,\text{V}$ a cero sesgo). Al subir $V(n_2)$ hasta $\approx 0.66\,\text{V}$, la tensión compuerta-fuente cae a $V_{GS2} = 1.0 - 0.66 = 0.34\,\text{V} \ll V_{th,\text{eff}}$, forzando a $M_2$ a entrar en régimen subumbral y bloqueando el flujo de carga antes de alcanzar el equilibrio estático total.
-  \item \textbf{No Linealidad de Capacitancias de Unión:} Conforme $n_1$ y $n_2$ aumentan su tensión respecto a masa, la polarización inversa de las uniones $p\text{-}n$ reduce dinámicamente la capacitancia neta según $C_j(V_R) = C_{j0} / (1 + V_R/PB)^M$.
+\subsection{Resultados del Caso Base y Dinámica de Conmutación}
+Bajo las condiciones nominales de referencia síncrona ($C_L = 2.0\,\text{fF}$, Figura~\ref{fig:peor_caso_formas_onda}), la simulación registra una caída neta de $\Delta V_{\text{sinc}} = \mathbf{164.29\,\text{mV}}$, alcanzando un mínimo de $V_{dyn,\text{min}} = \mathbf{0.8357\,\text{V}}$ ($V_{out,\text{max}} = 0.134\,\text{mV} \ll V_{IL} = 0.3675\,\text{V}$). La curva exhibe dos fases físicas:
+\begin{enumerate}[leftmargin=1.4em,itemsep=0.12em]
+  \item \textbf{Fase de Redistribución Rápida ($t \in [3.00,\, 3.05]\,\text{ns}$):} En los primeros $50\,\text{ps}$, la ecualización capacitiva inmediata entre $C_{dyn}$ y los nodos $n_1, n_2$ provoca una caída abrupta de $114.6\,\text{mV}$, situando a $dyn$ en $0.8854\,\text{V}$.
+  \item \textbf{Corte Subumbral de $M_2$ y Deriva Asintótica ($t > 3.05\,\text{ns}$):} Al subir $V(n_2) \approx 0.66\,\text{V}$, el efecto de cuerpo ($V_{SB2} \approx 0.66\,\text{V}$, con $k_1 = 0.4\,\text{V}^{1/2}$) eleva el umbral efectivo a $V_{th,\text{eff}} \approx 0.55\text{--}0.60\,\text{V}$. Como la compuerta está en $V_B = 1.0\,\text{V}$, $V_{GS2} = 1.0 - 0.66 = 0.34\,\text{V} \ll V_{th,\text{eff}}$, empujando a $M_2$ a corte subumbral y bloqueando la redistribución libre. Los $49.7\,\text{mV}$ adicionales se deben a conducción residual en subumbral y fugas a masa.
 \end{enumerate}
 
 \subsection{Barrido Paramétrico de Carga (\texorpdfstring{$C_L$}{CL}) y Márgenes de Ruido}
-Se simuló el comportamiento ante variaciones de $C_L \in [0.5,\, 1.0,\, 2.0,\, 4.0]\,\text{fF}$. Los resultados cuantitativos contrastados con el modelo analítico se presentan en la Tabla~\ref{tab:barrido_cl_act2}, y su comportamiento gráfico en la Figura~\ref{fig:dv_vs_cl}.
+Se evaluó el comportamiento ante variaciones de $C_L \in [0.5,\, 1.0,\, 2.0,\, 4.0]\,\text{fF}$ (Tabla~\ref{tab:barrido_cl_act2} y Figura~\ref{fig:dv_vs_cl}).
 
 \input{tablas/tabla_barrido_cl_act2.tex}
 
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[width=0.68\linewidth]{figuras/fig2_act2_dv_vs_cl_analitico_simulado.png}
-  \caption[Validación paramétrica de charge sharing vs capacitancia de carga]{Validación paramétrica de charge sharing frente a $C_L$: (a) Caída de potencial $\Delta V$ analítica vs simulación SPICE; (b) Tensión mínima $V_{dyn,\text{min}}$ y delimitación de la zona lógica segura frente a umbrales del inversor dominó ($V_M = 0.480\,\text{V}$, $V_{IH} = 0.579\,\text{V}$).}
-  \label{fig:dv_vs_cl}
-\end{figure}
-
-\noindent\textbf{Tendencia Física e Inmunidad al Ruido:} A mayor capacitancia $C_L$, menor es la caída $\Delta V$ debido al incremento del depósito de carga inicial $Q = C_{dyn} V_{DD}$. En todos los casos ensayados, el nodo $dyn$ permanece rígidamente dentro de la zona lógica segura ($V_{dyn,\text{min}} \ge 0.8241\,\text{V} > V_{IH} = 0.5785\,\text{V}$), evitando falsas conmutaciones. Cabe resaltar que si la redistribución hubiese seguido el modelo lineal sin corte de umbral, para $C_L = 0.5\,\text{fF}$ la caída predicha ($\Delta V_{\text{pred}} = 529.15\,\text{mV}$) habría sumergido a $V(dyn)$ en $0.4708\,\text{V} < V_M$, generando un fallo lógico destructivo en la salida; el corte subumbral intrínseco del NMOS actúa así como una barrera protectora natural de integridad lógica.
+\noindent\textbf{Tendencia Física e Integridad Lógica:} La caída $\Delta V$ disminuye monótonamente con $C_L$ por mayor inercia $Q = C_{dyn} V_{DD}$. En todos los casos, $V_{dyn,\text{min}} \ge 0.6351\,\text{V}$ se mantiene holgadamente sobre el umbral de entrada alta del inversor ($V_{IH} = 0.5785\,\text{V}$), garantizando inmunidad lógica en la salida dominó ($V_{out,\text{max}} \le 15.6\,\text{mV} \ll V_{IL}$). Para $C_L = 0.5\,\text{fF}$, el modelo lineal clásico predice un colapso destructivo a $0.4708\,\text{V} < V_M$; la no linealidad del corte subumbral del NMOS opera como una protección natural contra la degradación excesiva.
 
 \subsection{Evaluación Cuantitativa de Técnicas de Mitigación}
-Bajo las condiciones de peor caso ($C_L = 2.0\,\text{fF}$), se implementaron y caracterizaron las tres técnicas de mitigación estipuladas en la guía. Los resultados comparativos se sintetizan en la Tabla~\ref{tab:mitigaciones_act2} y en la Figura~\ref{fig:comparacion_mitigaciones}.
+Bajo las condiciones de referencia ($C_L = 2.0\,\text{fF}$), se implementaron y caracterizaron las tres técnicas de mitigación bajo condiciones de conmutación homólogas. Para evaluar con rigor la inmunidad lógica, el margen de ruido de nivel alto frente a la entrada del inversor dominó se define formalmente como $NM_H \equiv V_{dyn,\text{min}} - V_{IH}$ (con $V_{IH} = 0.5785\,\text{V}$, tomando $V_M = 0.4797\,\text{V}$ como umbral de conmutación simétrica). Asimismo, los porcentajes de sobrecoste de silicio corresponden estrictamente al incremento del área geométrica activa de canal de compuerta ($\Delta W / W_{\text{base}}$ con $L=45\,\text{nm}$), distinguiendo explícitamente entre la etapa dinámica base ($W_{\text{dyn,base}} = 1215\,\text{nm}$) y la celda dominó completa con inversor ($W_{\text{celda,base}} = 1440\,\text{nm}$). La síntesis cuantitativa se detalla en la Tabla~\ref{tab:mitigaciones_act2} y las formas de onda en la Figura~\ref{fig:comparacion_mitigaciones}.
 
 \input{tablas/tabla_mitigaciones_act2.tex}
 
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=0.68\linewidth]{figuras/fig3_act2_comparacion_mitigaciones.png}
-  \caption[Comparación de técnicas de mitigación y compromiso de contención]{Comparación cuantitativa de técnicas de mitigación de charge sharing: (a) Formas de onda transitorias de $V(dyn)$ durante evaluación; (b) Compromiso de contención del keeper ($W_{kp}=45\,\text{nm}$) en retardo durante conmutación legítima ($A=B=C=1$).}
-  \label{fig:comparacion_mitigaciones}
+  \begin{minipage}[t]{0.485\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{figuras/fig2_act2_dv_vs_cl_analitico_simulado.png}
+    \caption[Validación paramétrica de charge sharing vs $C_L$]{Validación paramétrica de charge sharing vs $C_L$: (a) $\Delta V$ analítico vs simulado; (b) $V_{dyn,\text{min}}$ vs zona lógica segura.}
+    \label{fig:dv_vs_cl}
+  \end{minipage}\hfill
+  \begin{minipage}[t]{0.485\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{figuras/fig3_act2_comparacion_mitigaciones.png}
+    \caption[Evaluación de técnicas de mitigación]{Evaluación de técnicas de mitigación: (a) Formas de onda transitorias $V(dyn)$ ($C_L=2\,\text{fF}$); (b) Contención del keeper ($W_{kp}=45\,\text{nm}$).}
+    \label{fig:comparacion_mitigaciones}
+  \end{minipage}
 \end{figure}
 
 \subsubsection{Técnica 1: Precarga de Nodos Internos (\texorpdfstring{$n_1, n_2$}{n1, n2})}
-Se incorporaron dos transistores PMOS auxiliares ($W_p = 135\,\text{nm}$) comandados por $CLK$ para precargar los nodos internos $n_1$ y $n_2$ a $V_{DD}$ durante $CLK=0$. 
-\begin{itemize}[leftmargin=1.4em,itemsep=0.15em]
-  \item \textbf{Efectividad y Droop:} Al igualar las tensiones iniciales ($V(dyn) = V(n_1) = V(n_2) = V_{DD}$), la fuerza impulsora de redistribución se anula, suprimiendo completamente la caída ($\Delta V \le 0\,\text{mV}$).
-  \item \textbf{Sobrecarga de Reloj:} La adición de dos compuertas PMOS introduce una capacitancia parásita adicional en la línea de reloj estimada en $\Delta C_{clk,\text{gate}} \approx 2(W_p \cdot L \cdot C_{ox}) \approx \mathbf{0.34\,\text{fF}}$, lo cual supone un incremento relativo de compuerta del $+67\%$ respecto a la carga de reloj base ($C_{g,Mp} + C_{g,Mf} \approx 0.503\,\text{fF}$).
-  \item \textbf{Overshoot por Acoplamiento Transitorio:} Se aprecia un sobreimpulso nodal por acoplamiento capacitivo (\textit{clock feedthrough / bootstrap-like}): $V_{dyn,\text{min}} = 1.0120\,\text{V}$, $V(n_1) \approx 1.069\,\text{V}$ y $V(n_2) \approx 1.062\,\text{V}$. Si bien no induce conmutación espuria ($V_{out,\text{max}} \le 0.27\,\text{mV}$), debe considerarse en el diseño de márgenes de tensión.
-  \item \textbf{¿Por qué no se precarga el nodo $n_3$?} El nodo $n_3$ conecta directamente al drenaje del footer $M_f$. Al entrar en evaluación ($CLK \to 1$), $M_f$ conduce inmediatamente hacia tierra. Precargar $n_3$ forzaría una descarga innecesaria a masa en cada ciclo de reloj, incurriendo en una disipación dinámica redundante $C_{n3} V_{DD}^2 f_{clk}$ sin beneficio alguno, dado que cuando $C=0$, $M_3$ permanece en corte y $n_3$ jamás interactúa con el nodo dinámico.
+Se conectaron dos transistores PMOS auxiliares comandados por $CLK$ a los nodos $n_1$ y $n_2$. Se caracterizaron dos variantes: $W_p = 45\,\text{nm}$ (ancho mínimo) y $W_p = 135\,\text{nm}$ (convencional).
+\begin{itemize}[leftmargin=1.4em,itemsep=0.03em]
+  \item \textbf{Eficacia y Equivalencia Nominal:} Ambos anchos logran idéntica tensión mínima ($V_{dyn,\text{min}} = 1.0505\,\text{V}$, suprimiendo el droop con $\Delta V = -50.47\,\text{mV}$) porque la ventana de precarga ($1\,\text{ns}$) excede con creces a $\tau_{\text{pre}} \approx 5\,\text{ps}$. Un ancho de $135\,\text{nm}$ solo se requeriría en precargas ultra-cortas ($<50\,\text{ps}$).
+  \item \textbf{Sobrecarga y Potencia en Reloj:} Para $W=45\,\text{nm}$, $C_{\text{clk,aux}} = \mathbf{0.1274\,\text{fF}}$ y $P_{\text{clk}} = \mathbf{63.69\,\text{nW}}$ (+7.41\% área dyn). Para $W=135\,\text{nm}$, $C_{\text{clk,aux}} = \mathbf{0.3821\,\text{fF}}$ ($3.0\times$) y $P_{\text{clk}} = \mathbf{191.07\,\text{nW}}$ (+22.22\% área dyn). La opción de $45\,\text{nm}$ es óptima al ahorrar 66.7\% en potencia de reloj. Ambas variantes inducen sobreimpulso capacitivo de $+50.47\,\text{mV}$ sobre $V_{DD}$.
 \end{itemize}
 
-\subsubsection{Técnica 2: Reordenamiento de Entradas en la PDN}
-Consiste en asignar la entrada crítica que permanece en nivel bajo ($C=0$) al transistor más próximo al nodo dinámico ($M_3$ adyacente a $dyn$), relegando las entradas en nivel alto ($A, B$) a las posiciones inferiores.
-\begin{itemize}[leftmargin=1.4em,itemsep=0.15em]
-  \item \textbf{Rendimiento:} Al encontrarse $M_3$ bloqueado en el propio contacto superior, las capacitancias parásitas de $n_1$ y $n_2$ quedan físicamente aisladas de $dyn$. La perturbación se reduce drásticamente a $\Delta V = \mathbf{14.1\,\mu\text{V}}$ ($V_{dyn} = 0.99999\,\text{V}$).
-  \item \textbf{Coste:} No requiere transistores adicionales ($0$ PMOS) ni agrega carga a la línea de reloj ($0\,\text{fF}$). Su implementación involucra exclusivamente decisiones de enrutamiento y asignación de pines en layout.
-  \item \textbf{Asimetría Lógica Dominó vs Lógica Estática:} En lógica CMOS estática, el orden de apilamiento en la PDN no modifica la función lógica booleana ni los niveles lógicos estáticos en régimen permanente; únicamente altera marginalmente los retardos de conmutación. En contraste, en lógica dominó el nodo dinámico es una \textbf{memoria capacitiva flotante} durante la fase de evaluación; por tanto, el orden de los transistores determina qué difusiones internas entran en contacto con el nodo de salida, condicionando de manera decisiva la integridad de señal y el margen de ruido frente a eventos transitorios.
+\subsubsection{Técnica 2: Reordenamiento Topológico de la Red PDN}
+La efectividad del reordenamiento depende estrictamente del vector aplicado:
+\begin{itemize}[leftmargin=1.4em,itemsep=0.03em]
+  \item \textbf{Vector A ($A=B=1, C=0$):} Tanto C-B-A como C-A-B ubican $C=0$ en el transistor adyacente a $dyn$, aislando el nodo en el contacto superior ($\Delta V \le 0\,\text{mV}$, $V_{dyn,\text{min}} = 1.0220\,\text{V}$).
+  \item \textbf{Vector B ($A=0, B=C=1$):} En C-B-A, la entrada apagada es $A=0$ en el fondo; al conducir $C=1$ y $B=1$, reproduce la caída base: $\Delta V = \mathbf{164.29\,\text{mV}}$ ($V_{dyn,\text{min}} = 0.8357\,\text{V}$). En C-A-B, $M_3$ ($C=1$) conecta $dyn$ solo con $n_1$ mientras $M_1$ ($A=0$) aísla los nodos inferiores ($n_2, n_3$), acotando la caída a $\mathbf{72.08\,\text{mV}}$ ($V_{dyn,\text{min}} = 0.9279\,\text{V}$, droop $-56.1\%$).
+  \item \textbf{Costes:} No requiere transistores adicionales ($0\,\text{nm}$) ni carga a $CLK$; su coste radica en mayor complejidad de enrutamiento en layout.
 \end{itemize}
 
-\subsubsection{Técnica 3: Transistor Keeper (\texorpdfstring{$W_{kp} = 45\,\text{nm}$}{Wkp = 45 nm}) y Contención}
-Se conectó un transistor PMOS débil de mantenimiento ($W_{kp} = 45\,\text{nm}$) gobernado por la salida del inversor dominó ($out$).
-\begin{itemize}[leftmargin=1.4em,itemsep=0.15em]
-  \item \textbf{Atenuación y Restauración Activa:} El keeper reduce la caída transitoria de $101.03\,\text{mV}$ a $\mathbf{42.18\,\text{mV}}$ (atenuación del $\mathbf{58.2\%}$), logrando restaurar el nodo $dyn$ al $99\%$ de $V_{DD}$ en un tiempo activo de $t_{\text{rec}} = \mathbf{80.30\,\text{ps}}$. En contraste, en el caso base sin mitigación \textbf{no existe recuperación durante la ventana de evaluación}, manteniéndose la degradación hasta el inicio de la siguiente fase de precarga.
-  \item \textbf{Compromiso de Contención en Velocidad:} Durante una evaluación legítima a nivel bajo ($A=B=C=1$), la PDN debe vencer la corriente suministrada por el keeper hasta que $out$ ascienda y corte el dispositivo PMOS. Esta lucha transitoria incrementa el retardo de descarga: $t_{pHL,dyn}$ pasa de $23.95\,\text{ps}$ a $27.46\,\text{ps}$ ($\Delta t_{pHL} = +3.51\,\text{ps}$, penalización del $\mathbf{+14.65\%}$), mientras que $t_{pLH,out}$ se incrementa en $+5.52\,\text{ps}$ ($\mathbf{+14.69\%}$).
+\subsubsection{Técnica 3: Transistor Keeper (\texorpdfstring{$W_{kp} = 45\,\text{nm}$}{Wkp = 45 nm}) y Compromiso de Contención}
+El inversor dominó ya existe en la celda base; el keeper añade únicamente un PMOS ($\Delta W = +45\,\text{nm}$, $+3.70\%$ dyn y $+3.125\%$ celda).
+\begin{itemize}[leftmargin=1.4em,itemsep=0.03em]
+  \item \textbf{Dinámica y Tiempos de Recuperación:} La simulación certifica $V_{dyn,\text{min}} = \mathbf{0.930318\,\text{V}}$ ($\Delta V = \mathbf{69.68\,\text{mV}}$) a $t_{\text{min}} = 3.02710\,\text{ns}$ ($17.10\,\text{ps}$ tras el cruce al 50\% de $CLK$). La recuperación al $99\%$ de $V_{DD}$ ($0.990\,\text{V}$) ocurre a $t_{\text{rec}} = 3.12002\,\text{ns}$ ($92.92\,\text{ps}$ desde el mínimo). Al final de la evaluación ($t=3.95\,\text{ns}$), $V_{dyn,\text{end}} = \mathbf{0.999586\,\text{V}}$ ($99.96\%$ de $V_{DD}$, offset de apenas $-0.414\,\text{mV}$).
+  \item \textbf{Penalización por Contención:} En conmutación activa ($A=B=C=1$), el retardo de descarga $t_{pHL,dyn}$ pasa de $23.95\,\text{ps}$ a $27.46\,\text{ps}$ ($\Delta t = +3.51\,\text{ps}$, penalización de $\mathbf{+14.65\%}$), y a la salida $t_{pLH,out}$ pasa de $37.58\,\text{ps}$ a $43.09\,\text{ps}$ ($\Delta t = +5.52\,\text{ps}$, $\mathbf{+14.69\%}$).
 \end{itemize}
 
 \subsection{Conclusiones de la Actividad 2}
-\begin{enumerate}[leftmargin=1.4em,itemsep=0.15em]
-  \item El modelo analítico clásico de conservación de carga sobreestima fuertemente la caída ($2.85\times$ a $C_L = 2\,\text{fF}$) debido al efecto de cuerpo y al corte subumbral intrínseco del transistor NMOS de paso intermedio ($V_{th,\text{eff}} \approx 0.55\text{--}0.60\,\text{V}$).
-  \item El reordenamiento de transistores en la PDN es la solución más eficiente al suprimir la redistribución ($\Delta V \approx 14\,\mu\text{V}$) con cero transistores adicionales y nula sobrecarga sobre la red de distribución de reloj.
-  \item La precarga interna elimina el droop pero penaliza la línea de reloj en $+67\%$ e introduce sobreimpulsos por acoplamiento capacitivo.
-  \item El transistor keeper ($W_{kp} = 45\,\text{nm}$) provee restauración activa en $80.30\,\text{ps}$ amortiguando la caída en $58.2\%$, con una penalización moderada de contención del $+14.6\%$ en el retardo de propagación.
+\begin{enumerate}[leftmargin=1.4em,itemsep=0.03em]
+  \item \textbf{Desacople Analítico-Físico:} El modelo lineal sobreestima la caída ($\Delta V_{\text{pred}} = 288.1\,\text{mV}$ vs $\Delta V_{\text{sinc}} = 164.3\,\text{mV}$ a $C_L=2\,\text{fF}$) por efecto de cuerpo y corte subumbral del NMOS ($V_{th,\text{eff}} \approx 0.55\text{--}0.60\,\text{V}$).
+  \item \textbf{Asimetría del Reordenamiento:} No añade transistores pero es condicional: inmune con Vector A, pero con Vector B C-B-A reproduce $164.29\,\text{mV}$ y C-A-B sufre $72.08\,\text{mV}$.
+  \item \textbf{Optimización de Precarga:} Ancho mínimo ($W_p=45\,\text{nm}$) logra la misma eficacia que $135\,\text{nm}$, ahorrando 66.7\% en potencia de reloj ($63.69\,\text{nW}$ vs $191.07\,\text{nW}$).
+  \item \textbf{Protección Integral del Keeper:} Acota el droop a $69.68\,\text{mV}$ y restaura en $92.92\,\text{ps}$ desde el mínimo, con $+3.70\%$ de área activa y $+14.65\%$ de penalización por contención.
 \end{enumerate}

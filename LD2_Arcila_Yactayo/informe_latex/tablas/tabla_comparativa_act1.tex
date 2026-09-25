@@ -2,10 +2,11 @@
 % Fuente de datos: act1_metricas.json (Trazabilidad 100% verificada)
 \begin{table}[htbp]
 \centering
-\footnotesize
+\scriptsize
+\setlength{\tabcolsep}{3.5pt}
 \caption[Comparación cuantitativa entre NAND3 dinámica footed y CMOS estática]{Comparación cuantitativa entre la compuerta NAND3 dinámica footed (con inversor dominó) y la NAND3 CMOS estática (PTM 45\,nm HP, $V_{DD}=1.0\,\text{V}$, $T=27^\circ\text{C}$).}
 \label{tab:comparativa_act1}
-\begin{tabularx}{\linewidth}{@{}>{\RaggedRight\arraybackslash}p{3.4cm} c c c >{\RaggedRight\arraybackslash}X@{}}
+\begin{tabularx}{\linewidth}{@{}>{\RaggedRight\arraybackslash}p{3.2cm} c c c >{\RaggedRight\arraybackslash}X@{}}
 \toprule
 \textbf{Métrica Evaluada} & \textbf{NAND3 Dinámica} & \textbf{NAND3 Estática} & \textbf{Cociente} & \textbf{Condición / Notas Metodológicas} \\
 \midrule
@@ -16,7 +17,7 @@ $t_{pLH}$ (Precarga nodo $dyn$) & 25.13\,ps & 12.40\,ps & 2.026$\times$ & Precar
 \multicolumn{5}{@{}l@{}}{\textbf{Retardo en Salidas Lógicas (Triggers Asimétricos)}} \\
 Retardo en terminal $out$ & 35.89\,ps ($CLK\uparrow$) & 9.61\,ps ($A\uparrow$) & 3.733$\times$ & $C_{out}=1\,\text{fF}$. Triggers distintos ($CLK\uparrow$ vs $A\uparrow$) \\
 \midrule
-\multicolumn{5}{@{}l@{}}{\textbf{Control sin Carga Externa $C_L$ en $dyn$ (ENS-A1-08)}} \\
+\multicolumn{5}{@{}l@{}}{\textbf{Control con Carga Concentrada Desacoplada ($C_L=0\,\text{fF}$)}} \\
 Respuesta con $C_L=0\,\text{fF}$ & $t_{pHL,dyn}=11.26\,\text{ps}$ & --- & --- & Retiene parásitas de difusión, MOS y compuerta del inversor ($M_{pi}, M_{ni}$) \\
                                     & $t_{pd,\text{eval}}=21.27\,\text{ps}$ & & & \\
 \midrule
