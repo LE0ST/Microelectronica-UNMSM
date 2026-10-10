@@ -10,20 +10,22 @@
 ### Información Académica
 * **Docente Responsable:** MsC. Luz Adanaqué Infante
 * **Autores e Investigadores:**
-  * **Leonardo Sait Yactayo Tolentino** — Código: `23190214`
-  * **Marco Antonio Arcila Santander** — Código: `23190140`
+  * **Leonardo Sait Yactayo Tolentino** — Código: `23190214` (LD1, LD2; Autor individual de LD3)
+  * **Marco Antonio Arcila Santander** — Código: `23190140` (LD1, LD2)
 * **Rama Principal Oficial:** `main`
+* **Rama Activa de Desarrollo (LD3):** `feat/ld3-igbt`
 
 ---
 
 ## 1. Presentación y Alcance del Repositorio
 
-Este repositorio reúne las investigaciones, simulaciones físicas SPICE submicrométricas, desarrollos analíticos y reportes técnicos generados para el curso de **Microelectrónica y Sistemas Nanoelectrónicos** de la UNMSM.
+Este repositorio reúne las investigaciones, simulaciones físicas SPICE, desarrollos analíticos y reportes técnicos generados para el curso de **Microelectrónica y Sistemas Nanoelectrónicos** de la UNMSM.
 
-El propósito central es el análisis de celdas digitales y topologías nanométricas avanzadas utilizando modelos físicos predictivos BSIM4 (**Predictive Technology Model - PTM** de 130 nm, 90 nm, 45 nm y 22 nm en variantes de alto desempeño *HP* y bajo consumo *LP*), integrando:
-1. **Modelamiento físico y simulación SPICE de precisión** en LTspice (análisis transitorio `.tran`, barrido en continua `.dc`, análisis de punto de operación `.op` y mediciones automáticas `.meas`).
-2. **Post-procesamiento y validación analítica en Python** (extracción cuantitativa de métricas, análisis de compromisos de diseño, balance de fugas y generación de figuras a 300 DPI).
-3. **Redacción de informes técnicos de alto impacto en LaTeX** bajo el estándar y tipografía de IEEE (*IEEE Transactions*), cumpliendo restricciones estrictas de extensión, balance de ecuaciones y trazabilidad matemática-experimental biunívoca.
+El proyecto abarca dos grandes dominios tecnológicos:
+1. **Lógica Digital Submicrométrica CMOS:** Análisis estático y dinámico empleando modelos físicos predictivos BSIM4 (**Predictive Technology Model - PTM** de 130 nm, 90 nm, 45 nm y 22 nm en variantes *HP* y *LP*), abordando curvas VTC, retardo FO4, fugas causales, compartición de carga y régimen Near-Threshold Voltage (LD1 y LD2).
+2. **Dispositivos Electrónicos de Potencia (IGBT):** Caracterización estática y dinámica de transistores bipolares de compuerta aislada (IGBT) de canal N y canal P, así como módulos comerciales Trench-FS de 650 V (Fuji Electric Serie X de 50 A y 75 A), mediante bancos *Double Pulse Test* (DPT) para el análisis de corriente de cola, pérdidas de apagado $E_{\text{off}}$ y sobretensiones transitorias (LD3).
+
+El flujo de trabajo integra modelamiento SPICE en **LTspice**, post-procesamiento cuantitativo en **Python 3.14** (gráficas vectoriales a 300 DPI y tablas de datos) y redacción técnica de alto impacto.
 
 ---
 
@@ -37,77 +39,62 @@ MicroNano/
 ├── README.md                                   # Portada y documentación general del repositorio
 │
 ├── _docs/                                      # Documentación viva y recursos generales
+│   ├── bitacora.md                             # Bitácora cronológica global de desarrollo
 │   ├── plan.md                                 # Hoja de ruta del curso y estado de avance de entregables
 │   ├── process.md                              # Protocolo de simulación SPICE, generación de figuras y QA
 │   └── recursos/                               # Manuales auxiliares y tutoriales de herramientas
 │       └── Tutorial_Rapido_de_LTSpice.pdf      # Guía rápida de uso de LTspice para el curso
 │
-├── LD1_Arcila_Yactayo/                         # LABORATORIO DIRIGIDO N.° 1: Lógica CMOS Estática
-│   ├── informe_latex/                          # Documento maestro IEEE (máx 12 págs) y figuras vectoriales
+├── LD1_Arcila_Yactayo/                         # LABORATORIO DIRIGIDO N.° 1: Lógica CMOS Estática (Finalizado)
+│   ├── informe_latex/                          # Documento maestro IEEE (12 págs.) y figuras vectoriales
+│   │   └── LD1_Arcila_Yactayo.pdf              # Documento PDF compilado oficial de LD1
 │   ├── simulaciones/                           # Netlists SPICE (A1: VTC, A2: Retardos, A3: NAND/NOR, A4: Compleja, A5: RO)
 │   ├── modelos/                                # Tarjetas de modelo PTM BSIM4 (45nm HP/LP, 90nm, 22nm)
-│   ├── scripts/                                # Scripts Python de post-procesamiento y generación de curvas
+│   ├── scripts/                                # Scripts Python de post-procesamiento y curvas
 │   └── README.md                               # Documentación técnica específica de LD1
 │
-├── LD2_Arcila_Yactayo/                         # LABORATORIO DIRIGIDO N.° 2: Lógica CMOS Dinámica
-│   ├── informe_latex/                          # Código LaTeX y reporte maestro final (20 págs físicas)
-│   │   └── main.pdf                            # Documento PDF compilado oficial
+├── LD2_Arcila_Yactayo/                         # LABORATORIO DIRIGIDO N.° 2: Lógica CMOS Dinámica (Finalizado)
+│   ├── informe_latex/                          # Código LaTeX y reporte maestro final (20 págs. IEEE)
+│   │   └── main.pdf                            # Documento PDF compilado oficial de LD2
 │   ├── act1/                                   # Actividad 1: Caracterización NAND3 Dinámica vs. Estática
 │   ├── act2/                                   # Actividad 2: Compartición de Carga (Charge Sharing) y Mitigaciones
-│   ├── act3/                                   # Actividad 3: Balance de Fugas, Retención y Ventana de Keeper
+│   ├── act3/                                   # Actividad 3: Balance Causal de Fugas, Retención y Keeper
 │   ├── act4/                                   # Actividad 4: Monotonicidad y Skew de Reloj en Dominó Cascada
 │   ├── act5/                                   # Actividad 5: Régimen NTV, Feedthrough y Eficiencia Energética
-│   ├── act6/                                   # Actividad 6: Lógica Dinámica Multietapa (Módulo de extensión)
 │   ├── modelos/                                # Librerías PTM centralizadas y subcircuitos auxiliares
 │   ├── trazabilidad_figuras.txt                # Matriz biunívoca de reproducibilidad: Figuras -> Netlists -> Scripts
 │   ├── verificacion_modelos.txt                # Verificación de parámetros físicos BSIM4 Level 54
 │   └── README.md                               # Documentación técnica exhaustiva de LD2
 │
+├── LD3_Yactayo/                                # LABORATORIO DIRIGIDO N.° 3: Transistores IGBT en LTspice (Individual)
+│   ├── esquemas/                               # Archivos .asc esquemáticos interactivos de LTspice
+│   ├── simulaciones/                           # Netlists .cir y resultados trazables de simulación
+│   ├── modelos/                                # Documentación de procedencia y licenciamiento de modelos
+│   │   └── NOTAS_MODELOS.md                    # Registro de modelos Fuji Serie X y Duncan Electronics
+│   ├── scripts/                                # Scripts Python para extracción de métricas y figuras
+│   ├── figuras/                                # Formas de onda y gráficas comparativas a 300 DPI
+│   ├── tablas/                                 # Tablas cuantitativas consolidadas (Markdown y CSV)
+│   ├── informe/                                # Documento del reporte técnico (conclusiones >= 1 pág.)
+│   ├── README.md                               # Guía de reproducción y metodología de LD3
+│   └── TRAZABILIDAD.md                         # Matriz de trazabilidad experimental biunívoca
+│
 ├── Semana_01/                                  # Inversor CMOS Básico y Fundamentos de Conmutación
-│   ├── Teoria/                                 # Diapositivas de introducción y modelado SPICE elemental
-│   └── Practica_Inversor_NOT/                  # Esquemáticos `.asc` y netlists de inversores iniciales
-│
-├── Semana_02/                                  # Guía Oficial LD1, Tecnologías PTM y Dispositivos Especiales
-│   ├── Guia_Oficial_LD1/                       # Guía docente oficial y librería multitecnológica PTM
+├── Semana_02/                                  # Guía Oficial LD1, Tecnologías PTM y Dispositivos de Potencia
+│   ├── Guia_Oficial_LD1/                       # Guía docente oficial de LD1
 │   ├── Teoria_y_Lecturas/                      # Lecturas de fabricación de películas delgadas y gruesas
-│   └── Material_Adicional_Semestre/            # Módulos complementarios (SRAM 6T, Muxes, IGBTs)
-│
-├── Semana_03/                                  # Modelamiento CMOS Avanzado y Lógica CMOS Estática
-│   ├── Teoria_y_Lecturas/                      # Modelos de corriente, velocidad de saturación y esfuerzo lógico
-│   └── Ejercicios/                             # Ejercicios resueltos de dimensionamiento de transistores
-│
+│   └── Material_Adicional_Semestre/            # Módulos complementarios y modelos de referencia IGBT
+│       └── 05_Laboratorio_IGBT/                # Circuitos base y librerías SPICE de IGBTs
+├── Semana_03/                                  # Modelamiento CMOS Avanzado y Dimensionamiento
 ├── Semana_04/                                  # Guía Oficial LD2 y Lógica CMOS Dinámica
-│   ├── Guia_Oficial_LD2/                       # Guía oficial del Laboratorio Dirigido N.° 2
-│   └── Teoria_y_Lecturas/                      # Diapositivas y fundamentos de lógica dinámica y pre-carga
-│
-├── Semana_05/                                  # Dispositivos Submicrométricos y Lógica Dinámica Avanzada
-│   ├── 5. Submetric Devices.pdf                # Teoría de efectos de canal corto (SCE, DIBL, GIDL)
-│   ├── Ejercicios_CMOSDinamica.pdf             # Colección de ejercicios de diseño en lógica dinámica
-│   ├── Ejercicios_CMOSEstatica.pdf             # Ejercicios de análisis estático y dimensionamiento óptimo
-│   └── Referencia_PC1.pdf                      # Material de estudio y problemas de práctica calificada
-│
+│   └── Guia_Oficial_LD2/                       # Guía oficial del Laboratorio Dirigido N.° 2
+├── Semana_05/                                  # Dispositivos Submicrométricos y Ejercicios Prácticos
 ├── Semana_07/                                  # Guía Oficial LD3 y Dispositivos Submicrométricos II
-│   ├── Guia_Oficial_LD3/                       # Guía oficial del Laboratorio Dirigido N.° 3
-│   └── Teoria_y_Lecturas/                      # Apuntes y notas de aplicación de dispositivos nanométricos
-│
-│   # [Semana 08: Receso académico de exámenes de medio ciclo según calendario UNMSM]
-│
+│   ├── Guia_Oficial_LD3/                       # Guía oficial del Laboratorio Dirigido N.° 3 (LabDirigidoNro03.pdf)
+│   └── Teoria_y_Lecturas/                      # Notas de aplicación y lectura técnica sobre IGBTs
 ├── Semana_09/                                  # Microsensores de Estado Sólido
-│   ├── 9. Microsensores.pdf                    # Principios físicos de transducción y microsensores MEMS
-│   ├── 9. Perfomance Sensores.pdf              # Métricas de sensibilidad, resolución, ruido y ancho de banda
-│   └── 9. ReferenciaMicrosensores.pdf          # Lecturas de referencia en integración de sensores en silicio
-│
-├── Semana_10/                                  # Microactuadores y Sistemas Microelectromecánicos
-│   └── 10. MicroActuadores.pdf                 # Actuadores electrostáticos, térmicos, piezoeléctricos y magnéticos
-│
-├── Semana_11/                                  # Modelos de Fallos y Prueba de Circuitos Integrados (Test en CI)
-│   ├── 11.ModeloDeFallos.pdf                   # Modelos de fallos lógicos: stuck-at, bridging, open, delay
-│   ├── 11.TestEnCI.pdf                         # Metodologías de prueba, testabilidad y arquitectura DFT
-│   ├── 11.TestEnCI-apuntes.pdf                 # Apuntes de clase y resolución de esquemas de test
-│   └── Referencia_VectoresDeTest.pdf           # Algoritmos de generación de vectores (D-algorithm, PODEM)
-│
+├── Semana_10/                                  # Microactuadores y Sistemas MEMS
+├── Semana_11/                                  # Modelos de Fallos y Prueba de Circuitos Integrados (DFT)
 └── Semana_12/                                  # Ejercicios y Casos Avanzados de Test y Confiabilidad
-    └── S12-Ejercicios.pdf                      # Problemas integradores de diseño para testabilidad (Scan, BIST)
 ```
 
 ---
@@ -115,71 +102,63 @@ MicroNano/
 ## 3. Investigaciones de Laboratorio Desarrolladas
 
 ### [Laboratorio Dirigido N.° 1: Lógica CMOS Estática](LD1_Arcila_Yactayo/)
+* **Autores:** Leonardo Sait Yactayo Tolentino & Marco Antonio Arcila Santander.
 * **Objetivo:** Caracterización estática y dinámica exhaustiva de compuertas lógicas elementales y complejas en el nodo de 45 nm PTM BSIM4, estableciendo la correlación entre dimensionamiento físico ($\beta = W_p / W_n$) y figuras de mérito.
-* **Aspectos Investigados:**
-  1. *Curva de Transferencia de Tensión (VTC):* Determinación del punto de conmutación óptimo estático ($V_M \approx V_{DD}/2 = 0.500\text{ V}$ en $\beta_{\text{ópt}} = 2.50$) y evaluación de márgenes de ruido $NM_H$ y $NM_L$.
-  2. *Retardo de Propagación y Carga FO4:* Medición de retardos de conmutación ($t_{pHL}$, $t_{pLH}$, $t_{pd}$) bajo carga normalizada de 4 inversores idénticos, contrastando nodos de 90 nm, 45 nm y 22 nm.
-  3. *Compuertas Estándar NAND2 y NOR2:* Comparación de arquitecturas pull-up y pull-down conservando la resistencia equivalente del inversor base.
-  4. *Compuerta Compleja multinivel:* Dimensionamiento y simulación de redes AOI/OAI.
-  5. *Oscilador en Anillo y Balance de Potencia:* Evaluación de frecuencia libre de oscilación ($f_{osc}$), potencia de conmutación dinámica ($P_{dyn}$) y fuga estática en reposo ($I_{leak}$) entre procesos 45 nm HP y 45 nm LP.
-* **Informe Técnico Oficial:** `LD1_Arcila_Yactayo/informe_latex/LD1.pdf` (12 páginas formato IEEE).
-* **Comandos de Ejecución y Reproducción:**
-  ```powershell
-  # Simulación de la curva VTC en modo batch
-  & "LTspice.exe" -b .\LD1_Arcila_Yactayo\simulaciones\A1_Inversor_VTC\A1_VTC.cir
-
-  # Generación de gráficas analíticas a 300 DPI
-  python .\LD1_Arcila_Yactayo\scripts\generar_graficas.py
-  ```
+* **Aspectos Investigados:** Curva de transferencia de tensión (VTC, $\beta_{\text{ópt}} = 2.50$), retardo FO4, compuertas estándar NAND2/NOR2, compuerta compleja AOI ($\beta = 2.0$), oscilador en anillo de 5 etapas ($f_{osc} = 21.94\text{ GHz}$) y compromiso velocidad/fuga entre procesos 45 nm HP y LP.
+* **Informe Técnico Oficial:** [`LD1_Arcila_Yactayo/informe_latex/LD1_Arcila_Yactayo.pdf`](LD1_Arcila_Yactayo/informe_latex/LD1_Arcila_Yactayo.pdf) (12 páginas formato IEEE).
 
 ---
 
 ### [Laboratorio Dirigido N.° 2: Lógica CMOS Dinámica Submicrométrica](LD2_Arcila_Yactayo/)
+* **Autores:** Leonardo Sait Yactayo Tolentino & Marco Antonio Arcila Santander.
 * **Objetivo:** Análisis físico-circuital y cuantitativo de lógica CMOS dinámica y circuitos dominó en nodos tecnológicos PTM BSIM4 (45 nm HP, 45 nm LP y 130 nm Bulk).
-* **Módulos Experimentales y Resultados Clave:**
-  1. *Actividad 1 (Dinámica vs. Estática):* Demostración de la reducción de capacitancia de entrada ($-42.4\%$) y reducción del retardo de propagación al suprimir la red pull-up redundante.
-  2. *Actividad 2 (Compartición de Carga - Charge Sharing):* Identificación analítica y experimental del peor caso sincrónico de descarga interna ($\Delta V_{dyn} = 164.29\text{ mV}$ bajo $C_L = 2.0\text{ fF}$) y contraste de técnicas de mitigación (pre-carga pasiva interna vs. sobre-dimensionamiento de $C_L$).
-  3. *Actividad 3 (Balance Causal de Fugas, Retención y Keeper):* Aislamiento físico de componentes de fuga (subumbral, túnel de compuerta y GIDL) a 27 °C y 85 °C. Establecimiento formal de la ventana de viabilidad del *keeper* ($W_{kp} \in [10.5, 38.0]\text{ nm}$) resolviendo el compromiso de contención estática (*ratioed fighting*).
-  4. *Actividad 4 (Monotonicidad y Skew de Reloj en Cascada Dominó):* Demostración de la falla catastrófica ante entradas no monótonas en cascadas sin inversor de polaridad, y caracterización de la ventana de robustez ante desfase de reloj (*skew*) comparando celdas *footed* y *unfooted*.
-  5. *Actividad 5 (Régimen Near-Threshold Voltage y Feedthrough):* Barrido de tensión de alimentación ($V_{DD} \in [0.35, 1.00]\text{ V}$) determinando el punto de energía mínima por ciclo, la ventana de frecuencias admisibles $[f_{min}, f_{max}]$, y la mitigación del acoplamiento capacitivo de reloj (*feedthrough*).
+* **Actividades Realizadas:**
+  1. *Actividad 1:* Caracterización NAND3 Dinámica footed vs. Estática (reducción de capacitancia de entrada en $-42.4\%$).
+  2. *Actividad 2:* Compartición de carga (*charge sharing*) y mitigaciones (precarga interna, reordenamiento PDN y keeper activo).
+  3. *Actividad 3:* Balance causal de fugas y ventana de viabilidad del keeper a 27 °C y 85 °C.
+  4. *Actividad 4:* Monotonicidad y tolerancia a skew de reloj en cascada dominó.
+  5. *Actividad 5:* Operación en régimen Near-Threshold Voltage (NTV) y supresión de feedthrough capacitivo.
+  *(Nota: Actividad 6 de lógica multietapa constituyó un módulo de extensión opcional no desarrollado).*
 * **Informe Técnico Oficial:** [`LD2_Arcila_Yactayo/informe_latex/main.pdf`](LD2_Arcila_Yactayo/informe_latex/main.pdf) (20 páginas físicas exactas bajo estándar IEEE).
-* **Comandos de Ejecución y Reproducción:**
-  ```powershell
-  # Ejecución de simulaciones SPICE de referencia
-  & "LTspice.exe" -b .\LD2_Arcila_Yactayo\act1\circuitos\nand3_dinamica_base.cir
-  & "LTspice.exe" -b .\LD2_Arcila_Yactayo\act2\circuitos\nand3_cs_g2b_piloto_cl2f.cir
 
-  # Regeneración automatizada de figuras vectoriales
-  python .\LD2_Arcila_Yactayo\act1\scripts\generar_figuras_act1.py
-  python .\LD2_Arcila_Yactayo\act2\scripts\generar_figuras_act2.py
-  python .\LD2_Arcila_Yactayo\act3\scripts\generar_figura8_editorial.py
-  python .\LD2_Arcila_Yactayo\act4\scripts\generar_figuras_act4.py
-  python .\LD2_Arcila_Yactayo\act5\scripts\generar_figuras_act5.py
-  ```
+---
+
+### [Laboratorio Dirigido N.° 3: Transistores IGBT en LTspice](LD3_Yactayo/) *(EN DESARROLLO)*
+* **Autor:** Leonardo Sait Yactayo Tolentino (*Modalidad Individual*).
+* **Estado:** **EN DESARROLLO** (fase inicial de configuración de bancos DPT; simulaciones y resultados en proceso de ejecución).
+* **Objetivo:** Caracterización y simulación comparativa de transistores bipolares de compuerta aislada (IGBT) de canal N y canal P, así como dispositivos comerciales Trench de alta velocidad de conmutación (Fuji Electric Serie X de 650 V), mediante el banco de pruebas *Double Pulse Test* (DPT) en LTspice.
+* **Aspectos Investigados:**
+  1. *Banco Double Pulse Test:* Configuración de lado bajo (N-IGBT con emisor a tierra) y lado alto (P-IGBT con polarización negativa de compuerta $0\to -15\text{ V}$).
+  2. *Corriente de Cola (Tail Current):* Identificación analítica del punto de inicio de la fase asintótica de cola y justificación basada en recombinación de portadores minoritarios en la región de deriva.
+  3. *Retardo de Apagado ($t_{d(\text{off})}$):* Medición cuantitativa del intervalo temporal entre el 90% de $V_{GE}$ y el 90% de $I_C$, contrastando con hojas de datos de fabricante.
+  4. *Pérdidas de Conmutación ($E_{\text{off}}$):* Cálculo numérico de la integral $\int V_{CE} I_C dt$ y porcentaje energético disipado durante la corriente de cola.
+  5. *Sobretensión Transitoria por Inductancia Parásita ($V_{CE,\text{peak}}$):* Evaluación del pico de sobretensión al comparar modelos con y sin diodo de marcha libre integrado (*co-pack*).
+  6. *Sensibilidad a la Resistencia de Compuerta ($R_G$):* Análisis del impacto de duplicar $R_G$ sobre la velocidad de conmutación y pérdidas dinámicas.
+  7. *Escalamiento de Área de Silicio:* Comparación entre modelos de 50 A (`FGW50XS65/C`) y 75 A (`FGW75XS65/C`).
+* **Entregables Oficiales:** Tabla de resultados cuantitativa completa, gráficas transitorias ordenadas ($V_{GE}, V_{CE}, I_C$), conclusiones técnicas fundamentadas ($\ge 1$ página) y exposición oral programada para el **21 de octubre de 2026**.
 
 ---
 
 ## 4. Requisitos y Herramientas del Entorno
 
-Para replicar íntegramente las simulaciones y compilar los documentos técnicos, se requiere:
+Para replicar íntegramente las simulaciones y compilar los reportes técnicos se requiere:
 
-* **Simulador SPICE:** [LTspice](https://www.analog.com/en/resources/design-tools-and-calculators/ltspice-simulator.html) (versión XVII o LTspice 24, instalado en la ruta por defecto o añadido al `PATH` del sistema).
-* **Entorno de Programación:** Python 3.10 o superior con las bibliotecas científicas estándar:
+* **Simulador SPICE:** [LTspice](https://www.analog.com/en/resources/design-tools-and-calculators/ltspice-simulator.html) (versión 24 o superior instalada localmente, ejecutable en `G:\LTspice\LTspice.exe` o en el `PATH` del sistema).
+* **Entorno de Programación:** Python 3.10 o superior (verificado con Python 3.14 local):
   ```bash
   pip install numpy scipy matplotlib
   ```
-* **Sistema Tipográfico:** TeX Live 2024 o MiKTeX con `pdflatex` y los paquetes estándar para IEEE:
-  * `IEEEtran`, `amsmath`, `amssymb`, `booktabs`, `cite`, `graphicx`, `microtype`, `subcaption`, `siunitx`, `xcolor`.
+* **Sistema Tipográfico:** TeX Live o MiKTeX con `pdflatex` y paquetes IEEE (`IEEEtran`, `amsmath`, `booktabs`, `graphicx`, `siunitx`).
 
 ---
 
 ## 5. Control de Versiones y Políticas de Integridad
 
-* **Rama Oficial Única:** El repositorio opera de forma exclusiva sobre la rama principal **`main`**. Todas las contribuciones concluidas se integran mediante commits convencionales en esta rama.
+* **Políticas de Ramas:**
+  * La rama `main` refleja únicamente entregables concluidos, auditados e integrados.
+  * Todo desarrollo activo en curso se realiza en ramas de funcionalidad específicas (ej. `feat/ld3-igbt`).
 * **Estándar de Mensajes de Confirmación:**
-  * `feat(alcance): nueva funcionalidad o actividad de laboratorio`
-  * `fix(alcance): corrección analítica, circuital o tipográfica`
-  * `docs(alcance): actualización de informes, figuras o README`
-  * `chore(alcance): mantenimiento, organización de carpetas y dependencias`
-* **Políticas de Higiene y Exclusión (.gitignore):**
-  * Quedan excluidos del repositorio remoto los archivos binarios de simulación masiva (`*.raw`, `*.op.raw`, `*.fft`), registros temporales (`*.log`), archivos intermedios de compilación LaTeX (`*.aux`, `*.fls`, `*.fdb_latexmk`), así como evaluaciones y materiales locales privados.
+  * Se aplica estrictamente la convención Conventional Commits (`feat:`, `fix:`, `docs:`, `chore:`).
+* **Políticas de Exclusión (.gitignore):**
+  * Quedan excluidos del repositorio remoto los archivos binarios pesados (`*.raw`, `*.op.raw`, `*.db`), temporales del compilador LaTeX (`*.aux`, `*.fls`), entornos virtuales (`.venv`), áreas temporales (`scratch/`) y evaluaciones privadas locales (`LC1*`).
+  * Los resultados cuantitativos se registran y versionan preferentemente en tablas Markdown, archivos JSON o CSV trazables.
