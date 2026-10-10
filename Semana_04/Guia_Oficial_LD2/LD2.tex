@@ -1,0 +1,889 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish,es-noshorthands]{babel}
+\usepackage[margin=2.2cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs,array,multirow}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{listings}
+\usepackage[breakable,skins]{tcolorbox}
+\usepackage{circuitikz}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,calc,shapes.misc,decorations.pathreplacing}
+\usepackage{hyperref}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+
+% ---------- Colores de la plantilla del curso ----------
+\definecolor{navy}{HTML}{1E2761}
+\definecolor{coral}{HTML}{F96167}
+\definecolor{ice}{HTML}{CADCFC}
+\definecolor{codegray}{HTML}{F4F4F4}
+
+\hypersetup{colorlinks=true,linkcolor=navy,urlcolor=coral,citecolor=navy}
+
+% ---------- Encabezado / pie ----------
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small\textcolor{navy}{Microelectrónica — Lab.\ 2: Lógica CMOS Dinámica}}
+\rhead{\small\textcolor{navy}{FIEE-UNMSM}}
+\cfoot{\small MsC.\ Luz Adanaqué Infante \quad·\quad Página \thepage\ de \pageref{LastPage}}
+
+% ---------- Listings SPICE ----------
+\lstdefinelanguage{SPICE}{
+  morekeywords={.include,.param,.tran,.meas,.step,.temp,.options,.dc,.ac,.end,
+                TRIG,TARG,VAL,RISE,FALL,FIND,AT,AVG,MAX,MIN,FROM,TO,WHEN,PARAM,
+                PULSE,PWL,list},
+  sensitive=false,
+  morecomment=[l]{;},
+  moredelim=[l][\color{gray}\itshape]{*\ },
+}
+\lstset{
+  language=SPICE,
+  basicstyle=\ttfamily\footnotesize,
+  keywordstyle=\color{navy}\bfseries,
+  commentstyle=\color{gray}\itshape,
+  backgroundcolor=\color{codegray},
+  frame=single, rulecolor=\color{ice},
+  breaklines=true, columns=fullflexible, keepspaces=true,
+  xleftmargin=4pt, framexleftmargin=4pt,
+}
+
+% ---------- Cajas ----------
+\newtcolorbox{aviso}[1][Advertencia]{breakable,colback=coral!8,colframe=coral,
+  fonttitle=\bfseries,title=#1,arc=2mm}
+\newtcolorbox{nota}[1][Nota]{breakable,colback=ice!40,colframe=navy,
+  fonttitle=\bfseries,title=#1,arc=2mm}
+\newtcolorbox{tarea}[1][Tareas]{breakable,colback=white,colframe=navy!70,
+  fonttitle=\bfseries,coltitle=white,colbacktitle=navy,title=#1,arc=2mm}
+
+% ---------- Estilos circuitikz ----------
+\ctikzset{
+  tripoles/mos style/arrows,
+  transistors/scale=0.85,
+  bipoles/length=0.9cm,
+  logic ports=ieee,
+}
+\tikzset{
+  lbl/.style={font=\footnotesize},
+  clk/.style={font=\footnotesize\itshape,color=navy},
+  pdnbox/.style={draw=navy,dashed,rounded corners=2pt,inner sep=4pt},
+  faseP/.style={fill=ice!60,draw=none},
+  faseE/.style={fill=coral!25,draw=none},
+}
+
+\newcommand{\keeper}[5]{
+  \node[pmos,xscale=-1] (#1) at (#2,#3+1.2) {};
+  \draw (#1.S) -- ++(0,0.25) node[vcc]{};
+  \draw (#1.D) -- (#2,#3);
+  \node[circle,fill=black,inner sep=1.2pt] at (#2,#3) {};
+  \draw (#1.G) -- ++(0.45,0) |- (#4,#5) -- (#4,#3);
+}
+\newcommand{\inversor}[3]{
+  \node[pmos] (#1p) at (#2,#3+0.9) {};
+  \node[nmos] (#1n) at (#2,#3-0.9) {};
+  \draw (#1p.S) -- ++(0,0.3) node[vcc]{};
+  \draw (#1n.S) -- ++(0,-0.3) node[ground]{};
+  \draw (#1p.D) -- (#1n.D);
+  \draw (#1p.G) -- (#1n.G);
+  \coordinate (#1out) at (#2,#3);
+}
+
+\title{\vspace{-1.2cm}\textcolor{navy}{\textbf{Laboratorio N.º 2}}\\[3pt]
+\large Lógica CMOS Dinámica: Dominó, Compartición de Carga, Keepers y Operación NTV}
+
+
+\begin{document}
+\maketitle
+\thispagestyle{fancy}
+
+\section{Presentación}
+En el laboratorio anterior caracterizaron la lógica CMOS estática: robusta, sin restricciones de temporización, pero con $2N$ transistores por función y una PUN que carga cada entrada con la mitad de la capacitancia total. La lógica \textbf{dinámica} rompe ese compromiso: reemplaza la PUN por un único transistor de precarga y almacena temporalmente el estado en la capacitancia parásita de un nodo. El precio es que el circuito deja de ser una función de sus entradas y pasa a ser una función de sus entradas \textbf{y del tiempo}: fugas, compartición de carga, acoplamiento capacitivo y reglas de monotonicidad determinan si la compuerta funciona o no.
+
+En este laboratorio no se verifica el funcionamiento de los circuitos: van a \textbf{hacerlos fallar} de cinco maneras distintas, cuantificar cada mecanismo contra la teoría y diseñar la mitigación correspondiente. Trabajaremos principalmente con el nodo \textbf{PTM 45\,nm HP} ($V_{DD}=1{,}0$\,V) y usaremos \textbf{45\,nm LP} y \textbf{130\,nm} para comparaciones de fugas y escalado. El nodo de 0{,}35\,\textmu m / 3{,}3\,V de las clases de teoría sigue siendo la referencia conceptual; aquí verán por qué en nodos sub-100\,nm la lógica dinámica se vuelve delicada.
+
+
+\section{Objetivos}
+Al finalizar, el estudiante será capaz de:
+\begin{enumerate}[nosep]
+  \item Describir las fases de precarga y evaluación y explicar por qué la salida de una compuerta dinámica solo puede realizar una transición $1\to0$ durante la evaluación.
+  \item Medir y explicar la asimetría entre $t_{pHL}$ y $t_{pLH}$ en compuertas dinámicas y compararla con la estática equivalente.
+  \item Cuantificar la \textbf{compartición de carga} en una PDN serie, predecirla analíticamente y validarla en simulación.
+  \item Dimensionar un \textbf{keeper} como compromiso entre retención (fugas) y contención (velocidad), en HP y LP y a varias temperaturas.
+  \item Demostrar experimentalmente la \textbf{regla de monotonicidad} de la lógica dominó y la necesidad del inversor estático de salida.
+  \item Evaluar el impacto del \textbf{skew de reloj} en cascadas dominó con y sin \emph{footer}.
+  \item Determinar la \textbf{frecuencia mínima de reloj} y la \textbf{tensión mínima de operación} de un bloque dominó y argumentar la viabilidad de la lógica dinámica en régimen NTV (near threshold voltage).
+\end{enumerate}
+
+
+\section{Marco teórico}
+
+\subsection{Compuerta dinámica básica ($n$-type, footed) y dominó}
+
+\begin{figure}[htb]
+\centering
+\begin{circuitikz}[scale=1]
+  \node[pmos] (Mp) at (0,3.2) {};
+  \draw (Mp.S) -- ++(0,0.3) node[vcc]{$V_{DD}$};
+  \draw (Mp.G) -- ++(-0.9,0) node[left,clk]{CLK};
+  \node[lbl,right=2pt of Mp.D,yshift=5pt] {$M_p$};
+  \draw (Mp.D) -- (0,2.0) coordinate (dyn);
+  \node[circle,fill=coral,inner sep=1.6pt] at (dyn) {};
+  \node[lbl,left=2pt of dyn] {OUT$_{dyn}$};
+  \draw (dyn) -- (1.4,2.0) to[C,l=$C_L$] (1.4,0.8) node[ground]{};
+  \node[pdnbox,minimum width=1.6cm,minimum height=1.5cm] (pdn) at (0,0.9) {};
+  \node[lbl,align=center] at (pdn) {PDN\\ $f(A,B,\dots)$};
+  \draw (dyn) -- (pdn.north);
+  \draw (pdn.west) -- ++(-0.6,0) node[left,lbl]{$A,B,\dots$};
+  \node[nmos] (Mf) at (0,-0.9) {};
+  \draw (pdn.south) -- (Mf.D);
+  \draw (Mf.G) -- ++(-0.9,0) node[left,clk]{CLK};
+  \draw (Mf.S) -- ++(0,-0.3) node[ground]{};
+  \node[lbl,right=2pt of Mf.D,yshift=-5pt] {$M_f$};
+  % inversor de salida
+  \inversor{I}{4.8}{2.0}
+  \draw (1.4,2.0) -| (Ip.G);
+  \draw (Iout) -- (5.6,2.0) coordinate (out) node[right,lbl]{OUT};
+  \node[circle,fill=navy,inner sep=1.4pt] at (out) {};
+  % keeper (opcional, en coral)
+  \begin{scope}[color=coral]
+    \keeper{Mk}{2.6}{2.0}{5.6}{4.7}
+  \end{scope}
+  \node[lbl,coral,align=center] at (1.5,4.1) {$M_k$ (keeper,\\ opcional)};
+\end{circuitikz}
+\caption{Compuerta dinámica $n$-type con \emph{footer} $M_f$, inversor estático de salida (configuración dominó) y \emph{keeper} $M_k$ (en coral, opcional). El nodo dinámico \textbf{flota} durante la evaluación si la PDN no conduce.}
+\label{fig:dinamica}
+\end{figure}
+
+\begin{itemize}[nosep]
+  \item \textbf{CLK = 0 (precarga):} $M_p$ conduce, $M_f$ corta $\Rightarrow$ OUT$_{dyn}$ se carga a $V_{DD}$ sin importar las entradas.
+  \item \textbf{CLK = 1 (evaluación):} $M_p$ corta, $M_f$ conduce $\Rightarrow$ si la PDN encuentra camino a tierra, OUT$_{dyn}$ se descarga; si no, \textbf{flota} en $V_{DD}$.
+\end{itemize}
+La palabra clave es \emph{flota}. Un nodo flotante es una memoria analógica de unos pocos fF que cualquier corriente parásita puede corromper.
+
+\begin{figure}[htb]
+\centering
+\begin{tikzpicture}[x=1cm,y=0.6cm,>=Stealth]
+  % fondos de fase
+  \fill[faseP] (0,-0.3) rectangle (2,6.4);
+  \fill[faseE] (2,-0.3) rectangle (4,6.4);
+  \fill[faseP] (4,-0.3) rectangle (6,6.4);
+  \fill[faseE] (6,-0.3) rectangle (8,6.4);
+  \node[lbl,navy] at (1,6.0) {precarga};
+  \node[lbl,coral!80!black] at (3,6.0) {evaluación};
+  \node[lbl,navy] at (5,6.0) {precarga};
+  \node[lbl,coral!80!black] at (7,6.0) {evaluación};
+  % CLK
+  \node[lbl,left] at (0,4.5) {CLK};
+  \draw[thick] (0,4) -- (2,4) -- (2,5) -- (4,5) -- (4,4) -- (6,4) -- (6,5) -- (8,5);
+  % Entradas
+  \node[lbl,left] at (0,2.5) {$A\cdot B\cdot C$};
+  \draw[thick] (0,2) -- (2.2,2) -- (2.2,3) -- (5.5,3) -- (5.5,2) -- (8,2);
+  % OUT dyn
+  \node[lbl,left] at (0,0.5) {OUT$_{dyn}$};
+  \draw[thick,navy] (0,1) -- (2.2,1) -- (2.55,0) -- (4,0) -- (4.5,1) -- (8,1);
+  \draw[thick,navy,dashed] (6,1) -- (8,0.85);
+  \node[lbl,navy,align=left] at (7.1,-0.05) {\scriptsize fugas (PDN abierta)};
+  % Cotas
+  \draw[<->,coral] (2,-0.1) -- (2.55,-0.1) node[midway,below,lbl] {$t_{pHL}$};
+  \draw[<->,navy] (4,1.4) -- (4.5,1.4) node[midway,above,lbl] {$t_{pLH}$};
+\end{tikzpicture}
+\caption{Diagrama de fases. El nodo dinámico solo puede caer durante la evaluación; en precarga se recupera independientemente de las entradas. Con PDN abierta, el nodo flotante se degrada por fugas (trazo discontinuo).}
+\label{fig:fases}
+\end{figure}
+
+\paragraph{Dominó.} Añadir un inversor estático a la salida dinámica (Fig.~\ref{fig:dinamica}) produce una compuerta \textbf{no inversora} cuya salida es monótonamente creciente ($0\to1$) durante la evaluación. Como las entradas de una compuerta dominó también deben ser monótonamente crecientes en evaluación (una entrada que cae tras haber descargado el nodo no puede recargarlo), las salidas dominó pueden alimentar directamente otras compuertas dominó: el efecto ``dominó'' en cascada. Solo se pueden implementar funciones \textbf{no inversoras}; la inversión se obtiene con lógica dual (NP-domino / \emph{zipper}) o reorganizando la lógica.
+
+\subsection{Mecanismos de degradación del nodo dinámico}
+\begin{center}\small
+\begin{tabular}{@{}p{3.4cm}p{5cm}p{6.6cm}@{}}
+\toprule
+\textbf{Mecanismo} & \textbf{Causa} & \textbf{Efecto sobre $V_{OUT}$ (nodo en ``1'' flotante)}\\
+\midrule
+Fugas subumbral y de compuerta & $I_{off}$ de la PDN y del footer & Caída lenta, exponencial con $T$ y con $V_{th}$\\
+Compartición de carga & Nodos internos de la PDN a 0\,V se conectan a $C_L$ & Caída \textbf{instantánea} $\Delta V = V_{DD}\,C_a/(C_a+C_L)$\\
+Acoplamiento capacitivo & Transiciones en nodos vecinos / $C_{gd}$ de $M_p$ & Glitches de amplitud $\propto C_c/(C_c+C_L)$\\
+Clock feedthrough & Flanco de CLK inyecta carga vía $C_{gd}(M_p)$ & Sobreimpulso al final de precarga, subimpulso al inicio de evaluación\\
+Efecto cuerpo & $V_{SB}>0$ en transistores apilados & Reduce corriente de evaluación; retarda $t_{pHL}$\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{Keeper}
+Un PMOS débil realimentado desde la salida del inversor mantiene OUT$_{dyn}$ en $V_{DD}$ mientras la PDN no evalúa. Debe ser suficientemente \textbf{fuerte} para compensar $I_{leak}$ y la compartición de carga, y suficientemente \textbf{débil} para que la PDN lo venza rápidamente cuando debe descargar (contención). El \emph{ratio} de contención se cuantifica típicamente como $(W/L)_{kp}/(W/L)_{PDN,eq}\approx 0{,}1$--$0{,}2$ en HP; en NTV este compromiso se cierra y puede no existir solución.
+
+\subsection{Escala de tiempo y escala de tensión}
+\begin{itemize}[nosep]
+  \item \textbf{Frecuencia mínima de reloj:} $f_{min}\approx 1/(2\,t_{hold})$, donde $t_{hold}$ es el tiempo que el nodo tarda en caer por debajo de $V_M$ del inversor de salida. Sin keeper, $t_{hold}\sim C_L\,\Delta V_{max}/I_{leak}$.
+  \item \textbf{NTV:} al bajar $V_{DD}$ hacia $V_{th}$, $I_{on}$ cae exponencialmente pero $I_{off}$ cae mucho menos $\Rightarrow$ $I_{on}/I_{off}$ se desploma $\Rightarrow$ $t_{hold}$ y $t_{eval}$ se cruzan.
+\end{itemize}
+
+\textbf{Bibliografía obligatoria:} Rabaey, Chandrakasan \& Nikolić, \emph{Digital Integrated Circuits}, cap.~6.3; Uyemura, \emph{Introduction to VLSI Circuits and Systems}, cap.~9; Sze \& Lee, \emph{Semiconductor Devices}, 3.ª ed., cap.~6 (subumbral).
+
+
+\section{Preparación del entorno (obligatorio antes de la sesión)}
+
+\subsection{Librerías PTM}
+En el Classroom están \texttt{45nm\_HP.pm}, \texttt{45nm\_LP.pm}, \texttt{130nm\_bulk.pm}, \texttt{65nm\_bulk.pm}, etc.
+
+\begin{aviso}[Dos advertencias críticas]
+\textbf{Todas las tarjetas PTM definen sus modelos como \texttt{nmos} y \texttt{pmos}.} Si incluyen dos librerías en el mismo esquemático, la última sobreescribe silenciosamente a la primera. Como compararemos HP vs LP en la misma simulación, \textbf{es obligatorio renombrar los modelos}:
+\begin{lstlisting}[language=bash]
+sed -e 's/^\.model  *nmos  *nmos/.model nmos_45hp nmos/' \
+    -e 's/^\.model  *pmos  *pmos/.model pmos_45hp pmos/' 45nm_HP.pm > ptm45hp.lib
+sed -e 's/^\.model  *nmos  *nmos/.model nmos_45lp nmos/' \
+    -e 's/^\.model  *pmos  *pmos/.model pmos_45lp pmos/' 45nm_LP.pm > ptm45lp.lib
+sed -e 's/^\.model  *nmos  *nmos/.model nmos_130 nmos/' \
+    -e 's/^\.model  *pmos  *pmos/.model pmos_130 pmos/' 130nm_bulk.pm > ptm130.lib
+grep "^.model" ptm45hp.lib ptm45lp.lib ptm130.lib   # deben aparecer 6 modelos distintos
+\end{lstlisting}
+\end{aviso}
+
+\subsection{Parámetros de referencia extraídos de las tarjetas PTM}
+\begin{center}\small
+\begin{tabular}{@{}lccc@{}}
+\toprule
+\textbf{Parámetro} & \textbf{45\,nm HP} & \textbf{45\,nm LP} & \textbf{130\,nm bulk}\\
+\midrule
+$V_{DD}$ nominal & 1{,}0\,V & 1{,}1\,V & 1{,}3\,V\\
+$V_{th0}$ NMOS & 0{,}469\,V & 0{,}623\,V & 0{,}378\,V\\
+$V_{th0}$ PMOS & $-0{,}492$\,V & $-0{,}587$\,V & $-0{,}321$\,V\\
+$t_{oxe}$ NMOS & 1{,}25\,nm & 1{,}80\,nm & 2{,}25\,nm\\
+$\mu_0$ NMOS (m$^2$/V$\cdot$s) & 0{,}054 & 0{,}049 & 0{,}059\\
+$\mu_0$ PMOS (m$^2$/V$\cdot$s) & 0{,}020 & 0{,}021 & 0{,}0084\\
+$v_{sat}$ NMOS (m/s) & $1{,}7\times10^5$ & $1{,}3\times10^5$ & $1{,}0\times10^5$\\
+\texttt{nfactor} NMOS & 2{,}22 & 1{,}60 & 1{,}50\\
+$L$ mínima a usar & 45\,nm & 45\,nm & 130\,nm\\
+\bottomrule
+\end{tabular}
+\end{center}
+\begin{nota}
+El HP tiene $V_{th}$ \textbf{menor} y $t_{ox}$ \textbf{más delgado} que el LP: más corriente de encendido, pero fugas subumbral y de compuerta órdenes de magnitud mayores. Ese es el eje de toda la Actividad~3.
+\end{nota}
+
+\subsection{Encabezado común de netlist}
+\begin{lstlisting}
+* ---- Encabezado comun Lab 2 ----
+.include ptm45hp.lib
+.include ptm45lp.lib
+.include ptm130.lib
+.param VDD=1.0
+.param Ln=45n Wn=90n Wp=135n      ; W minimo 2L; PMOS 1.5x por movilidad
+.param Wkp=45n                    ; keeper (se barre en Act. 3)
+.param CL=2f                      ; carga externa en nodo dinamico
+.param Tclk=2n                    ; 500 MHz por defecto
+.temp 27
+.options gmin=1e-15 abstol=1e-14 reltol=1e-4 method=gear
+Vdd  vdd 0 {VDD}
+\end{lstlisting}
+\begin{nota}[\texttt{gmin} y \texttt{abstol}]
+Los valores por defecto de LTspice (1e-12 / 1e-12) introducen una conductancia parásita a tierra de 1\,pS en cada nodo, comparable a las fugas que queremos medir en 45\,nm LP. Si no los ajustan, medirán el simulador y no el transistor.
+\end{nota}
+
+% =====================================================================
+\section{Actividad 1 — NAND3 dinámica footed: fases, asimetría y consumo}
+
+\begin{figure}[htb]
+\centering
+\begin{circuitikz}[scale=1]
+  \node[pmos] (Mp) at (0,5.0) {};
+  \draw (Mp.S) -- ++(0,0.3) node[vcc]{$V_{DD}$};
+  \draw (Mp.G) -- ++(-0.9,0) node[left,clk]{CLK};
+  \node[lbl,right=2pt of Mp.D,yshift=5pt]{$M_p$ ($W_p$)};
+  \draw (Mp.D) -- (0,4.0) coordinate (dyn);
+  \node[circle,fill=coral,inner sep=1.6pt] at (dyn) {};
+  \node[lbl,left=2pt of dyn]{dyn};
+  \draw (dyn) -- (2.2,4.0) to[C,l=$C_L$] (2.2,2.8) node[ground]{};
+  \node[nmos] (M1) at (0,3.0) {};
+  \node[nmos] (M2) at (0,1.6) {};
+  \node[nmos] (M3) at (0,0.2) {};
+  \node[nmos] (Mf) at (0,-1.2) {};
+  \draw (dyn) -- (M1.D);
+  \draw (M1.S) -- (M2.D) node[midway,left=2pt,lbl]{$n_1$};
+  \draw (M2.S) -- (M3.D) node[midway,left=2pt,lbl]{$n_2$};
+  \draw (M3.S) -- (Mf.D) node[midway,left=2pt,lbl]{$n_3$};
+  \draw (Mf.S) -- ++(0,-0.3) node[ground]{};
+  \draw (M1.G) -- ++(-0.9,0) node[left,lbl]{$A$};
+  \draw (M2.G) -- ++(-0.9,0) node[left,lbl]{$B$};
+  \draw (M3.G) -- ++(-0.9,0) node[left,lbl]{$C$};
+  \draw (Mf.G) -- ++(-0.9,0) node[left,clk]{CLK};
+  \node[lbl,right=2pt of M1.D,yshift=-5pt]{$M_1$ ($3W_n$)};
+  \node[lbl,right=2pt of M2.D,yshift=-5pt]{$M_2$ ($3W_n$)};
+  \node[lbl,right=2pt of M3.D,yshift=-5pt]{$M_3$ ($3W_n$)};
+  \node[lbl,right=2pt of Mf.D,yshift=-5pt]{$M_f$ ($3W_n$)};
+  \inversor{I}{5.2}{4.0}
+  \draw (2.2,4.0) -| (Ip.G);
+  \draw (Iout) -- (6.2,4.0) coordinate (out) node[right,lbl]{out};
+  \draw (out) to[C,l=1\,fF] (6.2,2.8) node[ground]{};
+\end{circuitikz}
+\caption{NAND3 dinámica footed con inversor dominó. Los nodos internos $n_1$, $n_2$, $n_3$ serán el foco de la Actividad~2.}
+\label{fig:nand3}
+\end{figure}
+
+\begin{lstlisting}
+* NAND3 dinamica footed, 45nm HP
+Vclk clk 0 PULSE(0 {VDD} 0 20p 20p {Tclk/2} {Tclk})
+Va   a   0 PULSE(0 {VDD} {Tclk*0.55} 20p 20p {Tclk*1.9} {Tclk*4})
+Vb   b   0 {VDD}
+Vc   c   0 {VDD}
+Mp   dyn clk vdd vdd pmos_45hp W={Wp} L={Ln}
+M1   n1  a   dyn 0   nmos_45hp W={Wn*3} L={Ln}
+M2   n2  b   n1  0   nmos_45hp W={Wn*3} L={Ln}
+M3   n3  c   n2  0   nmos_45hp W={Wn*3} L={Ln}
+Mf   0   clk n3  0   nmos_45hp W={Wn*3} L={Ln}
+CL   dyn 0 {CL}
+* Inversor de salida (domino)
+Mpi  out dyn vdd vdd pmos_45hp W={Wp} L={Ln}
+Mni  out dyn 0   0   nmos_45hp W={Wn} L={Ln}
+Cout out 0 1f
+.tran 0 {Tclk*8} 0 5p
+.meas TRAN tpHL_dyn TRIG V(clk) VAL={VDD/2} RISE=2 TARG V(dyn) VAL={VDD/2} FALL=1
+.meas TRAN tpLH_dyn TRIG V(clk) VAL={VDD/2} FALL=2 TARG V(dyn) VAL={VDD/2} RISE=1
+.meas TRAN Pavg AVG -I(Vdd)*V(vdd) FROM={Tclk*2} TO={Tclk*8}
+\end{lstlisting}
+\begin{nota}
+$A$ cambia \textbf{en mitad de la evaluación} (retardo $0{,}55\,T_{clk}$). Es intencional: primera pista sobre la regla de monotonicidad de la Actividad~4.
+\end{nota}
+
+\begin{tarea}
+\begin{enumerate}[nosep,leftmargin=*]
+\item Simulen y capturen en una sola gráfica $V(\mathrm{clk})$, $V(a)$, $V(\mathrm{dyn})$, $V(\mathrm{out})$. Identifiquen las fases y anoten cuándo el nodo dinámico está \textbf{flotando}.
+\item Registren $t_{pHL}$ (evaluación) y $t_{pLH}$ (precarga). Expliquen por qué $t_{pLH}$ ``no cuenta'' como retardo lógico en dominó y qué restricción impone sobre el ciclo de reloj.
+\item Construyan la NAND3 \textbf{estática} equivalente (misma $W$ en PDN, PUN con 3 PMOS de $W=W_p$) y completen:
+\begin{center}\small
+\begin{tabular}{@{}lccc@{}}
+\toprule
+\textbf{Métrica} & \textbf{Dinámica} & \textbf{Estática} & \textbf{Cociente}\\
+\midrule
+N.º transistores &&&\\
+$t_{pHL}$ &&&\\
+$t_{pLH}$ &&&\\
+$C_{in}(A)$ &&&\\
+$P_{avg}$ @ 500\,MHz, $A$ conmutando &&&\\
+$P_{avg}$ @ 500\,MHz, entradas fijas en 1 &&&\\
+\bottomrule
+\end{tabular}
+\end{center}
+\item La última fila es la trampa: con entradas fijas en 1, la estática no consume potencia dinámica, pero la dinámica sí. Calculen $P=\alpha\,C_{dyn}V_{DD}^2 f$ con $\alpha=1$ y comparen con la medida. Expliquen la diferencia.
+\item Cambien \texttt{Vc c 0 \{VDD\}} por \texttt{Vc c 0 0} (PDN abierta). Simulen con \texttt{Tclk=2n} y luego con \texttt{Tclk=400n} y \texttt{.tran 0 200n}. ¿Qué le pasa a $V(\mathrm{dyn})$ en el segundo caso? Es el punto de partida de la Actividad~3.
+\end{enumerate}
+\end{tarea}
+
+% =====================================================================
+\section{Actividad 2 — Compartición de carga: predicción, medición y mitigación}
+
+\subsection{Motivación}
+En la PDN serie de la Fig.~\ref{fig:nand3} hay tres nodos internos. Si en un ciclo previo la PDN descargó completamente, $n_1$, $n_2$, $n_3$ quedan en 0\,V. Si en el ciclo siguiente solo se activan los transistores \textbf{superiores} ($A=1$, $B=1$, $C=0$), la carga de $C_L$ se reparte con las capacitancias parásitas de $n_1$ y $n_2$ aunque \textbf{no exista camino a tierra}.
+
+\begin{figure}[htb]
+\centering
+\begin{circuitikz}[scale=0.95]
+  \foreach \dx/\s/\ttl in {0/a/(a) problema, 7.2/b/(b) mitigación 1}{
+  \begin{scope}[xshift=\dx cm]
+    \node[pmos] (Mp\s) at (0,3.6) {};
+    \draw (Mp\s.S) -- ++(0,0.25) node[vcc]{};
+    \draw (Mp\s.G) -- ++(-0.8,0) node[left,clk]{CLK};
+    \draw (Mp\s.D) -- (0,2.7) coordinate (dyn\s);
+    \node[circle,fill=coral,inner sep=1.6pt] at (dyn\s) {};
+    \draw (dyn\s) -- ++(1.4,0) to[C,l=$C_L$] ++(0,-1.0) node[ground]{};
+    \node[nmos] (M1\s) at (0,1.9) {};
+    \node[nmos] (M2\s) at (0,0.3) {};
+    \node[nmos] (M3\s) at (0,-1.3) {};
+    \draw (dyn\s) -- (M1\s.D);
+    \draw (M1\s.S) -- (M2\s.D) coordinate[midway] (n1\s);
+    \draw (M2\s.S) -- (M3\s.D) coordinate[midway] (n2\s);
+    \draw (M3\s.S) -- ++(0,-0.4) node[lbl,below]{hacia $M_f$};
+    \node[lbl,left=1pt of n1\s]{$n_1$};
+    \node[lbl,left=1pt of n2\s]{$n_2$};
+    \node[lbl,navy,font=\footnotesize\bfseries] at (-1.6,4.4) {\ttl};
+  \end{scope}}
+  % (a) entradas y capacitancias parasitas
+  \draw (M1a.G) -- ++(-0.8,0) node[left,lbl]{$A=1$};
+  \draw (M2a.G) -- ++(-0.8,0) node[left,lbl]{$B=1$};
+  \draw (M3a.G) -- ++(-0.8,0) node[left,lbl]{$C=0$};
+  \draw[coral] (n1a) -- (1.4,1.1) to[C,l=$C_{n1}$] (1.4,0.35) node[ground]{};
+  \draw[coral] (n2a) -- (1.4,-0.5) to[C,l=$C_{n2}$] (1.4,-1.25) node[ground]{};
+  \node[lbl,coral,align=center] at (0.6,-2.9) {$C_a=C_{n1}+C_{n2}$, inicialmente a 0\,V};
+  % (b) entradas y PMOS de precarga interna
+  \draw (M1b.G) -- ++(-0.8,0) node[left,lbl]{$A$};
+  \draw (M2b.G) -- ++(-0.8,0) node[left,lbl]{$B$};
+  \draw (M3b.G) -- ++(-0.8,0) node[left,lbl]{$C$};
+  \node[pmos,xscale=-1,color=navy] (Q1) at (9.9,1.75) {};
+  \draw[navy] (Q1.S) -- ++(0,0.2) node[vcc]{};
+  \draw[navy] (Q1.D) |- (n1b);
+  \draw[navy] (Q1.G) -- ++(0.5,0) node[right,clk]{CLK};
+  \node[pmos,xscale=-1,color=navy] (Q2) at (9.9,0.15) {};
+  \draw[navy] (Q2.S) -- ++(0,0.2) node[vcc]{};
+  \draw[navy] (Q2.D) |- (n2b);
+  \draw[navy] (Q2.G) -- ++(0.5,0) node[right,clk]{CLK};
+  \node[lbl,navy,align=center] at (7.8,-2.9) {PMOS de precarga en $n_1$ y $n_2$};
+\end{circuitikz}
+\caption{(a) Compartición de carga: con $A=B=1$, $C=0$, $C_L$ se reparte con $C_{n1}+C_{n2}$ sin que exista camino a tierra. (b) Mitigación: PMOS de precarga en los nodos internos. La Actividad~2 pide además reordenar la PDN y añadir keeper.}
+\label{fig:cs}
+\end{figure}
+
+\subsection{Predicción analítica (antes de simular)}
+Estimen $C_a\equiv C_{n1}+C_{n2}$ con las capacitancias de difusión de $M_1$, $M_2$, $M_3$: $C_j\,W\,L_{diff}+C_{jsw}(W+2L_{diff})$, con $L_{diff}=90$\,nm; extraigan \texttt{cj}, \texttt{cjsw} de \texttt{ptm45hp.lib} (si no aparecen, usen los valores por defecto BSIM4 y declaren la suposición). Calculen
+\[
+\Delta V_{pred}=V_{DD}\,\frac{C_a}{C_a+C_L},\qquad C_L = 2\,\mathrm{fF}+C_{gd}(M_p)+C_g(\text{inversor}),
+\]
+y respondan: ¿$\Delta V_{pred}$ supera el margen de ruido del inversor de salida ($V_{DD}-V_M-NM$)? Si sí, la compuerta \textbf{falla lógicamente} sin ninguna fuga.
+
+\subsection{Netlist de peor caso}
+\begin{lstlisting}
+* Charge sharing peor caso: ciclo 1 descarga completa, ciclo 2 solo A y B
+Vclk clk 0 PULSE(0 {VDD} 0 20p 20p {Tclk/2} {Tclk})
+Va   a   0 {VDD}
+Vb   b   0 {VDD}
+Vc   c   0 PWL(0 {VDD} {Tclk*1.45} {VDD} {Tclk*1.5} 0)
+.param Ad={Wn*3*90n} Pd={Wn*3+180n}
+Mp   dyn clk vdd vdd pmos_45hp W={Wp} L={Ln}
+M1   n1  a   dyn 0   nmos_45hp W={Wn*3} L={Ln} AS={Ad} AD={Ad} PS={Pd} PD={Pd}
+M2   n2  b   n1  0   nmos_45hp W={Wn*3} L={Ln} AS={Ad} AD={Ad} PS={Pd} PD={Pd}
+M3   n3  c   n2  0   nmos_45hp W={Wn*3} L={Ln} AS={Ad} AD={Ad} PS={Pd} PD={Pd}
+Mf   0   clk n3  0   nmos_45hp W={Wn*3} L={Ln} AS={Ad} AD={Ad} PS={Pd} PD={Pd}
+CL   dyn 0 {CL}
+Mpi  out dyn vdd vdd pmos_45hp W={Wp} L={Ln}
+Mni  out dyn 0   0   nmos_45hp W={Wn} L={Ln}
+.tran 0 {Tclk*3} 0 2p
+.meas TRAN Vdyn_min FIND V(dyn) AT={Tclk*1.95}
+.meas TRAN dV PARAM {VDD}-Vdyn_min
+\end{lstlisting}
+\begin{aviso}[Error clásico]
+Los parámetros \texttt{AS/AD/PS/PD} hacen aparecer las capacitancias de difusión en BSIM4. Sin ellos, $n_1$ y $n_2$ tendrían capacitancia casi nula y \textbf{no observarían compartición de carga}: la simulación ``demostraría'' que un problema no existe porque se olvidó modelarlo.
+\end{aviso}
+
+\begin{tarea}
+\begin{enumerate}[nosep,leftmargin=*]
+\item Simulen. Midan $\Delta V$ en el ciclo 2. Comparen con $\Delta V_{pred}$ y expliquen la discrepancia (pista: el reparto se detiene cuando $V_{GS}$ de $M_2$ cae a $V_{th}$; la fórmula de reparto puro sobrestima).
+\item \texttt{.step param CL list 0.5f 1f 2f 4f}. Grafiquen $\Delta V$ vs $C_L$ y superpongan la curva teórica. ¿En qué rango $V(\mathrm{out})$ supera $V_M$ durante la evaluación (salida errónea)?
+\item \textbf{Mitigación 1 — precarga de nodos internos} (Fig.~\ref{fig:cs}b). Repitan la medición. ¿Cuánto cuesta en capacitancia de reloj y área? ¿Por qué no se precarga $n_3$?
+\item \textbf{Mitigación 2 — reordenar la PDN:} coloquen la entrada que \textbf{llega tarde} ($C$) más cerca del nodo dinámico. Repitan con $C$ alto y $A$ bajo. ¿Por qué el orden de apilamiento es decisión de diseño en dominó y no en estática?
+\item \textbf{Mitigación 3 — keeper} de $W=45$\,nm. ¿Recupera el nodo? ¿Cuánto tarda?
+\end{enumerate}
+\end{tarea}
+
+% =====================================================================
+\section{Actividad 3 — Fugas y dimensionamiento del keeper (HP vs LP, 27\,°C vs 85\,°C)}
+
+Aquí el reloj se \textbf{detiene en evaluación} (\emph{clock gating}) durante 1\,\textmu s con la PDN abierta: exactamente lo que ocurre cuando el reloj se apaga para ahorrar energía, y exactamente lo que la lógica dinámica no soporta sin keeper.
+
+\begin{figure}[htb]
+\centering
+\begin{circuitikz}[scale=1]
+  \node[pmos] (Mp) at (0,3.2) {};
+  \draw (Mp.S) -- ++(0,0.3) node[vcc]{$V_{DD}$};
+  \draw (Mp.G) -- ++(-0.9,0) node[left,clk]{CLK = 1};
+  \draw (Mp.D) -- (0,2.0) coordinate (dyn);
+  \node[circle,fill=coral,inner sep=1.6pt] at (dyn) {};
+  \node[lbl,left=2pt of dyn]{dyn};
+  \draw (dyn) -- (1.4,2.0) to[C,l=$C_L$] (1.4,0.8) node[ground]{};
+  \node[pdnbox,minimum width=1.7cm,minimum height=1.4cm] (pdn) at (0,0.9) {};
+  \node[lbl,align=center] at (pdn) {PDN abierta\\ $A=B=C=0$};
+  \draw (dyn) -- (pdn.north);
+  \node[nmos] (Mf) at (0,-0.9) {};
+  \draw (pdn.south) -- (Mf.D);
+  \draw (Mf.G) -- ++(-0.9,0) node[left,clk]{CLK = 1};
+  \draw (Mf.S) -- ++(0,-0.3) node[ground]{};
+  \draw[->,coral,thick] (-1.6,1.7) -- (-1.6,0.3) node[left,lbl,coral,pos=0.5]{$I_{leak}$};
+  \inversor{I}{4.8}{2.0}
+  \draw (1.4,2.0) -| (Ip.G);
+  \draw (Iout) -- (5.6,2.0) coordinate (out) node[right,lbl]{out};
+  \keeper{Mk}{2.6}{2.0}{5.6}{4.7}
+  \node[lbl,align=center] at (1.4,4.1) {$M_k$:\\ $W_{kp}$ barrido};
+  \draw[->,navy,thick] (2.25,3.0) -- (2.25,2.3) node[left,lbl,navy,pos=0.4]{$I_{kp}$};
+\end{circuitikz}
+\caption{Escenario de retención: reloj detenido en evaluación, PDN abierta. El keeper debe reponer $I_{leak}$ sin frenar la evaluación cuando la PDN sí conduce (contención).}
+\label{fig:keeper}
+\end{figure}
+
+\begin{lstlisting}
+* Retencion del nodo dinamico con reloj detenido en evaluacion
+.param Tstop=1u
+Vclk clk 0 PWL(0 0 0.5n 0 0.52n {VDD} {Tstop} {VDD})
+Va a 0 0
+Vb b 0 0
+Vc c 0 0
+Mp   dyn clk vdd vdd pmos_45hp W={Wp} L={Ln}
+M1   n1  a   dyn 0   nmos_45hp W={Wn*3} L={Ln}
+M2   n2  b   n1  0   nmos_45hp W={Wn*3} L={Ln}
+M3   n3  c   n2  0   nmos_45hp W={Wn*3} L={Ln}
+Mf   0   clk n3  0   nmos_45hp W={Wn*3} L={Ln}
+CL   dyn 0 {CL}
+Mpi  out dyn vdd vdd pmos_45hp W={Wp} L={Ln}
+Mni  out dyn 0   0   nmos_45hp W={Wn} L={Ln}
+Mk   dyn out vdd vdd pmos_45hp W={Wkp} L={Ln}      ; KEEPER
+.step param Wkp list 1n 22n 45n 90n 180n
+.tran 0 {Tstop} 0 1n
+.meas TRAN Vdyn_end FIND V(dyn) AT={Tstop}
+.meas TRAN t_hold  WHEN V(dyn)={VDD/2} FALL=1
+\end{lstlisting}
+\begin{nota}
+$W_{kp}=0$ no es válido en BSIM4; \texttt{1n} es una aproximación numérica de ``ausente''. Alternativa: duplicar el netlist sin $M_k$. Indiquen cuál eligieron y por qué.
+\end{nota}
+
+\begin{tarea}
+\begin{enumerate}[nosep,leftmargin=*]
+\item Versión HP a 27\,°C. Para cada $W_{kp}$ registren $V_{dyn}$ final y $t_{hold}$. Para $W_{kp}\to0$ midan la pendiente inicial $dV/dt$ y calculen $I_{leak,tot}=C_{nodo}\,dV/dt$. Descompongan: subumbral de $M_1$ ($V_{GS}=0$, $V_{DS}\approx V_{DD}$), fuga de compuerta de $M_p$/$M_k$, GIDL. Aíslenlo con un \texttt{.dc} de un transistor solo.
+\item Repitan con \texttt{.temp 85}. Cuantifiquen el factor de aumento de $I_{leak}$ y compárenlo con $I_{sub}\propto (kT/q)^2\exp[-V_{th}/(n\,kT/q)]$, $V_{th}(T)\approx V_{th0}-1\,\mathrm{mV/°C}\,(T-27)$. ¿Qué término domina?
+\item Repitan con \texttt{nmos\_45lp}/\texttt{pmos\_45lp}, $V_{DD}=1{,}1$\,V, y con 130\,nm a 1{,}3\,V. Completen:
+\begin{center}\small
+\begin{tabular}{@{}lccc@{}}
+\toprule
+\textbf{Tecnología / $T$} & $I_{leak}$ (nA) & $t_{hold}$ sin keeper & $W_{kp,min}$ para $V_{dyn}(1\,\mu s)>0{,}9V_{DD}$\\
+\midrule
+45 HP / 27\,°C &&&\\
+45 HP / 85\,°C &&&\\
+45 LP / 27\,°C &&&\\
+45 LP / 85\,°C &&&\\
+130\,nm / 27\,°C &&&\\
+\bottomrule
+\end{tabular}
+\end{center}
+\item \textbf{Contención.} Con $W_{kp,min}$ de HP/85\,°C, vuelvan a la Actividad~1 (entradas en 1) y grafiquen $t_{pHL}$ vs $W_{kp}$. Definan $r=(W/L)_{kp}/(W/L)_{PDN,eq}$ con $(W/L)_{PDN,eq}=(W/L)_n/4$ y marquen dónde $t_{pHL}$ se degrada 10\,\%.
+\item \textbf{Pregunta de diseño:} ¿existe $W_{kp}$ que cumpla retención $>0{,}9V_{DD}$ a 1\,\textmu s/85\,°C \textbf{y} degradación $<10$\,\% en HP? ¿Y en LP? Si no, propongan y simulen un \textbf{keeper condicional} (controlado por CLK retardado con 3 inversores) y demuestren que abre la ventana.
+\end{enumerate}
+\end{tarea}
+
+% =====================================================================
+\section{Actividad 4 — Regla de monotonicidad, cascada dominó y skew de reloj}
+
+\subsection{Violación de la regla}
+
+\begin{figure}[htb]
+\centering
+\begin{circuitikz}[scale=0.95]
+  \foreach \dx/\nm in {0/1, 7.6/2}{
+  \begin{scope}[xshift=\dx cm]
+    \node[pmos] (P\nm) at (0,3.2) {};
+    \draw (P\nm.S) -- ++(0,0.25) node[vcc]{};
+    \draw (P\nm.G) -- ++(-0.8,0) node[left,clk]{CLK};
+    \draw (P\nm.D) -- (0,2.4) coordinate (d\nm);
+    \node[circle,fill=coral,inner sep=1.6pt] at (d\nm) {};
+    \node[nmos] (A\nm) at (0,1.5) {};
+    \node[nmos] (B\nm) at (0,0.2) {};
+    \node[nmos] (F\nm) at (0,-1.1) {};
+    \draw (d\nm) -- (A\nm.D); \draw (A\nm.S) -- (B\nm.D); \draw (B\nm.S) -- (F\nm.D);
+    \draw (F\nm.S) -- ++(0,-0.25) node[ground]{};
+    \draw (F\nm.G) -- ++(-0.8,0) node[left,clk]{CLK};
+    \node[lbl,navy,font=\footnotesize\bfseries] at (-1.4,4.0) {Etapa \nm};
+  \end{scope}}
+  \node[lbl,left=2pt of d1]{dyn1};
+  \node[lbl,right=2pt of d2]{dyn2};
+  \draw (A1.G) -- ++(-0.8,0) node[left,lbl]{$A=1$};
+  \draw (B1.G) -- ++(-0.8,0) node[left,lbl]{$B=1$};
+  \draw (B2.G) -- ++(-0.8,0) node[left,lbl]{$X=1$};
+  \draw (A2.G) -- ++(-1.0,0) coordinate (g2);
+  \node[circle,fill=black,inner sep=1.2pt] at (g2) {};
+  % nodo de bifurcacion
+  \draw (d1) -- (1.2,2.4) coordinate (j);
+  \node[circle,fill=black,inner sep=1.2pt] at (j) {};
+  % (a) directa (coral, discontinua) por arriba
+  \draw[coral,thick,dashed] (j) -- (1.2,4.6) -- (5.8,4.6) -- (5.8,1.5) -- (g2);
+  \node[lbl,coral,above] at (3.5,4.6) {(a) conexión directa (viola monotonicidad)};
+  % (b) dominó: inversor
+  \inversor{V}{3.6}{1.5}
+  \draw[navy,thick] (j) -- (1.2,1.5) -| (Vp.G);
+  \draw[navy,thick] (Vout) -- (5.8,1.5);
+  \node[circle,fill=black,inner sep=1.2pt] at (5.8,1.5) {};
+  \node[lbl,navy,below,align=center] at (3.6,-0.1) {(b) dominó:\\ inversor estático};
+\end{circuitikz}
+\caption{Cascada de dos NAND2 dinámicas. (a) Conexión directa dyn1$\to$etapa 2 (violación de monotonicidad): durante la precarga dyn1 = 1 y descarga parcialmente dyn2 antes de que la etapa 1 evalúe. (b) Con el inversor estático (dominó) la entrada de la etapa 2 es monótona creciente. En el netlist se simula una configuración a la vez.}
+\label{fig:cascada}
+\end{figure}
+
+\begin{lstlisting}
+* Etapa 1: NAND2 dinamica, a=b=1 -> dyn1 cae a 0 en evaluacion
+Vclk clk 0 PULSE(0 {VDD} 0 20p 20p {Tclk/2} {Tclk})
+Va a 0 {VDD}
+Vb b 0 {VDD}
+Vx x 0 {VDD}
+Mp1  dyn1 clk vdd vdd pmos_45hp W={Wp} L={Ln}
+M11  m1   a   dyn1 0 nmos_45hp W={Wn*2} L={Ln}
+M12  m2   b   m1   0 nmos_45hp W={Wn*2} L={Ln}
+Mf1  0    clk m2   0 nmos_45hp W={Wn*2} L={Ln}
+C1   dyn1 0 {CL}
+* Etapa 2: alimentada DIRECTAMENTE por dyn1 (violacion)
+Mp2  dyn2 clk  vdd vdd pmos_45hp W={Wp} L={Ln}
+M21  k1   dyn1 dyn2 0 nmos_45hp W={Wn*2} L={Ln}
+M22  k2   x    k1   0 nmos_45hp W={Wn*2} L={Ln}
+Mf2  0    clk  k2   0 nmos_45hp W={Wn*2} L={Ln}
+C2   dyn2 0 {CL}
+.tran 0 {Tclk*4} 0 2p
+.meas TRAN Vdyn2_min MIN V(dyn2) FROM={Tclk*1.5} TO={Tclk*2}
+\end{lstlisting}
+
+\begin{tarea}
+\begin{enumerate}[nosep,leftmargin=*]
+\item Lógicamente $\mathrm{dyn2}=\overline{\mathrm{dyn1}\cdot X}=\overline{0\cdot1}=1$. Simulen y midan $V(\mathrm{dyn2})$ al final de la evaluación. Expliquen con la forma de onda de dyn1 por qué dyn2 se descarga aunque la lógica diga que no debe. ¿Es recuperable dentro del mismo ciclo?
+\item Inserten el inversor estático (Fig.~\ref{fig:cascada}b) y demuestren que el error desaparece. Justifiquen por qué la entrada de la etapa 2 es ahora monótona creciente en evaluación.
+\item Sustituyan $X$ por un pulso que \textbf{cae} en mitad de la evaluación. Aunque ahora es dominó ``correcto'', falla. Expliquen por qué la regla aplica a \textbf{todas} las entradas y qué implica para los flip-flops que alimentan un bloque dominó (relacionen con el TGFF del examen).
+\end{enumerate}
+\end{tarea}
+
+\subsection{Footed vs unfooted con skew de reloj}
+
+\begin{figure}[htb]
+\centering
+\begin{circuitikz}[scale=0.9]
+  \foreach \i/\x/\c/\foot in {1/0/CLK/1, 2/4.2/CLK$'$/0, 3/8.4/CLK$''$/0}{
+    \begin{scope}[xshift=\x cm]
+      \node[pmos] (P\i) at (0,2.6) {};
+      \draw (P\i.S) -- ++(0,0.25) node[vcc]{};
+      \draw (P\i.G) -- ++(-0.6,0) node[left,clk]{\c};
+      \draw (P\i.D) -- (0,1.9) coordinate (d\i);
+      \node[circle,fill=coral,inner sep=1.4pt] at (d\i) {};
+      \node[pdnbox,minimum width=1.3cm,minimum height=0.9cm] (pdn\i) at (0,1.1) {};
+      \node[lbl] at (pdn\i) {NAND2};
+      \draw (d\i) -- (pdn\i.north);
+      \ifnum\foot=1
+        \node[nmos] (F\i) at (0,-0.1) {};
+        \draw (pdn\i.south) -- (F\i.D);
+        \draw (F\i.G) -- ++(-0.6,0) node[left,clk]{\c};
+        \draw (F\i.S) -- ++(0,-0.2) node[ground]{};
+        \node[lbl,right=1pt of F\i.D,yshift=-4pt]{footer};
+      \else
+        \node[pdnbox,draw=coral,minimum width=1.3cm,minimum height=0.6cm] (nf\i) at (0,-0.15) {};
+        \node[lbl,coral] at (0,-0.15) {sin footer};
+        \draw (pdn\i.south) -- (nf\i.north);
+        \draw (nf\i.south) -- ++(0,-0.2) node[ground]{};
+      \fi
+      \node[not port,scale=0.7] (inv\i) at (1.7,1.9) {};
+      \draw (d\i) -- (inv\i.in);
+    \end{scope}
+  }
+  \draw (inv1.out) -- ++(0.3,0) |- (pdn2.west);
+  \draw (inv2.out) -- ++(0.3,0) |- (pdn3.west);
+  \draw (inv3.out) -- ++(0.5,0) node[right,lbl]{OUT};
+  % skew
+  \draw[<->,navy] (1.4,3.6) -- (4.2,3.6) node[midway,above,clk]{$T_{skew}$};
+  \draw[<->,navy] (5.6,3.6) -- (8.4,3.6) node[midway,above,clk]{$T_{skew}$};
+\end{circuitikz}
+\caption{Cascada dominó de tres etapas. En la versión \emph{unfooted} las etapas 2 y 3 eliminan el transistor de evaluación; CLK$'$ y CLK$''$ están desplazados $T_{skew}$ respecto a CLK. Con skew, la etapa $i$ puede entrar en precarga mientras la etapa $i-1$ aún tiene salida en 1: corriente de cortocircuito.}
+\label{fig:skew}
+\end{figure}
+
+\begin{tarea}
+\begin{enumerate}[nosep,leftmargin=*]
+\item \textbf{Footed:} generen CLK$'$ con una fuente PULSE desplazada \texttt{Tskew} y usen \texttt{.step param Tskew list -50p 0 50p 100p 200p}. Midan la salida final y el retardo total. ¿Es sensible al skew? ¿En qué dirección?
+\item \textbf{Unfooted:} eliminen $M_f$ en las etapas 2 y 3. Repitan el barrido. Registren la corriente de cortocircuito pico durante la precarga (\texttt{.meas TRAN Ipk MAX I(Vdd)}) y si la salida es correcta para cada $T_{skew}$.
+\item Cuantifiquen el ahorro de retardo del unfooted en $T_{skew}=0$ y su costo en corriente de precarga cuando $T_{skew}>0$. Concluyan bajo qué condición de temporización es admisible quitar el footer (Rabaey lo enuncia; ustedes deben \textbf{verificarlo} con números).
+\end{enumerate}
+\end{tarea}
+
+% =====================================================================
+\section{Actividad 5 — Clock feedthrough, frecuencia mínima y régimen NTV}
+
+\subsection{Clock feedthrough}
+
+\begin{figure}[htb]
+\centering
+\begin{circuitikz}[scale=1]
+  \node[pmos] (Mp) at (0,2.4) {};
+  \draw (Mp.S) -- (0,3.3) node[vcc]{$V_{DD}$};
+  \draw (Mp.G) -- (-2.2,2.4) node[left,clk]{CLK};
+  \draw (Mp.D) -- (0,1.2) coordinate (dyn);
+  \node[circle,fill=coral,inner sep=1.6pt] at (dyn) {};
+  \node[lbl,below right=1pt and 2pt of dyn]{dyn (flotante)};
+  \draw (dyn) -- (0,0.9) to[C,l=$C_L$] (0,-0.2) node[ground]{};
+  % Cgd parasita entre compuerta y drenador
+  \draw[coral] (-1.3,2.4) -- (-1.3,2.1) to[C,l_=$C_{gd}$] (-1.3,1.2) -- (dyn);
+  % diodo drenador-sustrato
+  \draw[navy] (dyn) -- (1.6,1.2) to[D,l=$D_{DB}$] (1.6,3.1) -- (0,3.1);
+  % forma de onda
+  \begin{scope}[xshift=5cm,yshift=0.2cm,x=0.7cm,y=0.9cm]
+    \draw[->] (0,0) -- (4.6,0) node[right,lbl]{$t$};
+    \draw[->] (0,0) -- (0,2.3) node[above,lbl]{$V_{dyn}$};
+    \draw[dashed] (0,1.5) -- (4.4,1.5) node[right,lbl]{$V_{DD}$};
+    \draw[thick,navy] (0,1.5) -- (1.4,1.5) -- (1.5,1.85) -- (1.7,1.55) -- (2.0,1.5)
+                      -- (3.0,1.5) -- (3.1,1.15) -- (3.35,1.4) -- (4.4,1.42);
+    \node[lbl,navy] at (1.5,2.15) {\scriptsize fin precarga};
+    \node[lbl,navy] at (3.3,0.8) {\scriptsize inicio eval.};
+    \draw[thick,gray!60] (0,-0.6) -- (1.4,-0.6) -- (1.5,-0.2) -- (3.0,-0.2) -- (3.1,-0.6) -- (4.4,-0.6);
+    \node[lbl,gray] at (-0.5,-0.4) {\scriptsize CLK};
+  \end{scope}
+\end{circuitikz}
+\caption{Clock feedthrough: el flanco de CLK inyecta carga en el nodo flotante a través de $C_{gd}(M_p)$. El sobreimpulso positivo es recortado por el diodo drenador--sustrato $D_{DB}$; el subimpulso al inicio de la evaluación no tiene recorte.}
+\label{fig:feedthrough}
+\end{figure}
+
+\begin{tarea}
+Con la Actividad~1, PDN abierta, $C_L=0{,}5$\,fF y flancos de reloj de 5\,ps:
+\begin{enumerate}[nosep,leftmargin=*]
+\item Midan sobreimpulso y subimpulso de $V(\mathrm{dyn})$. Relacionen la amplitud con $C_{gd}/(C_{gd}+C_L)$; estimen $C_{gd}$ desde \texttt{cgdo} o con un \texttt{.ac} del PMOS.
+\item ¿Qué limita el sobreimpulso positivo? ¿Puede el keeper corregir el subimpulso durante la evaluación?
+\end{enumerate}
+\end{tarea}
+
+\subsection{Barrido de tensión hacia NTV}
+
+\begin{figure}[htb]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm,>=Stealth]
+  \draw[->] (0,0) -- (7.5,0) node[right,lbl]{$V_{DD}$};
+  \draw[->] (0,0) -- (0,4.2) node[above,lbl]{$f$ (log)};
+  \foreach \x/\l in {1/0{,}35, 2.5/0{,}5, 4/0{,}7, 6.5/1{,}0}{
+    \draw (\x,0.08) -- (\x,-0.08) node[below,lbl]{\l\,V};}
+  % fmax: crece con VDD
+  \draw[thick,navy] (0.8,0.3) .. controls (2.5,1.2) and (4,3.0) .. (7,3.6) node[right,lbl,navy]{$f_{max}\approx\dfrac{1}{2(t_{eval}+t_{pLH})}$};
+  % fmin: cae con VDD (leakage relativo)
+  \draw[thick,coral] (0.8,2.6) .. controls (2.5,1.6) and (4,1.0) .. (7,0.5) node[right,lbl,coral]{$f_{min}\approx\dfrac{1}{2\,t_{hold}}$};
+  % region operable
+  \fill[ice,opacity=0.5] (2.65,1.35) .. controls (4,1.0) .. (7,0.5) -- (7,3.6) .. controls (4,3.0) and (2.5,1.2) .. (2.65,1.35) -- cycle;
+  \node[lbl,navy] at (5.3,2.2) {región operable};
+  \draw[dashed] (2.65,0) -- (2.65,1.35);
+  \node[lbl,below,align=center] at (2.65,-0.5) {\scriptsize $V_{DD,min}$\\[-2pt]\scriptsize (cierre)};
+\end{tikzpicture}
+\caption{Ventana de frecuencia de un bloque dominó vs $V_{DD}$ (esquema cualitativo que la Actividad~5 debe reproducir con datos). Por debajo de $V_{DD,min}$ el nodo se descarga por fugas casi tan rápido como por evaluación y no existe reloj que funcione.}
+\label{fig:ntv}
+\end{figure}
+
+\begin{tarea}
+Con los netlists de las Actividades 1 y 3 (HP), \texttt{.step param VDD list 1.0 0.8 0.6 0.5 0.45 0.4 0.35}:
+\begin{enumerate}[nosep,leftmargin=*]
+\item Midan $t_{eval}$ (entradas en 1, sin keeper) y $t_{hold}$ (PDN abierta, sin keeper, hasta $V_{DD}/2$). Grafíquenlos vs $V_{DD}$ en escala log. Marquen el cruce $t_{hold}\approx10\,t_{eval}$.
+\item Calculen $f_{max}$ y $f_{min}$ para cada $V_{DD}$ y reproduzcan la Fig.~\ref{fig:ntv} con datos. ¿A qué $V_{DD}$ se cierra la ventana?
+\item Repitan con keeper $W_{kp}=45$\,nm y 90\,nm. ¿El keeper reabre la ventana o la cierra desde el otro lado por contención (verifíquenlo: a $V_{DD}$ baja, ¿cómo escalan $I_{kp}$ e $I_{PDN}$ relativo a sus $|V_{th}|$)?
+\item Repitan con \texttt{nmos\_45lp}. Con $V_{th}\approx0{,}62$\,V, a $V_{DD}=0{,}5$\,V la compuerta está en subumbral. ¿Es peor o mejor que HP en NTV? Argumenten con $I_{on}/I_{off}$ medido.
+\item \textbf{Conclusión obligatoria (máx.\ 10 líneas):} ¿es viable la lógica dominó en NTV? ¿Bajo qué condiciones (tecnología, $T$, keeper, frecuencia) y cuál es el costo respecto a la lógica estática del laboratorio anterior?
+\end{enumerate}
+\end{tarea}
+
+% =====================================================================
+\section{Actividad 6 (opcional, +2 puntos) — NP-domino (\emph{zipper})}
+
+\begin{figure}[htb]
+\centering
+\begin{circuitikz}[scale=0.95]
+  % n-domino
+  \node[pmos] (Pn) at (0,2.6) {};
+  \draw (Pn.S) -- ++(0,0.25) node[vcc]{};
+  \draw (Pn.G) -- ++(-0.6,0) node[left,clk]{CLK};
+  \draw (Pn.D) -- (0,1.9) coordinate (dn);
+  \node[circle,fill=coral,inner sep=1.4pt] at (dn) {};
+  \node[pdnbox,minimum width=1.7cm,minimum height=1.0cm] (pdn) at (0,1.05) {};
+  \node[lbl,align=center] at (pdn) {PDN\\ $A\!\cdot\! B+C$};
+  \draw (dn) -- (pdn.north);
+  \node[nmos] (Fn) at (0,-0.15) {};
+  \draw (pdn.south) -- (Fn.D);
+  \draw (Fn.G) -- ++(-0.6,0) node[left,clk]{CLK};
+  \draw (Fn.S) -- ++(0,-0.2) node[ground]{};
+  \node[lbl,navy,font=\footnotesize\bfseries] at (-1.3,3.5) {$n$-domino};
+  \node[lbl,left=2pt of dn]{$\overline{AB+C}$};
+  % p-domino
+  \begin{scope}[xshift=5cm]
+    \node[pmos] (Fp) at (0,2.6) {};
+    \draw (Fp.S) -- ++(0,0.25) node[vcc]{};
+    \draw (Fp.G) -- ++(-0.6,0) node[left,clk]{$\overline{\mathrm{CLK}}$};
+    \draw (Fp.D) -- (0,1.9);
+    \node[pdnbox,minimum width=1.7cm,minimum height=1.0cm] (pun) at (0,1.05) {};
+    \node[lbl,align=center] at (pun) {PUN\\ (PMOS)};
+    \draw (0,1.9) -- (pun.north);
+    \draw (pun.south) -- (0,0.2) coordinate (dp);
+    \node[circle,fill=coral,inner sep=1.4pt] at (dp) {};
+    \node[nmos] (Pp) at (0,-0.5) {};
+    \draw (dp) -- (Pp.D);
+    \draw (Pp.G) -- ++(-0.6,0) node[left,clk]{$\overline{\mathrm{CLK}}$};
+    \draw (Pp.S) -- ++(0,-0.2) node[ground]{};
+    \node[lbl,navy,font=\footnotesize\bfseries] at (-1.3,3.5) {$p$-domino};
+    \node[lbl,right=2pt of dp]{precarga a 0};
+    \draw ($(pun.west)+(0,-0.3)$) -- ++(-0.7,0) node[left,lbl]{$\bar D$};
+  \end{scope}
+  \draw[thick] (dn) -- (2.6,1.9) -- (2.6,1.35) -- ($(pun.west)+(0,0.3)$);
+  \node[lbl,above] at (1.7,1.9) {sin inversor};
+  \draw (pun.east) -- ++(0.6,0) node[right,lbl]{$F=(AB+C)\cdot\bar D$};
+\end{circuitikz}
+\caption{NP-domino: una etapa $n$ (precarga a 1, PDN) alimenta directamente una etapa $p$ (precarga a 0, PUN, reloj invertido). La etapa $p$ acepta entradas monótonas \emph{decrecientes}, por lo que no necesita inversor intermedio y permite implementar la inversión.}
+\label{fig:np}
+\end{figure}
+
+Implementen $F=(A\cdot B+C)\cdot\bar D$ según la Fig.~\ref{fig:np}. Demuestren funcionamiento correcto, midan retardo total y compárenlo con dos etapas $n$-domino + inversor. Discutan por qué la etapa $p$ es más lenta y qué implica para el balance de fases del reloj.
+
+% =====================================================================
+\section{Preguntas teóricas cortas (máx.\ 5 líneas cada una)}
+\begin{enumerate}[nosep,leftmargin=*]
+\item ¿Por qué una compuerta dinámica no puede realizar una transición $0\to1$ en la salida durante la evaluación? ¿Qué componente físico lo impide?
+\item Una NAND de $N$ entradas requiere $2N$ transistores en estática y $N+2$ en dinámica. ¿Por qué la ventaja en \textbf{capacitancia de entrada} es aún mayor que la ventaja en número de transistores?
+\item Explique por qué el factor de actividad $\alpha$ del nodo dinámico es $\sim1$ aunque las entradas no cambien, y qué implica para la potencia en un datapath con baja actividad.
+\item Derive $\Delta V=V_{DD}\,C_a/(C_a+C_L)$. ¿Bajo qué condición sobre $V_{th}$ deja de ser válida y qué expresión la reemplaza?
+\item ¿Por qué el orden de apilamiento afecta la compartición de carga en una PDN dinámica pero no la funcionalidad lógica de una PDN estática?
+\item Enuncie la regla de monotonicidad de la lógica dominó y explique por qué el inversor de salida la garantiza para la etapa siguiente.
+\item ¿Qué funciones \textbf{no} pueden implementarse directamente en dominó? Nombre dos técnicas para superar esa limitación.
+\item Describa la corriente subumbral: dependencia con $V_{GS}$, $V_{th}$, $T$ y el factor $n$ (\texttt{nfactor}). ¿Por qué el 45\,nm HP tiene \texttt{nfactor} mayor que el LP y qué implica?
+\item Compare 45\,nm HP y LP: ¿cuál es mejor para lógica dinámica y por qué? Considere $I_{on}$, $I_{off}$, $t_{ox}$ y fuga de compuerta.
+\item Explique el compromiso retención/contención al dimensionar un keeper. ¿Qué es un keeper condicional y qué problema resuelve?
+\item ¿Por qué el keeper se realimenta desde la salida del inversor y no desde el propio nodo dinámico?
+\item ¿En qué consiste el clock feedthrough y qué elemento del transistor de precarga lo origina? ¿Cómo depende de la pendiente del reloj?
+\item ¿Por qué un skew positivo es tolerable en dominó footed y por qué en unfooted genera corriente de cortocircuito?
+\item ¿Qué restricción impone la lógica dinámica sobre la \textbf{frecuencia mínima} de reloj? ¿Por qué la estática no la tiene?
+\item ¿Por qué $I_{on}/I_{off}$ se degrada exponencialmente al reducir $V_{DD}$ hacia $V_{th}$, y por qué afecta más a la dinámica que a la estática?
+\item Un diseñador propone dominó a $V_{DD}=0{,}4$\,V en 45\,nm HP a 85\,°C sin keeper. Argumente en tres líneas por qué no funcionará, citando dos mecanismos distintos.
+\item ¿Por qué \texttt{AS/AD/PS/PD} son imprescindibles para simular compartición de carga en BSIM4? ¿Qué ocurre si se omiten?
+\item ¿Por qué ajustar \texttt{gmin} y \texttt{abstol} es necesario en esta práctica pero no lo fue en la de lógica estática?
+\item Relacione la lógica dominó con el TGFF de Bappy, Zhao y Han (SOCC 2025): ¿qué exige la compuerta dominó a la salida del flip-flop y qué mecanismo del TGFF ``imperfecto'' podría violarlo?
+\item Explique por qué el efecto cuerpo penaliza el retardo de evaluación en PDN apiladas y proponga una modificación de conexión de sustrato que lo mitigue. ¿Es realizable en bulk estándar?
+\end{enumerate}
+
+% =====================================================================
+\section{Entregables y rúbrica (20 puntos)}
+\begin{itemize}
+\item \textbf{Informe:} PDF, máx.\ 20 páginas. Cada figura con título, ejes con unidades y nombre del \texttt{.asc} que la genera. Tablas con valores numéricos, no capturas del \texttt{.log}.
+\item \textbf{Archivos:} \texttt{.zip} con carpetas \texttt{act1/}\dots\texttt{act6/}, los \texttt{.lib} renombrados y un \texttt{README.txt}.
+\item \textbf{Fecha:} Viernes 25 de setiembre hasta la medianoche.
+\item \textbf{Nota:} El laboratorio es en parejas, no se aceptarán trabajos individuales.
+\end{itemize}
+\begin{center}\small
+\begin{tabular}{@{}p{6.2cm}cp{7.2cm}@{}}
+\toprule
+\textbf{Ítem} & \textbf{Pts} & \textbf{Criterios}\\
+\midrule
+Preparación del entorno & 1 & \texttt{grep} de modelos incluido; justificación de \texttt{gmin}/\texttt{abstol}\\
+Act.\ 1 — Caracterización y comparación con estática & 3 & Tabla completa; explicación de $\alpha\approx1$; formas de onda anotadas\\
+Act.\ 2 — Compartición de carga & 4 & Predicción analítica \textbf{antes} de simular; discrepancia explicada; 3 mitigaciones simuladas\\
+Act.\ 3 — Fugas y keeper & 4 & Tabla HP/LP/130\,nm a dos $T$; descomposición de fugas; gráfica de contención; pregunta de diseño razonada\\
+Act.\ 4 — Monotonicidad y skew & 3 & Violación demostrada y corregida; barrido footed/unfooted con condición numérica\\
+Act.\ 5 — Feedthrough y NTV & 3 & Gráfica $f_{min}/f_{max}$ vs $V_{DD}$; tensión de cierre; conclusión con $I_{on}/I_{off}$\\
+Preguntas teóricas (20) & 2 & 0{,}1 c/u; se penaliza copiar sin reformular\\
+Act.\ 6 (opcional) & +2 & Solo si las 5 anteriores están completas\\
+\bottomrule
+\end{tabular}
+\end{center}
+\textbf{Penalizaciones:} $-2$ por netlists que no corren tal como se entregan; $-1$ por figuras sin unidades; $-3$ por resultados sin el archivo que los genera. El informe se rechaza si no incluye la predicción analítica de la Act.~2.
+
+% =====================================================================
+\appendix
+\section{Solución de problemas frecuentes}
+\begin{center}\small
+\begin{tabular}{@{}p{4.3cm}p{4.8cm}p{5.6cm}@{}}
+\toprule
+\textbf{Síntoma} & \textbf{Causa probable} & \textbf{Solución}\\
+\midrule
+\texttt{Unknown model nmos\_45hp} & No se renombró el modelo o ruta del \texttt{.include} incorrecta & Verificar con \texttt{grep}; ruta absoluta\\
+HP y LP dan \textbf{exactamente} lo mismo & Colisión \texttt{nmos}/\texttt{pmos}: un archivo sobreescribió al otro & Renombrar (§4.1); nunca incluir dos \texttt{.pm} originales\\
+No hay compartición de carga & Faltan \texttt{AS/AD/PS/PD} o los nodos internos no partieron de 0\,V & Añadir áreas; asegurar ciclo de descarga previo\\
+$V(\mathrm{dyn})$ no cae con reloj detenido & \texttt{gmin} por defecto o simulación muy corta & \texttt{.options gmin=1e-15}; $T_{stop}\ge1$\,\textmu s (LP: 10--100\,\textmu s)\\
+$V(\mathrm{dyn})$ cae demasiado rápido en LP & \texttt{abstol}/\texttt{reltol} laxos & Revisar \texttt{.options}; comparar con \texttt{.dc} de $I_{off}$\\
+\texttt{Time step too small} en barrido de $V_{DD}$ & Convergencia en subumbral & \texttt{method=trap}; \texttt{reltol=1e-3} solo en NTV; $R$ de 1\,T$\Omega$ al nodo\\
+Keeper $W=0$ no compila & BSIM4 exige $W>0$ & $W=1$\,nm o eliminar la instancia\\
+Sobreimpulso $>V_{DD}$ desaparece & Diodo D--B del PMOS lo recorta: es físico & Reportarlo (§9.1)\\
+$I(\mathrm{Vdd})$ con signo invertido & Convención LTspice & Usar \texttt{-I(Vdd)} en \texttt{.meas}\\
+\texttt{.meas} devuelve \texttt{FAIL'ed} & El evento no ocurre en el rango & Revisar \texttt{FROM/TO}; comprobar visualmente\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{Referencias}
+\begin{enumerate}[nosep,leftmargin=*]
+\item J.\ Rabaey, A.\ Chandrakasan, B.\ Nikolić, \emph{Digital Integrated Circuits: A Design Perspective}, 2.ª ed., Pearson, cap.~6.
+\item J.\ P.\ Uyemura, \emph{Introduction to VLSI Circuits and Systems}, Wiley, cap.~9.
+\item S.\ M.\ Sze, M.-K.\ Lee, \emph{Semiconductor Devices: Physics and Technology}, 3.ª ed., Wiley, cap.~6.
+\item D.\ Pucknell, K.\ Eshraghian, \emph{Basic VLSI Design}, 3.ª ed., Prentice Hall.
+\item Bappy, Zhao, Han, ``Ultra-Low-Power Imperfect Transmission Gate Flip-Flops,'' \emph{IEEE SOCC}, 2025.
+\item Predictive Technology Model (PTM), Arizona State University — tarjetas BSIM4 45\,nm HP/LP, 130\,nm bulk.
+\item BSIM4 Technical Manual, UC Berkeley — capacitancia de difusión y corriente subumbral.
+\end{enumerate}
+
+\end{document}
