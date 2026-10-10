@@ -1,4 +1,4 @@
-# ==============================================================================
+# ============================================================================== 
 # .gitignore para Proyecto de Microelectrónica (LTspice + LaTeX + Python)
 # UNMSM - FIEE | Leonardo Sait Yactayo Tolentino & Marco Antonio Arcila Santander
 # ==============================================================================
@@ -61,10 +61,7 @@ planificacion_final/
 notas.md
 guia_seccion*.txt
 
-
-
-
-# --- Evaluaciones calificadas y preparaci�n (locales, no van a GitHub) ---
+# --- Evaluaciones calificadas y preparación (locales, no van a GitHub) ---
 LC1_Arcila_Yactayo/
 preparacion_calificado/
 *LC1*
