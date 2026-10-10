@@ -32,7 +32,7 @@ Para registrar una nueva actividad, añadir una sección al inicio de la lista c
 * **Módulo / Entregable:** LD3_Yactayo / Ensayos EXP-01 a EXP-05
 * **Autor(es):** Leonardo Sait Yactayo Tolentino
 * **Estado:** COMPLETADO Y VALIDADO (EXP-01 a EXP-05 validados; figuras a 300 DPI generadas; detención antes de EXP-06)
-* **Rama / Commit:** `feat/ld3-igbt` | *(Sin commit de G2/G3 — a la espera de autorización)*
+* **Rama / Commit:** `feat/ld3-igbt` | Commit `c399cac`
 * **Archivos Modificados / Creados:**
   * `LD3_Yactayo/simulaciones/netlists/dpt_nigbt_nom.cir` — Netlist DPT nominal N-IGBT ($19.00\text{ A}$, $t_{p1} = 3.65\ \mu\text{s}$).
   * `LD3_Yactayo/simulaciones/netlists/dpt_pigbt_nom.cir` — Netlist DPT nominal P-IGBT ($40.02\text{ A}$, $t_{p1} = 8.88\ \mu\text{s}$).
