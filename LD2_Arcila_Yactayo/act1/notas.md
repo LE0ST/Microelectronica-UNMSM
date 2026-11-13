@@ -1,5 +1,7 @@
 # Notas de Trabajo — Actividad 1: NAND3 dinámica footed: fases, asimetría y consumo
 
+> **[HISTÓRICO — Fase 1]** Plantilla de planificación previa a la ejecución de simulaciones; se conserva intacta como registro histórico. Para los resultados finales y verificados, véase el README_act*.md correspondiente (o ct6/README.txt en el caso de la Actividad 6 opcional, no desarrollada).
+
 ## 1. Objetivos de la Actividad
 - [ ] Captura de formas de onda conjuntas V(clk), V(a), V(dyn), V(out) anotando fases.\n- [ ] Medición de tpHL (evaluación) y tpLH (precarga) justificando asimetría.\n- [ ] Diseño de NAND3 estática equivalente y comparación de métricas (Tabla 1).\n- [ ] Cálculo analítico de potencia dinámica vs simulación con entradas fijas en 1.\n- [ ] Apertura de PDN y comparación de retención a 2ns vs 400ns.
 

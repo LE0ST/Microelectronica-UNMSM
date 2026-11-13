@@ -1,5 +1,7 @@
 # Notas de Trabajo — Actividad 6: Actividad opcional (+2 pts): NP-domino (zipper)
 
+> **[HISTÓRICO — Fase 1]** Plantilla de planificación previa a la ejecución de simulaciones; se conserva intacta como registro histórico. Para los resultados finales y verificados, véase el README_act*.md correspondiente (o ct6/README.txt en el caso de la Actividad 6 opcional, no desarrollada).
+
 ## 1. Objetivos de la Actividad
 - [ ] Implementación de F = (A*B + C) * ~D con etapa n alimentando etapa p.\n- [ ] Verificación de eliminación del inversor estático intermedio.\n- [ ] Medición de retardo global y comparación con doble etapa n-domino.\n- [ ] Discusión del desbalance de fases de reloj debido a la menor movilidad de la etapa p.
 

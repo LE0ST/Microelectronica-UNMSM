@@ -1,5 +1,7 @@
 # Notas de Trabajo — Actividad 2: Compartición de carga: predicción, medición y mitigación
 
+> **[HISTÓRICO — Fase 1]** Plantilla de planificación previa a la ejecución de simulaciones; se conserva intacta como registro histórico. Para los resultados finales y verificados, véase el README_act*.md correspondiente (o ct6/README.txt en el caso de la Actividad 6 opcional, no desarrollada).
+
 ## 1. Objetivos de la Actividad
 - [ ] Deducción analítica previa de Ca y dVpred.\n- [ ] Simulación de peor caso con parámetros de difusión AS/AD/PS/PD.\n- [ ] Barrido de CL (0.5fF a 4fF) y detección de rango de falla lógica.\n- [ ] Mitigación 1: Precarga de nodos internos n1 y n2 con PMOS.\n- [ ] Mitigación 2: Reordenamiento de apilamiento en la PDN.\n- [ ] Mitigación 3: Incorporación de keeper W=45nm.
 
