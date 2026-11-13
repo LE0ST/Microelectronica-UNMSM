@@ -22,7 +22,7 @@ Every quantitative metric reported in LD3 was subjected to multi-layer verificat
 | :--- | :--- | :--- | :---: |
 | `cases/g42_ref_L0_1ns.cir` | Ideal loop baseline ($L_\sigma = 0\text{ nH}$, `maxstep = 1.0 ns`) | $V_{CE,\text{peak}} = 401.33\text{ V}$, $t_{d(\text{off})} = 229.72\text{ ns}$, $E_{C,\text{net}} = 987.37\ \mu\text{J}$ | **PASS** |
 | `cases/g42_ref_L25_1ns.cir` | Physical inductive loop baseline ($L_\sigma = 25\text{ nH}$, `Rpar = None`, `1.0 ns`, SPICE default `temp = 27 °C`) | $V_{CE,\text{peak}} = 442.08\text{ V}$, $t_{d(\text{off})} = 234.30\text{ ns}$, $E_{C,\text{net}} = 1089.68\ \mu\text{J}$ | **PASS** |
-| `cases/g42_ref_L25_05ns.cir` | Fine-timestep convergence check ($L_\sigma = 25\text{ nH}$, `0.5 ns`, `temp = 27 °C`) | $V_{CE,\text{peak}} = 441.98\text{ V}$, $t_{d(\text{off})} = 234.28\text{ ns}$, $E_{C,\text{net}} = 1089.49\ \mu\text{J}$ ($\Delta < 0.02\%$) | **PASS** |
+| `cases/g42_ref_L25_05ns.cir` | Fine-timestep convergence check ($L_\sigma = 25\text{ nH}$, `0.5 ns`, `temp = 27 °C`) | $V_{CE,\text{peak}} = 441.98\text{ V}$, $t_{d(\text{off})} = 234.28\text{ ns}$, $E_{C,\text{net}} = 1089.49\ \mu\text{J}$ ($\Delta V \approx 0.023\%$, $\Delta E \approx 0.017\%$, $\Delta t_d \approx 0.009\%$) | **PASS** |
 | `cases/g42_diag_L25_rpar50_1ns.cir` | Diagnostic comparison with artificial damping (`Rpar = 50 Ω`) | $V_{CE,\text{peak}} = 441.14\text{ V}$, $E_{C,\text{net}} = 1088.21\ \mu\text{J}$, $E_{R\text{par}} = 0.758\ \mu\text{J}$ | **PASS** *(Diagnostic)* |
 | `cases/val_damp_rpar_None.cir` | Undamped `Lpar` stability check (pre-G4.2) | $V_{CE,\text{peak}} = 442.08\text{ V}$, $E_{\text{off,shunt}} = 1060.41\ \mu\text{J}$ | **PASS** |
 | `cases/val_damp_rpar_50.cir` | Damped `Lpar` sensitivity check (`Rpar = 50 Ω`) | $V_{CE,\text{peak}} = 441.14\text{ V}$, $E_{\text{off,shunt}} = 1058.95\ \mu\text{J}$ | **PASS** *(Diagnostic)* |
@@ -40,7 +40,7 @@ To run any validation case (after placing the Fuji Electric `.LIB` models as des
 ### A. PASS — Verified Experimental & Validation Checks
 * **EXP-01 & EXP-02 (Duncan N-IGBT 19 A & P-IGBT 40 A nominal DPT):** Clean switching waveforms, `.meas` extraction, and 300 DPI figures (`fig1`–`fig5`).
 * **EXP-06 through EXP-09 (Fuji Electric X-Series `F01`–`F06`):** Full 6-case matrix (`FGW50XS65/C`, `FGW75XS65/C`, $R_G = 10\ \Omega \to 20\ \Omega$) simulated at $V_{bus} = 400\text{ V}$, $L_\sigma = 25\text{ nH}$, $T = 25\ ^\circ\text{C}$, and $R_G = 10\ \Omega$, yielding $t_{d(\text{off})}$ within $+4.7\%$ to $+5.0\%$ of typical datasheet reference values (`231.10 ns` vs. `~220 ns` at 50 A; `293.18 ns` vs. `~280 ns` at 75 A, noting that datasheet test fixtures may differ in $R_G$, $V_{CC}$, and stray inductance).
-* **G4.2-R Energy & Convergence Suite:** Tellegen residual $-33\text{ pJ}$ (`-0.000001%`) and `< 0.02%` timestep delta between `0.5 ns` and `1.0 ns`.
+* **G4.2-R Energy & Convergence Suite:** Tellegen residual $-33\text{ pJ}$ (`-0.000001%`) and sub-$0.025\%$ timestep delta between `0.5 ns` and `1.0 ns` ($\approx 0.023\%$ in $V_{CE,\text{peak}}$, $\approx 0.017\%$ in $E_{C,\text{net}}$, $\approx 0.009\%$ in $t_{d(\text{off})}$).
 
 ### B. RESOLVED FAILURE — Errors Identified and Fixed During Development
 1. **Emitter Shunt Current Contamination in G4.1 (`validar_piloto_fuji.py`):**

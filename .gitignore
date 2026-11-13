@@ -87,6 +87,7 @@ LD3_Yactayo/modelos/*.LIB
 # --- Modelos SPICE/PTM de terceros y material docente (locales, no van a GitHub) ---
 Semana_02/Material_Adicional_Semestre/05_Laboratorio_IGBT/Circuitos_y_Modelos/*.LIB
 Semana_02/Material_Adicional_Semestre/05_Laboratorio_IGBT/Circuitos_y_Modelos/*.lib
+LD1_Arcila_Yactayo/*.zip
 LD1_Arcila_Yactayo/modelos/*.pm
 LD1_Arcila_Yactayo/modelos/*.txt
 LD1_Arcila_Yactayo/modelos/*.lib
