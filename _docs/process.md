@@ -1,81 +1,94 @@
 # Proceso Operativo y Protocolo de Laboratorio (`_docs/process.md`)
 
-Este documento establece el protocolo estándar de trabajo para la ejecución de simulaciones SPICE, extracción de parámetros, generación de figuras de alta resolución, redacción de informes en LaTeX y control de calidad académico en el repositorio **Microelectronica-UNMSM**.
+Este documento establece el protocolo estándar de ingeniería para la ejecución de simulaciones SPICE, extracción cuantitativa de parámetros, generación de figuras de alta resolución, redacción técnica y control de calidad académico en el repositorio **Microelectronica-UNMSM**.
 
 ---
 
-## 1. Ciclo de Vida de una Actividad de Laboratorio
+## 1. Ciclo de Vida Estándar de una Actividad de Laboratorio
 
-Todo laboratorio o diseño analógico/digital en este repositorio sigue un flujo secuencial riguroso de 5 fases:
+Todo laboratorio en este repositorio sigue un flujo secuencial riguroso de 5 fases:
 
 ```
-[ 1. Pre-Lab Teórico ] ──> [ 2. Netlist SPICE ] ──> [ 3. Simulación & .meas ]
-                                                               │
-[ 5. Auditoría & Entrega ] <── [ 4. Figuras & LaTeX ] <────────┘
+[ 1. Pre-Lab Teórico ] ──> [ 2. Netlist / Esquema SPICE ] ──> [ 3. Simulación & .meas ]
+                                                                       │
+[ 5. Auditoría & Cierre ] <── [ 4. Gráficas & Redacción ] <────────────┘
 ```
 
-### Fase 1: Análisis Teórico y Pre-Lab
-1. Consultar la guía oficial en `Semana_XX/Guia_Oficial_*/`.
-2. Deducir algebraicamente los puntos estáticos ($V_M$, márgenes de ruido $NM_L/NM_H$) y dinámicos ($t_p$, capacitancias equivalentes).
-3. Identificar el régimen físico dominante:
-   - Canales largos ($\ge 180\text{ nm}$): Modelo cuadrático de saturación ($I_D \propto (V_{GS}-V_T)^2$).
-   - Nodos submicrométricos ($\le 65\text{ nm}$): Saturación de velocidad por alto campo eléctrico ($I_D \propto (V_{GS}-V_T) v_{sat}$).
-
-### Fase 2: Configuración de Netlists SPICE
-1. Crear un subdirectorio temático en `LDX_*/simulaciones/A*_.../`.
-2. Incluir los modelos predictivos PTM (`.include 45nm_HP.pm`, etc.) ubicados en `modelos/` o en la carpeta local.
-3. Declarar explícitamente parámetros tecnológicos:
-   - Longitud mínima: `.param Lmin = 45n`
-   - Ancho unitario de referencia: `.param Wn = 4*Lmin` (180 nm en 45 nm)
-   - Razón de aspecto PMOS/NMOS: `.param beta = ...`
-4. Configurar estímulos limpios (`PULSE`, `.dc`, `.tran`) con tiempos de subida y bajada no nulos ($t_r, t_f \ge 5\text{ ps}$ para prevenir singularidades numéricas).
-
-### Fase 3: Simulación por Lote y Extracción Automática
-1. Ejecutar en modo *batch* (`LTspice.exe -b -ascii ...`).
-2. Utilizar directivas `.meas` para todas las métricas cuantitativas clave:
-   - Umbral estático: `.meas dc VM FIND V(in) WHEN V(out)=V(in)`
-   - Retardos: `.meas tran tpHL TRIG ... TARG ...`
-   - Corriente media y fuga: `.meas tran Iavg AVG I(V1)` / `.meas dc Ileak_lo FIND I(V1) AT 0`
-3. Inspeccionar el archivo `.log` resultante. **Nunca copiar datos a mano sin cotejar contra el registro generado.**
-
-### Fase 4: Post-procesamiento y Redacción del Informe
-1. Generar gráficas vectoriales o PNG a 300 DPI con scripts de Python (`matplotlib`) alojados en `scripts/`:
-   - Ejes claramente rotulados con unidades físicas en KaTeX/LaTeX.
-   - Puntos críticos señalados con anotaciones (`plt.annotate`).
-   - Paleta de color institucional (Azul `#1E2761`, Rojo/Coral `#F96167`).
-2. Insertar resultados en la plantilla oficial LaTeX (`LDX.tex`):
-   - Formato IEEE de doble columna.
-   - Límite estricto de páginas (ej. 12 páginas para LD1).
-   - Cada tabla debe citarse en el texto (`Tabla~\ref{tab:...}`).
-   - Cada pregunta de la rúbrica debe contar con respuesta técnica exhaustiva fundamentada en física de semiconductores.
-
-### Fase 5: Verificación y Entrega
-1. Correr script de balanceo de entornos LaTeX.
-2. Confirmar que no queden discrepancias entre el texto explicativo, las tablas, los esquemas circuitales y los anexos de código.
-3. Generar el archivo comprimido `.zip` requerido por el aula virtual.
-4. Hacer `commit` convencional y `push` a la rama `main`.
+1. **Fase 1: Análisis Teórico y Pre-Lab:**
+   * Consultar la guía docente oficial en `Semana_XX/Guia_Oficial_*/`.
+   * Deducir analíticamente los puntos de operación, ecuaciones constitutivas y transitorios esperados.
+   * Identificar la física subyacente: regímenes de transporte (saturación de velocidad, portadores minoritarios en base ancha, tiempo de recombinación, modulación de conductividad).
+2. **Fase 2: Configuración Circuital SPICE:**
+   * Diseñar esquemas interactivos (`.asc`) o netlists limpios (`.cir`).
+   * Incluir modelos de componentes mediante rutas relativas reproducibles (`.include`).
+   * Configurar estímulos limpios y realistas (tiempos de subida/bajada $t_r, t_f$ no nulos para evitar discontinuidades matemáticas).
+3. **Fase 3: Simulación por Lote y Medición Automática:**
+   * Ejecutar simulaciones en modo batch o interactivo en LTspice.
+   * Utilizar directivas `.meas` para todas las magnitudes cuantitativas clave (retardos, corrientes, energías, picos de sobretensión).
+   * Inspeccionar el archivo `.log` generado. **Queda terminantemente prohibido inventar o estimar cifras a ojo.**
+4. **Fase 4: Post-procesamiento y Redacción:**
+   * Extraer métricas a formatos estructurados y trazables (CSV, JSON o tablas Markdown).
+   * Generar figuras vectoriales o PNG a 300 DPI mediante scripts en Python (`matplotlib`), con ejes completamente rotulados, unidades físicas claras y anotaciones de puntos críticos.
+   * Redactar el informe correspondiente cumpliendo las pautas docentes (ej. conclusiones justificadas físicamente).
+5. **Fase 5: Auditoría, QA y Control de Versiones:**
+   * Verificar la correspondencia biunívoca entre la matriz de trazabilidad, las tablas y las gráficas.
+   * Validar que ningún archivo binario pesado (`.raw`, `.op.raw`) sea incorporado a Git.
+   * Confirmar mediante commits estructurados en la rama de desarrollo correspondiente (`feat/...`).
 
 ---
 
-## 2. Protocolo de Manejo de Modelos Tecnológicos PTM
+## 2. Reglas Globales e Innegociables (Aplica a Todos los Laboratorios)
 
-1. **Inmutabilidad:** Las tarjetas PTM originales (`45nm_HP.pm`, `45nm_LP.pm`, `90nm_bulk.pm`, `22nm_HP.pm`) descargadas de Nanoscale Integration and Modeling (NIMO) son de solo lectura. No se deben editar los coeficientes del modelo BSIM4 directamente.
-2. **Prevención de colisiones:** Si una simulación involucra simultáneamente transistores de alto rendimiento (HP) y bajo consumo (LP) en el mismo archivo SPICE, usar las librerías renombradas (`45nm_HP_ren.lib` y `45nm_LP_ren.lib`), las cuales asignan nombres únicos de subcircuito (`nmos_hp`, `pmos_hp`, `nmos_lp`, `pmos_lp`).
-3. **Escalamiento de tensiones:**
-   - 90 nm: $V_{DD} = 1.2\text{ V}$
-   - 45 nm HP: $V_{DD} = 1.0\text{ V}$
-   - 45 nm LP: $V_{DD} = 1.1\text{ V}$
-   - 22 nm HP: $V_{DD} = 0.8\text{ V}$
+Las siguientes 6 directivas rigen de forma universal en el repositorio y **NUNCA** deben ser vulneradas:
+
+1. **Cero Invención / Cero Fabricación de Datos (Zero Hallucination):**
+   * Todo valor numérico, retardo, energía o corriente reportada debe provenir de una simulación real ejecutada en LTspice o de un cálculo analítico formalmente documentado.
+2. **Trazabilidad Experimental Biunívoca:**
+   * Cada figura, tabla y afirmación cuantitativa debe estar mapeada a su esquema, netlist y registro de medición en la matriz de trazabilidad del laboratorio respectivo.
+3. **Inmutabilidad de Modelos de Referencia:**
+   * Los archivos de modelos provistos por fabricantes o instituciones (modelos PTM de NIMO, macro-modelos Fuji Electric o Duncan Electronics) son de solo lectura. No deben alterarse sus parámetros internos para forzar resultados.
+4. **Respaldo Físico Riguroso:**
+   * Las preguntas y análisis no se responden con generalidades. Deben explicarse los mecanismos físicos de semiconductores involucrados (saturación de velocidad, recombinación de portadores, modulación de conductividad, DIBL, inductancias parásitas $L \cdot di/dt$, etc.).
+5. **Higiene Estricta del Repositorio:**
+   * Queda prohibido cometer a Git archivos binarios de simulación masiva (`*.raw`, `*.op.raw`, `*.db`, `*.tmp`). Mantener `.gitignore` riguroso.
+6. **Flujo Seguro de Control de Versiones:**
+   * El desarrollo activo se realiza en ramas temáticas dedicadas (ej. `feat/ld3-igbt`), no directamente sobre `main`.
+   * Prohibido el uso de `git add .` indiscriminado. Se deben añadir archivos explícitamente (`git add <archivo>`).
 
 ---
 
-## 3. Lista de Chequeo para Pull Requests y Commits (QA Checklist)
+## 3. Requisitos Específicos por Laboratorio
 
-Antes de realizar un commit a `main`, validar los siguientes 6 puntos:
+### A. Laboratorio Dirigido N.° 1 (Lógica CMOS Estática) — *Cerrado*
+* **Autores:** Leonardo Yactayo & Marco Arcila.
+* **Tecnología:** PTM BSIM4 45 nm HP/LP, 90 nm Bulk y 22 nm HP.
+* **Parámetro $\beta$:** Calibración en Actividad 1 con $\beta_{\text{ópt}} = 2.50$ ($V_M \approx V_{DD}/2 = 0.500\text{ V}$); propagado a compuertas estándar y oscilador en anillo; compuerta compleja con $\beta = 2.0$.
+* **Extensión del Informe:** Máximo 12 páginas bajo estándar IEEE.
 
-- [ ] **Simulaciones verificadas:** Todos los valores numéricos citados en el texto provienen de un archivo `.log` real.
-- [ ] **Consistencia de $\beta$:** La calibración de $\beta$ del inversor se propaga fielmente a las celdas estándar derivadas.
-- [ ] **Límite de páginas:** El informe en LaTeX no supera el tope máximo de la guía (12 páginas).
-- [ ] **Integridad gráfica:** Todas las figuras referenciadas (`\includegraphics`) existen en `figuras/` y renderizan sin oclusiones de texto.
-- [ ] **Limpieza del árbol Git:** Ningún archivo binario o temporal de LTspice (`.raw`, `.op.raw`, `.db`) ha sido añadido al repositorio.
-- [ ] **Mensaje de commit estructurado:** Sigue el estándar Conventional Commits (`feat:`, `fix:`, `docs:`, `style:`, `refactor:`).
+### B. Laboratorio Dirigido N.° 2 (Lógica CMOS Dinámica) — *Cerrado*
+* **Autores:** Leonardo Yactayo & Marco Arcila.
+* **Tecnología:** PTM BSIM4 45 nm HP/LP y 130 nm Bulk.
+* **Alcance:** 5 actividades desarrolladas (Dinámica vs. Estática, Charge Sharing y Mitigaciones, Fugas y Keeper a 27 °C/85 °C, Monotonicidad y Skew en Cascada, Régimen NTV). Actividad 6 opcional no desarrollada.
+* **Extensión del Informe:** 20 páginas físicas exactas bajo estándar IEEE.
+
+### C. Laboratorio Dirigido N.° 3 (Transistores IGBT en LTspice) — *En Preparación*
+* **Autor:** Leonardo Sait Yactayo Tolentino (*Modalidad Individual*).
+* **Tecnología:** Transistores bipolares de compuerta aislada (IGBT):
+  - Modelos teóricos: `NIGBT` (`XIRGBC20S`), `PIGBT` (`XPIGBT`).
+  - Modelos comerciales: Fuji Electric Serie X 650 V (`FGW50XS65`, `FGW50XS65C`, `FGW75XS65`, `FGW75XS65C`).
+* **Circuito de Prueba:** Banco *Double Pulse Test* (DPT) para lado bajo (N) y lado alto (P).
+* **Métricas Clave:** Corriente de cola (*tail current*), retardo de apagado ($t_{d(\text{off})}$ entre 90% $V_{GE}$ y 90% $I_C$), energía de conmutación de apagado ($E_{\text{off}}$), sobretensión pico por inductancia parásita ($V_{CE,\text{peak}}$ con y sin diodo integrado) e influencia de $R_G$ (nominal vs. duplicado).
+* **Entregables:**
+  - Tabla de resultados comparativa completa.
+  - Gráficas transitorias ordenadas ($V_{GE}, V_{CE}, I_C$) en LTspice / Python.
+  - Conclusiones de mínimo una página física con fundamentos físicos detallados.
+  - Exposición técnica programada para el **21 de octubre de 2026**.
+* **Nota Operativa:** No aplican reglas de $\beta$ CMOS ni límites arbitrarios de 12 páginas. El laboratorio se rige estrictamente por su guía oficial.
+
+---
+
+## 4. Protocolo de Modelos y Datos Cuantitativos
+
+1. **Modelos Predictivos PTM (BSIM4):** Empleados en celdas lógicas CMOS integradas. Requieren definición de parámetros $W_n, W_p, L_{min}$.
+2. **Macromodelos Discretos de Potencia (IGBT):** Emplean subcircuitos (`.SUBCKT`) de fabricantes o modelos teóricos. En LTspice se instancian con prefijo de componente `X` (no `Z`), asignando el nombre del subcircuito en el atributo `Value`.
+3. **Persistencia de Métricas:** Para evitar depender de archivos `.log` ignorados por Git, se promueve la extracción automatizada de resultados hacia tablas en Markdown (`.md`), archivos `.csv` o `.json` dentro del directorio del laboratorio.

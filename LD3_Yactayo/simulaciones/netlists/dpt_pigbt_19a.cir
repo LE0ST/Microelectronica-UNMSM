@@ -1,0 +1,23 @@
+* DPT P-IGBT Test Bench (Controlled 19A) - LD3
+* Autor: Leonardo Sait Yactayo Tolentino
+.include "../../../Semana_02/Material_Adicional_Semestre/05_Laboratorio_IGBT/Circuitos_y_Modelos/pigbt.lib"
+
+XZ1 VC VG VE XPIGBT
+V1 Vpulse 0 PWL(0 0 10.0u 0 10.1u -15 13.65u -15 13.75u 0 18.75u 0 18.85u -15 19.85u -15 19.95u 0 30.0u 0)
+R1 VG Vpulse 10
+R2 VE 0 0.001
+V2 0 Vbus 400V
+L1 VC Vbus 100u Rser=1m
+D1 Vbus VC DMOD
+.model DMOD D(IS=1e-12 RS=0.01 BV=800 IBV=10u CJO=100p VJ=0.7 M=0.5 TT=35n)
+
+.tran 0 30u 0 5n uic
+.options abstol=1e-9 reltol=1e-4
+
+.meas tran Ic_on FIND -I(R2) AT 19.80u
+.meas tran Vce_on FIND (V(VE)-V(VC)) AT 19.80u
+.meas tran td_off TRIG V(VG,VE) VAL=-13.5 TD=19.8u RISE=1 TARG I(R2) VAL=-17.1 TD=19.8u RISE=1
+.meas tran tf TRIG I(R2) VAL=-17.1 TD=19.8u RISE=1 TARG I(R2) VAL=-1.9 TD=19.8u RISE=1
+.meas tran Eoff INTEG (V(VE)-V(VC))*(-I(R2)) FROM 19.85u TO 25.0u
+
+.end

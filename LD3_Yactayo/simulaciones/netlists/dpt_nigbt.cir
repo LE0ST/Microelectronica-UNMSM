@@ -1,0 +1,42 @@
+* DPT N-IGBT Test Bench - LD3 (Baseline 80A)
+* Autor: Leonardo Sait Yactayo Tolentino
+* Dispositivo: XIRGBC20S (600V, 19A TO-220, Duncan Electronics / IR)
+* Fuente: Semana_02/Material_Adicional_Semestre/05_Laboratorio_IGBT/Circuitos_y_Modelos/nigbt.lib
+
+.include "../../../Semana_02/Material_Adicional_Semestre/05_Laboratorio_IGBT/Circuitos_y_Modelos/nigbt.lib"
+
+XZ1 VC VG VE XIRGBC20S
+V1 Vpulse 0 PWL(0 0 10u 0 10.1u 15 30u 15 30.1u 0 35u 0 35.1u 15 36u 15 36.1u 0 60u 0)
+R1 VG Vpulse 10
+R2 VE 0 0.001
+V2 Vbus 0 400V
+L1 Vbus VC 100u Rser=1m
+D1 VC Vbus DMOD
+.model DMOD D(IS=1e-12 RS=0.01 BV=800 IBV=10u CJO=100p VJ=0.7 M=0.5 TT=35n)
+
+.tran 0 60u 0 10n uic
+.options abstol=1e-9 reltol=1e-4
+
+* Corriente y tension al final del pulso 1 (calibracion historica)
+.meas tran Ic_peak_p1 MAX I(R2) FROM 29u TO 31u
+.meas tran IL_max_p1 MAX I(L1) FROM 29u TO 31u
+.meas tran Vce_on_p1 AVG (V(VC)-V(VE)) FROM 28u TO 29u
+
+* Segundo pulso: conduccion previa al apagado
+.meas tran Ic_on_p2 FIND I(R2) AT 35.95u
+.meas tran Vce_on_p2 FIND (V(VC)-V(VE)) AT 35.95u
+
+* Sobretension en el segundo apagado
+.meas tran Vce_peak_p2 MAX (V(VC)-V(VE)) FROM 36.0u TO 45.0u
+.meas tran Vge_peak_p2 MAX (V(VG)-V(VE)) FROM 35.0u TO 36.5u
+
+* Retardo de apagado td(off) en 2do pulso (90% VGE a 90% IC)
+* Ic_on_p2 es ~79.8A -> 90% = 71.82A
+.meas tran td_off TRIG V(VG,VE) VAL=13.5 TD=35.9u FALL=1 TARG I(R2) VAL=71.82 TD=35.9u FALL=1
+.meas tran tf TRIG I(R2) VAL=71.82 TD=35.9u FALL=1 TARG I(R2) VAL=7.98 TD=35.9u FALL=1
+.meas tran toff TRIG V(VG,VE) VAL=13.5 TD=35.9u FALL=1 TARG I(R2) VAL=7.98 TD=35.9u FALL=1
+
+* Energia de apagado Eoff en 2do pulso (desde inicio de caida de compuerta)
+.meas tran Eoff INTEG (V(VC)-V(VE))*I(R2) FROM 36.0u TO 45.0u
+
+.end

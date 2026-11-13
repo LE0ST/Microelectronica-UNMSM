@@ -1,0 +1,54 @@
+* Banco DPT Suite Fuji - Caso F03: 75A Discreto (Nominal 75A)
+* Autor: Leonardo Sait Yactayo Tolentino
+.include "../../../Semana_02/Material_Adicional_Semestre/05_Laboratorio_IGBT/Circuitos_y_Modelos/FGW75XS65.LIB"
+.temp 25.0
+
+* Fuente de bus y carga inductiva
+V2 Vbus 0 400V
+L1 Vbus VC 100u Rser=1m
+D1 VC Vbus DMOD
+.model DMOD D(IS=1e-12 RS=0.01 BV=800 IBV=10u CJO=100p VJ=0.7 M=0.5 TT=35n)
+
+* Inductancia parasita de lazo de conmutacion (sin Rpar anadida)
+Lpar VC VC_igbt 25.0n Rser=10m
+
+* Sensores ideales de corriente (0V)
+Vsens_C VC_igbt C_int 0V
+Vsens_G VG_ext G_int 0V
+Vsens_E E_int VE 0V
+
+* Transistor IGBT bajo prueba
+X1 C_int G_int E_int FGW75XS65
+R2 VE 0 0.001
+
+* Excitacion de compuerta (Pulsos DPT: 15V / 0V con RG = 10.0 ohm)
+V1 Vpulse 0 PWL(0 0 10.000u 0 10.100u 15 27.840u 15 27.940u 0 32.940u 0 33.040u 15 34.040u 15 34.140u 0 39.140u 0)
+R1 VG_ext Vpulse 10.0
+
+* Metodo de integracion Gear
+.tran 0 39.140u 0 1.0n
+.options method=gear abstol=1e-8 reltol=1e-3
+
+* Mediciones previas al segundo apagado
+.meas tran Ic_pre FIND I(Vsens_C) AT 33.990u
+.meas tran Ie_pre FIND I(Vsens_E) AT 33.990u
+.meas tran Ig_pre FIND I(Vsens_G) AT 33.990u
+.meas tran Vce_on FIND (V(C_int)-V(E_int)) AT 33.990u
+.meas tran Vge_on FIND (V(G_int)-V(E_int)) AT 33.990u
+
+* Tensiones pico en el segundo apagado
+.meas tran Vce_peak MAX (V(C_int)-V(E_int)) FROM 34.040u TO 39.140u
+.meas tran Vge_peak MAX (V(G_int)-V(E_int)) FROM 33.040u TO 34.140u
+
+* Umbrales dinamicos de corriente para retardos (90% y 10% de Ic_pre)
+.meas tran Ic_90 PARAM 0.90*Ic_pre
+.meas tran Ic_10 PARAM 0.10*Ic_pre
+
+* Retardos de conmutacion con corriente terminal de colector
+.meas tran td_off TRIG V(G_int,E_int) VAL=13.5 TD=33.990u FALL=1 TARG I(Vsens_C) VAL=Ic_90 TD=33.990u FALL=1
+.meas tran tf TRIG I(Vsens_C) VAL=Ic_90 TD=33.990u FALL=1 TARG I(Vsens_C) VAL=Ic_10 TD=33.990u FALL=1
+
+* Energias integradas en ventana relativa [t3, t3+5.10u]
+.meas tran Eoff_C INTEG (V(C_int)-V(E_int))*I(Vsens_C) FROM 34.040u TO 39.140u
+.meas tran Eoff_G INTEG (V(G_int)-V(E_int))*I(Vsens_G) FROM 34.040u TO 39.140u
+.end

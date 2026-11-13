@@ -1,6 +1,6 @@
 # ============================================================================== 
 # .gitignore para Proyecto de Microelectrónica (LTspice + LaTeX + Python)
-# UNMSM - FIEE | Leonardo Sait Yactayo Tolentino & Marco Antonio Arcila Santander
+# UNMSM - FIEE | Escuela Profesional de Ingeniería Electrónica
 # ==============================================================================
 
 # --- Archivos de simulación pesados y temporales de LTspice ---
@@ -8,6 +8,7 @@
 *.op.raw
 *.fft
 *.plt
+!LD3_Yactayo/esquemas/*.plt
 *.log
 *.log.raw
 *.db
@@ -64,4 +65,45 @@ guia_seccion*.txt
 # --- Evaluaciones calificadas y preparación (locales, no van a GitHub) ---
 LC1_Arcila_Yactayo/
 preparacion_calificado/
-*LC1*
+Semana_06/*LC1*.zip
+Semana_06/LC1*/
+*LC1_Arcila_Yactayo*
+
+# --- Artefactos temporales, previews, duplicados y auditorías internas de LD3 ---
+LD3_Yactayo/informe/preview/
+LD3_Yactayo/presentacion/vista_previa/
+LD3_Yactayo/presentacion/activos/*.zip
+LD3_Yactayo/presentacion/activos/logo_*.png
+LD3_Yactayo/presentacion/activos/unmsm_*.png
+LD3_Yactayo/figuras/evidencias_ltspice/*_crop_test.png
+LD3_Yactayo/figuras/evidencias_ltspice/*_zoom.png
+LD3_Yactayo/guia_texto_extraido.txt
+LD3_Yactayo/informe/QA_FINAL_01_REPORTE.md
+LD3_Yactayo/tablas/tabla_resultados_exp01_exp05.md
+AUDITORIA_DPT_IGBT_G2.md
+LD3_Yactayo/modelos/*.lib
+LD3_Yactayo/modelos/*.LIB
+
+# --- Modelos SPICE/PTM de terceros y material docente (locales, no van a GitHub) ---
+Semana_02/Material_Adicional_Semestre/05_Laboratorio_IGBT/Circuitos_y_Modelos/*.LIB
+Semana_02/Material_Adicional_Semestre/05_Laboratorio_IGBT/Circuitos_y_Modelos/*.lib
+LD1_Arcila_Yactayo/*.zip
+LD1_Arcila_Yactayo/modelos/*.pm
+LD1_Arcila_Yactayo/modelos/*.txt
+LD1_Arcila_Yactayo/modelos/*.lib
+LD1_Arcila_Yactayo/simulaciones/*/*.pm
+LD2_Arcila_Yactayo/modelos/*.lib
+LD2_Arcila_Yactayo/modelos/originales/
+Semana_01/**/*.pdf
+Semana_02/**/*.pdf
+Semana_02/**/*.pptx
+Semana_03/**/*.pdf
+Semana_04/**/*.pdf
+Semana_05/**/*.pdf
+Semana_07/**/*.pdf
+Semana_09/**/*.pdf
+Semana_09/**/*.docx
+Semana_10/**/*.pdf
+Semana_11/**/*.pdf
+Semana_12/**/*.pdf
+_docs/recursos/
