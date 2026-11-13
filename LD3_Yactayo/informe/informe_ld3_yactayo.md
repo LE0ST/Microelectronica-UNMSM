@@ -9,7 +9,7 @@
 * **Asignatura:** Microelectrónica y Sistemas Nanoelectrónicos (Semestre Académico 2026-II)
 * **Docente:** MsC. Luz Adanaqué Infante
 * **Estudiante:** Leonardo Sait Yactayo Tolentino (Código: `23190214`) — *Modalidad Individual*
-* **Guía de Práctica:** Guía Oficial de Laboratorio Dirigido N.° 3 ([`Semana_07/Guia_Oficial_LD3/LabDirigidoNro03.pdf`](../../Semana_07/Guia_Oficial_LD3/LabDirigidoNro03.pdf)) (Emisión: 7 de octubre de 2026)
+* **Guía de Práctica:** Guía Oficial de Laboratorio Dirigido N.° 3 (`Semana_07/Guia_Oficial_LD3/LabDirigidoNro03.pdf`, documento docente local excluido del repositorio público; emisión: 7 de octubre de 2026)
 * **Fecha de Exposición:** 21 de octubre de 2026
 
 ---
@@ -187,7 +187,7 @@ Siguiendo la indicación expresa de la guía docente (*«Utilizando los cursores
 
 | Medición en N-IGBT (`XIRGBC20S`, 19 A) | Medición en P-IGBT (`XPIGBT`, 40 A) |
 |:---:|:---:|
-| ![Oscilograma N-IGBT](../figuras/evidencias_ltspice/E03_cursores_tdoff_nigbt.png)<br>![Zoom Cuadro Cursores N](../figuras/evidencias_ltspice/E03_cursor_zoom.png) | ![Oscilograma P-IGBT](../figuras/evidencias_ltspice/E04_cursores_tdoff_pigbt.png)<br>![Zoom Cuadro Cursores P](../figuras/evidencias_ltspice/E04_cursor_zoom.png) |
+| ![Oscilograma N-IGBT](../figuras/evidencias_ltspice/E03_cursores_tdoff_nigbt.png) | ![Oscilograma P-IGBT](../figuras/evidencias_ltspice/E04_cursores_tdoff_pigbt.png) |
 | Cursor 1 ($V_{GE}$ flanco desc.): $13.502988\text{ V}$ en $19.861622\ \mu\text{s}$<br>Cursor 2 ($I_C$): $17.113018\text{ A}$ en $20.012432\ \mu\text{s}$<br>**$\bm{t_{d(\text{off})}}$ manual: 150.81081 ns**<br>Directiva `.meas`: **150.827513 ns** (coincidencia 99.99%) | Cursor 1 ($V_{GE}$ flanco asc. a 0 V): $-13.486733\text{ V}$ en $25.093283\ \mu\text{s}$<br>Cursor 2 ($|I_C|$): $36.039449\text{ A}$ en $25.287649\ \mu\text{s}$<br>**$\bm{t_{d(\text{off})}}$ manual: 194.3662 ns**<br>Directiva `.meas`: **194.573629 ns** (coincidencia 99.89%) |
 
 * **Cotejo con la Hoja de Datos Oficial (IRGBC20S, Farnell 68617):**
@@ -204,7 +204,7 @@ Para calcular $E_{\text{off}}$ se graficó la potencia instantánea $(V(VC)-V(VE
 
 | Oscilograma Global de Integración | Ampliación del Cuadro de Diálogo LTspice |
 |:---:|:---:|
-| ![Oscilograma Global](../figuras/evidencias_ltspice/E05_energia_eoff_integral.png) | ![Ampliación Cuadro Integral](../figuras/evidencias_ltspice/E05_energia_zoom.png) |
+| ![Oscilograma Global](../figuras/evidencias_ltspice/E05_energia_eoff_integral.png) | *(Recorte local `E05_energia_zoom.png` excluido por `.gitignore`; ver cuadro de diálogo en `E05_energia_eoff_integral.png`)* |
 
 *Figura 6: Cálculo de energía Eoff mediante integración gráfica interactiva en LTspice (Ctrl + Clic en traza de potencia instantánea): oscilograma global y ampliación directa del cuadro de diálogo donde se confirma la lectura nítida de la integral de 691.48 µJ y potencia media de 134.27 W.*
 

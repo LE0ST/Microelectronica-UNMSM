@@ -20,8 +20,8 @@ Every quantitative metric reported in LD3 was subjected to multi-layer verificat
 
 | Case File | Purpose | Key Observed Metrics (`.log`) | Status |
 | :--- | :--- | :--- | :---: |
-| `cases/g42_ref_L0_1ns.cir` | Ideal loop baseline ($L_\sigma = 0\text{ nH}$, `maxstep = 1.0 ns`) | $V_{CE,\text{peak}} = 401.33\text{ V}$, $t_{d(\text{off})} = 229.72\text{ ns}$, $E_{C,\text{net}} = 987.37\ \mu\text{J}$ | **PASS** |
-| `cases/g42_ref_L25_1ns.cir` | Physical inductive loop baseline ($L_\sigma = 25\text{ nH}$, `Rpar = None`, `1.0 ns`, SPICE default `temp = 27 °C`) | $V_{CE,\text{peak}} = 442.08\text{ V}$, $t_{d(\text{off})} = 234.30\text{ ns}$, $E_{C,\text{net}} = 1089.68\ \mu\text{J}$ | **PASS** |
+| `cases/g42_ref_L0_1ns.cir` | Ideal loop baseline ($L_\sigma = 0\text{ nH}$, `maxstep = 1.0 ns`) | $V_{CE,\text{peak}} = 401.33\text{ V}$, $t_{d(\text{off})} = 229.72\text{ ns}$ (`.meas`) / $228.67\text{ ns}$ (Python), $E_{C,\text{net}} = 987.37\ \mu\text{J}$ | **PASS** |
+| `cases/g42_ref_L25_1ns.cir` | Physical inductive loop baseline ($L_\sigma = 25\text{ nH}$, `Rpar = None`, `1.0 ns`, SPICE default `temp = 27 °C`) | $V_{CE,\text{peak}} = 442.08\text{ V}$, $t_{d(\text{off})} = 234.30\text{ ns}$ (`.meas`) / $233.24\text{ ns}$ (Python), $E_{C,\text{net}} = 1089.68\ \mu\text{J}$ | **PASS** |
 | `cases/g42_ref_L25_05ns.cir` | Fine-timestep convergence check ($L_\sigma = 25\text{ nH}$, `0.5 ns`, `temp = 27 °C`) | $V_{CE,\text{peak}} = 441.98\text{ V}$, $t_{d(\text{off})} = 234.28\text{ ns}$, $E_{C,\text{net}} = 1089.49\ \mu\text{J}$ ($\Delta V \approx 0.023\%$, $\Delta E \approx 0.017\%$, $\Delta t_d \approx 0.009\%$) | **PASS** |
 | `cases/g42_diag_L25_rpar50_1ns.cir` | Diagnostic comparison with artificial damping (`Rpar = 50 Ω`) | $V_{CE,\text{peak}} = 441.14\text{ V}$, $E_{C,\text{net}} = 1088.21\ \mu\text{J}$, $E_{R\text{par}} = 0.758\ \mu\text{J}$ | **PASS** *(Diagnostic)* |
 | `cases/val_damp_rpar_None.cir` | Undamped `Lpar` stability check (pre-G4.2) | $V_{CE,\text{peak}} = 442.08\text{ V}$, $E_{\text{off,shunt}} = 1060.41\ \mu\text{J}$ | **PASS** |

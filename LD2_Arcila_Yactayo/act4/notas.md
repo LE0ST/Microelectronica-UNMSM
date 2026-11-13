@@ -1,5 +1,7 @@
 # Notas de Trabajo — Actividad 4: Regla de monotonicidad, cascada dominó y skew de reloj
 
+> **[HISTÓRICO — Fase 1]** Plantilla de planificación previa a la ejecución de simulaciones; se conserva intacta como registro histórico. Para los resultados finales y verificados, véase el README_act*.md correspondiente (o ct6/README.txt en el caso de la Actividad 6 opcional, no desarrollada).
+
 ## 1. Objetivos de la Actividad
 - [ ] Demostración de falla lógica en cascada directa dyn1 -> etapa 2.\n- [ ] Inserción de inversor estático dominó y corrección funcional.\n- [ ] Estímulo no monótono en entrada X y análisis de interfaz con flip-flops (TGFF).\n- [ ] Cascada de 3 etapas footed vs unfooted bajo barrido de skew (-50ps a 200ps).\n- [ ] Medición de corriente pico de cortocircuito en precarga y retardo.\n- [ ] Determinación de la condición de temporización para omitir footer.
 

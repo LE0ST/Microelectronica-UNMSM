@@ -130,8 +130,8 @@ Queda prohibido el uso de `git add .` indiscriminado o confirmaciones directas s
   * Informe técnico oficial de 20 páginas físicas IEEE.
 * **Laboratorio Dirigido N.° 3 (Transistores IGBT):**
   * **Autor:** Leonardo Sait Yactayo Tolentino (*Modalidad Individual*).
-  * **Fuente Oficial:** [`Semana_07/Guia_Oficial_LD3/LabDirigidoNro03.pdf`](file:///G:/Proyectos/MicroNano/Semana_07/Guia_Oficial_LD3/LabDirigidoNro03.pdf).
-  * **Modelos:** Duncan Electronics (`nigbt.lib`, `pigbt.lib`) y Fuji Electric Serie X (`FGW50XS65/C`, `FGW75XS65/C`).
+  * **Fuente Oficial:** `Semana_07/Guia_Oficial_LD3/LabDirigidoNro03.pdf` *(documento docente local, excluido del repositorio público)*.
+  * **Modelos:** Duncan Electronics (`nigbt.lib`, `pigbt.lib`) y Fuji Electric Serie X (`FGW50XS65/C`, `FGW75XS65/C`) — *dependencias locales de terceros excluidas del árbol público; ver [`LD3_Yactayo/modelos/NOTAS_MODELOS.md`](LD3_Yactayo/modelos/NOTAS_MODELOS.md)*.
   * **Ensayos:** Banco *Double Pulse Test* (DPT), corriente de cola (*tail current*), retardo de apagado ($t_{d(\text{off})}$ 90% a 90%), energía de apagado ($E_{\text{off}}$), sobretensión pico por inductancia parásita ($V_{CE,\text{peak}}$) e influencia de $R_G$.
   * **Entregables:** Tabla de resultados completa, gráficas comparativas de transitorios ($V_{GE}, V_{CE}, I_C$), conclusiones técnicas fundamentadas ($\ge 1$ página) y exposición oral programada para el **21 de octubre de 2026**.
   * **Reglas particulares:** No aplican reglas de $\beta$ CMOS ni límites arbitrarios de 12 páginas; el desarrollo se rige estrictamente por su guía oficial.
@@ -142,9 +142,9 @@ Queda prohibido el uso de `git add .` indiscriminado o confirmaciones directas s
 
 El agente debe consultar y mantener actualizados los siguientes documentos de referencia:
 
-* [**`_docs/bitacora.md`**](file:///G:/Proyectos/MicroNano/_docs/bitacora.md): Registro cronológico global de desarrollo y decisiones de diseño.
-* [**`_docs/process.md`**](file:///G:/Proyectos/MicroNano/_docs/process.md): Protocolo detallado de simulación SPICE, generación de figuras y QA.
-* [**`_docs/plan.md`**](file:///G:/Proyectos/MicroNano/_docs/plan.md): Hoja de ruta del curso y estado de avance de entregables.
-* [**`Semana_02/Guia_Oficial_LD1/LabDirigidoNro01.pdf`**](file:///G:/Proyectos/MicroNano/Semana_02/Guia_Oficial_LD1/LabDirigidoNro01.pdf): Enunciado oficial del Laboratorio Dirigido N.° 1.
-* [**`Semana_04/Guia_Oficial_LD2/LabDirigido2.pdf`**](file:///G:/Proyectos/MicroNano/Semana_04/Guia_Oficial_LD2/LabDirigido2.pdf): Enunciado oficial del Laboratorio Dirigido N.° 2.
-* [**`Semana_07/Guia_Oficial_LD3/LabDirigidoNro03.pdf`**](file:///G:/Proyectos/MicroNano/Semana_07/Guia_Oficial_LD3/LabDirigidoNro03.pdf): Enunciado oficial del Laboratorio Dirigido N.° 3.
+* [**`_docs/bitacora.md`**](_docs/bitacora.md): Registro cronológico global de desarrollo y decisiones de diseño.
+* [**`_docs/process.md`**](_docs/process.md): Protocolo detallado de simulación SPICE, generación de figuras y QA.
+* [**`_docs/plan.md`**](_docs/plan.md): Hoja de ruta del curso y estado de avance de entregables.
+* `Semana_02/Guia_Oficial_LD1/LabDirigidoNro01.pdf` *(local, excluido del repositorio público)*: Enunciado oficial del Laboratorio Dirigido N.° 1.
+* `Semana_04/Guia_Oficial_LD2/LabDirigido2.pdf` *(local, excluido del repositorio público)*: Enunciado oficial del Laboratorio Dirigido N.° 2.
+* `Semana_07/Guia_Oficial_LD3/LabDirigidoNro03.pdf` *(local, excluido del repositorio público)*: Enunciado oficial del Laboratorio Dirigido N.° 3.

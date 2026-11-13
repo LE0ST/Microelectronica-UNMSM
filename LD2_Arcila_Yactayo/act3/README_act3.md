@@ -1,80 +1,80 @@
-# Actividad 3 — Restauración y Robustez: Dimensionamiento de Keeper y Contención
+# Activity 3 — Restoration and Robustness: Keeper Sizing and Contention
 
-**Curso:** Microelectrónica y Sistemas Nanoelectrónicos (Semestre 2026-II)  
-**Institución:** Universidad Nacional Mayor de San Marcos (UNMSM) — FIEE  
-**Docente:** MsC. Luz Adanaqué Infante  
-**Autores:** Leonardo Sait Yactayo Tolentino (23190214) & Marco Antonio Arcila Santander (23190140)  
-**Directorio de Trabajo:** [`LD2_Arcila_Yactayo/act3/`](file:///g:/Proyectos/MicroNano/LD2_Arcila_Yactayo/act3/)  
-**Tecnologías Evaluadas:** PTM 45nm HP, PTM 45nm LP, PTM 130nm Bulk  
-
----
-
-## 1. Topología del Circuito y Función del Keeper PMOS
-
-En la compuerta NAND3 dinámica dominó, el nodo dinámico `dyn` queda flotante durante la fase de evaluación ($CLK = 1$) cuando las entradas no activan la red de descenso (PDN abierta). En tecnologías submicrométricas profundas (45 nm), las corrientes de fuga subumbral ($I_{sub}$) y de túnel de compuerta ($I_{gate}$) descargan progresivamente el nodo, amenazando la integridad del estado lógico.
-
-Para contrarrestar esta pérdida de carga sin comprometer la velocidad de conmutación:
-* Se conecta un transistor **keeper PMOS** ($M_k$) con su fuente a $V_{DD}$, su drenaje a `dyn` y su compuerta gobernada por la salida invertida `out`.
-* Cuando `dyn` está alto, `out = 0`, encendiendo $M_k$ para reinyectar corriente compensatoria ($I_{kp} \ge I_{leak,tot}$).
-* Si la PDN evalúa a tierra ($A=B=C=1$), la PDN debe vencer la corriente inyectada por $M_k$ hasta forzar la conmutación de `out` a alto (bloqueando a $M_k$). Esta contención dinámica introduce una penalización de retardo $\Delta t_{pHL}$.
+**Course:** Microelectronics and Nanoelectronic Systems (Semester 2026-II)  
+**Institution:** Universidad Nacional Mayor de San Marcos (UNMSM) — FIEE  
+**Instructor:** MsC. Luz Adanaqué Infante  
+**Authors:** Leonardo Sait Yactayo Tolentino (`23190214`) & Marco Antonio Arcila Santander (`23190140`)  
+**Working Directory:** [`act3/`](.)  
+**Evaluated Technologies:** PTM 45 nm HP, PTM 45 nm LP, PTM 130 nm Bulk
 
 ---
 
-## 2. Campaña de Retención Temporal (Ventana de $1.0\ \mu\text{s}$)
+## 1. Circuit Topology and PMOS Keeper Function
 
-Se evaluó la retención de carga bajo el criterio normativo de la guía ($V_{dyn}(1\,\mu\text{s}) > 0.90\,V_{DD}$) a $27^\circ\text{C}$ y $85^\circ\text{C}$:
+In the domino dynamic NAND3 gate, dynamic node `dyn` floats during the evaluation phase ($CLK = 1$) whenever inputs keep the pull-down network (PDN) off. In deep-submicron technologies (45 nm), subthreshold leakage ($I_{sub}$) and gate tunneling ($I_{gate}$) progressively discharge `dyn`, threatening logic integrity.
 
-| Tecnología | Temp | $V_{dyn}(1\,\mu\text{s})$ Sin Keeper | $t_{\text{hold}}$ a $0.90\,V_{DD}$ | Estado Sin Keeper | Con Keeper ($W_{kp}=22\text{ nm}$) |
+To counter charge loss without unduly penalizing switching speed:
+* A **PMOS keeper** ($M_k$) is connected with its source at $V_{DD}$, drain at `dyn`, and gate driven by the inverted output `out`.
+* When `dyn` is high, `out = 0`, turning on $M_k$ to replenish lost charge ($I_{kp} \ge I_{leak,tot}$).
+* When the PDN evaluates to ground ($A=B=C=1$), it must overcome $M_k$'s contention current until `out` switches high (turning $M_k$ off), introducing a delay penalty $\Delta t_{pHL}$.
+
+---
+
+## 2. Temporal Retention Campaign ($1.0\ \mu\text{s}$ Window)
+
+Charge retention was evaluated under the guide's criterion ($V_{dyn}(1\,\mu\text{s}) > 0.90\,V_{DD}$) at $27^\circ\text{C}$ and $85^\circ\text{C}$:
+
+| Technology | Temp | $V_{dyn}(1\,\mu\text{s})$ Without Keeper | $t_{\text{hold}}$ to $0.90\,V_{DD}$ | Status Without Keeper | With Keeper ($W_{kp}=22\text{ nm}$) |
 | :--- | :---: | :---: | :---: | :---: | :---: |
-| **PTM 45nm HP** | $27^\circ\text{C}$ | $0.9370\text{ V}$ | $> 1.0\ \mu\text{s}$ | Cumple retención | $0.999994\text{ V}$ (Estable) |
-| **PTM 45nm HP** | $85^\circ\text{C}$ | $0.7836\text{ V}$ | **$608.17\text{ ns}$** | **Falla retención** | $0.999975\text{ V}$ (Estable) |
-| **PTM 45nm LP** | $85^\circ\text{C}$ | $0.9997\text{ V}$ | $> 1.0\ \mu\text{s}$ | Cumple retención | $1.000000\text{ V}$ (Estable) |
-| **PTM 130nm** | $85^\circ\text{C}$ | $0.9985\text{ V}$ | $> 1.0\ \mu\text{s}$ | Cumple retención | $1.000000\text{ V}$ (Estable) |
+| **PTM 45nm HP** | $27^\circ\text{C}$ | $0.9370\text{ V}$ | $> 1.0\ \mu\text{s}$ | Passes retention | $0.999994\text{ V}$ (Stable) |
+| **PTM 45nm HP** | $85^\circ\text{C}$ | $0.7836\text{ V}$ | **$608.17\text{ ns}$** | **Fails retention** | $0.999975\text{ V}$ (Stable) |
+| **PTM 45nm LP** | $85^\circ\text{C}$ | $0.9997\text{ V}$ | $> 1.0\ \mu\text{s}$ | Passes retention | $1.000000\text{ V}$ (Stable) |
+| **PTM 130nm** | $85^\circ\text{C}$ | $0.9985\text{ V}$ | $> 1.0\ \mu\text{s}$ | Passes retention | $1.000000\text{ V}$ (Stable) |
 
-### Diagnóstico Físico:
-1. En 45nm HP a $85^\circ\text{C}$, el incremento térmico de corriente subumbral ($I_{sub} \propto T^2 \exp(-qV_{th}/mkT)$) reduce el tiempo de retención a $608.17\text{ ns}$, exigiendo obligatoriamente un keeper activo.
-2. En 45nm LP y 130nm Bulk, las tensiones de umbral más elevadas y espesores de óxido mayores reducen las fugas en varios órdenes de magnitud, haciendo que el keeper sea prescindible desde el punto de vista puramente estático a baja frecuencia.
+### Physical Diagnosis:
+1. In 45 nm HP at $85^\circ\text{C}$, thermal increase in subthreshold leakage ($I_{sub} \propto T^2 \exp(-qV_{th}/mkT)$) reduces retention time to $608.17\text{ ns}$, making an active keeper mandatory.
+2. In 45 nm LP and 130 nm Bulk, higher threshold voltages and thicker oxides reduce leakage by orders of magnitude, making the keeper unnecessary for static retention over a $1\ \mu\text{s}$ window.
 
 ---
 
-## 3. Compromiso de Contención y Ventana de Viabilidad Conjunta
+## 3. Contention Trade-Off and Joint Viability Window
 
-La guía oficial exige que la penalización relativa de retardo introducida por el keeper sea estrictamente inferior al 10%:
+The official guide requires the relative delay penalty introduced by the keeper to remain strictly below $10\%$:
 $$\Delta t_{pHL} = \frac{t_{pHL}(W_{kp}) - t_{pHL}(W_{kp}=0)}{t_{pHL}(W_{kp}=0)} \times 100\% < 10.00\%$$
 
-Se realizó una malla fina de simulación con paso de $1\text{ nm}$ en 45nm HP a $85^\circ\text{C}$:
+A fine simulation sweep with $1\text{ nm}$ step was performed in 45 nm HP at $85^\circ\text{C}$:
 
-| $W_{kp}$ (nm) | Razón $r = W_{kp}/(67.5\text{ nm})$ | $V_{dyn}(1\,\mu\text{s})$ | Retención ($>0.9V_{DD}$) | $\Delta t_{pHL}$ (%) | Contención ($<10\%$) | Viabilidad Conjunta |
+| $W_{kp}$ (nm) | Ratio $r = W_{kp}/(67.5\text{ nm})$ | $V_{dyn}(1\,\mu\text{s})$ | Retention ($>0.9V_{DD}$) | $\Delta t_{pHL}$ (%) | Contention ($<10\%$) | Joint Viability |
 | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| **10.5** | 0.156 | 0.999968 V | SÍ | +3.64% | SÍ | **VIABLE (Mínimo)** |
-| **15.0** | 0.222 | 0.999971 V | SÍ | +4.18% | SÍ | **VIABLE** |
-| **22.0** | 0.326 | 0.999975 V | SÍ | +5.34% | SÍ | **VIABLE (Referencia)** |
-| **30.0** | 0.444 | 0.999981 V | SÍ | +6.82% | SÍ | **VIABLE** |
-| **38.0** | 0.563 | 0.999985 V | SÍ | **+9.94%** | SÍ | **VIABLE (Máximo)** |
-| **39.0** | 0.578 | 0.999986 V | SÍ | +10.23% | **NO** | NO VIABLE |
-| **45.0** | 0.667 | 0.999988 V | SÍ | +12.90% | **NO** | NO VIABLE |
-| **60.0** | 0.889 | 0.999992 V | SÍ | +20.43% | **NO** | NO VIABLE |
+| **10.5** | 0.156 | 0.999968 V | YES | +3.64% | YES | **VIABLE (Min)** |
+| **15.0** | 0.222 | 0.999971 V | YES | +4.18% | YES | **VIABLE** |
+| **22.0** | 0.326 | 0.999975 V | YES | +5.34% | YES | **VIABLE (Reference)** |
+| **30.0** | 0.444 | 0.999981 V | YES | +6.82% | YES | **VIABLE** |
+| **38.0** | 0.563 | 0.999985 V | YES | **+9.94%** | YES | **VIABLE (Max)** |
+| **39.0** | 0.578 | 0.999986 V | YES | +10.23% | **NO** | NOT VIABLE |
+| **45.0** | 0.667 | 0.999988 V | YES | +12.90% | **NO** | NOT VIABLE |
+| **60.0** | 0.889 | 0.999992 V | YES | +20.43% | **NO** | NOT VIABLE |
 
-### Límites de Diseño Rigurosamente Verificados:
-* **Ventana Viable en 45nm HP @ $85^\circ\text{C}$:**
+### Verified Design Bounds:
+* **Viable Window in 45 nm HP @ $85^\circ\text{C}$:**
   $$W_{kp} \in [10.5\text{ nm},\ 38.0\text{ nm}] \quad \iff \quad r \in [0.156,\ 0.563]$$
-* El punto de referencia convencional ($W_{kp} = 22\text{ nm}$, $W_{eff} = 12\text{ nm}$, $r = 0.326$) opera holgadamente dentro de la ventana con $\Delta t_{pHL} \approx +5.34\%$, garantizando $V_{dyn}(1\,\mu\text{s}) = 0.999975\text{ V}$.
+* The conventional reference point ($W_{kp} = 22\text{ nm}$, $W_{eff} = 12\text{ nm}$, $r = 0.326$) operates comfortably inside the window with $\Delta t_{pHL} \approx +5.34\%$, ensuring $V_{dyn}(1\,\mu\text{s}) = 0.999975\text{ V}$.
 
 ---
 
-## 4. Alternativa Avanzada: Keeper Condicional
+## 4. Advanced Alternative: Conditional Keeper
 
-Para desacoplar el conflicto entre retención estática y contención dinámica:
-* Se ensayó una topología de **keeper condicional con línea de retardo** (dos inversores CMOS auxiliares).
-* Durante la conmutación rápida, el keeper permanece inicialmente inactivo por el retardo de compuerta, activándose únicamente si el nodo no conmuta tras el periodo de guarda.
-* **Resultado:** La penalización de retardo se redujo a solo **$+5.11\%$** (frente a $+12.90\%$ en keeper convencional unitario), a cambio de una sobrecarga moderada en área y consumo de conmutación.
+To decouple static retention from dynamic contention:
+* A **conditional keeper with a delay line** (two auxiliary CMOS inverters) was evaluated.
+* During fast evaluation, the keeper stays initially off due to the delay line and activates only if `dyn` remains high after the guard window.
+* **Result:** Delay penalty dropped to **$+5.11\%$** (vs. $+12.90\%$ for the conventional $45\text{ nm}$ keeper), at the cost of moderate area and switching power overhead.
 
 ---
 
-## 5. Inventario de Figuras Generadas (Actividad 3)
+## 5. Generated Figures (Activity 3)
 
-* [**`fig1_act3_retencion_formas_onda.png`**](file:///g:/Proyectos/MicroNano/LD2_Arcila_Yactayo/act3/figuras/fig1_act3_retencion_formas_onda.png): Evolución transitoria de $V(dyn)$ durante $1.0\ \mu\text{s}$ a $27^\circ\text{C}$ y $85^\circ\text{C}$ con y sin keeper.
-* [**`fig2_act3_consolidacion_hp_lp_130.png`**](file:///g:/Proyectos/MicroNano/LD2_Arcila_Yactayo/act3/figuras/fig2_act3_consolidacion_hp_lp_130.png): Comparativa multitecnológica tridimensional de retención (HP vs LP vs 130nm).
-* [**`fig3_act3_contencion_penalizacion.png`**](file:///g:/Proyectos/MicroNano/LD2_Arcila_Yactayo/act3/figuras/fig3_act3_contencion_penalizacion.png): Curvas de penalización $\Delta t_{pHL}$ frente a $W_{kp}$ y razón de aspecto $r$.
-* [**`fig4_act3_ventana_viabilidad.png`**](file:///g:/Proyectos/MicroNano/LD2_Arcila_Yactayo/act3/figuras/fig4_act3_ventana_viabilidad.png): Delimitación de la ventana de viabilidad conjunta (retención $>0.9V_{DD}$ vs contención $<10\%$).
-* [**`fig5_act3_keeper_condicional.png`**](file:///g:/Proyectos/MicroNano/LD2_Arcila_Yactayo/act3/figuras/fig5_act3_keeper_condicional.png): Formas de onda y análisis temporal del keeper condicional con línea de retardo.
+* [`figuras/fig1_act3_retencion_formas_onda.png`](figuras/fig1_act3_retencion_formas_onda.png): Transient evolution of $V(dyn)$ over $1.0\ \mu\text{s}$ at $27^\circ\text{C}$ and $85^\circ\text{C}$ with and without keeper.
+* [`figuras/fig2_act3_consolidacion_hp_lp_130.png`](figuras/fig2_act3_consolidacion_hp_lp_130.png): Multi-technology retention comparison (HP vs. LP vs. 130 nm).
+* [`figuras/fig3_act3_contencion_penalizacion.png`](figuras/fig3_act3_contencion_penalizacion.png): Delay penalty $\Delta t_{pHL}$ curves vs. $W_{kp}$ and aspect ratio $r$.
+* [`figuras/fig4_act3_ventana_viabilidad.png`](figuras/fig4_act3_ventana_viabilidad.png): Joint viability window (retention $>0.9V_{DD}$ vs. contention $<10\%$).
+* [`figuras/fig5_act3_keeper_condicional.png`](figuras/fig5_act3_keeper_condicional.png): Waveforms and timing analysis of the conditional keeper with delay line.

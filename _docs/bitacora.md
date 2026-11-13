@@ -336,4 +336,17 @@ Para registrar una nueva actividad, añadir una sección al inicio de la lista c
   * **Higiene de Control de Versiones:** Estricto cumplimiento de no ejecutar `git commit` ni `git push` sin instrucción directa del usuario.
 * **Estado Actual:** Informe académico LD3 y documentación técnica 100% alineados con las observaciones de auditoría externa y la guía oficial docente.
 
+---
+
+### Publicación en GitHub (`LE0ST/Microelectronica-UNMSM`) y Auditoría Documental (`docs/markdown-traceability`)
+* **Fecha:** 2026-11-12 / 2026-11-13
+* **Acciones Realizadas:**
+  * **Integración en `main` (PR #3):** Fusión de `feat/ld3-igbt` en `main` mediante *merge commit*, publicando el repositorio unificado con READMEs en inglés para la raíz, LD1, LD2 y LD3, manteniendo intactos los informes académicos PDF en español.
+  * **Exclusión de Dependencias de Terceros:** Retiro del seguimiento público de Git (`git rm --cached`) de los modelos PTM (LD1/LD2), modelos Duncan/Fuji (LD3), guías docentes (`Semana_01`–`Semana_07`) y el archivo comprimido `LD1_Arcila_Yactayo.zip`, preservando las copias locales y documentando su obtención manual.
+  * **Auditoría y Corrección de Trazabilidad (`docs/markdown-traceability`):**
+    * Corrección de `LD3_Yactayo/TRAZABILIDAD.md` (matrices reales `fuji_f01.cir`–`fuji_f06.cir` para EXP-06–EXP-09, enlaces G4.2 hacia `validation/cases/` y reconciliación documentada de $t_{d(\text{off})}$ entre SPICE `.meas` (`229.72 ns` / `234.30 ns`) y Python `compute_delay_python` (`228.67 ns` / `233.24 ns`)).
+    * Retiro del seguimiento de Git (`git rm --cached`) de la tabla preliminar `LD3_Yactayo/tablas/tabla_resultados_exp01_exp05.md` en coherencia con `.gitignore`, conservando `tabla_resultados_ld3.md` como fuente maestra.
+    * Eliminación de URIs locales `file:///` y enlaces a archivos excluidos en `AGENTS.md`, `CLAUDE.md`, `LD2_Arcila_Yactayo/act1..5/README_act*.md`, `auxiliares/README_calibracion.md` y documentos de `LD3_Yactayo/`.
+    * Modernización al inglés técnico de `LD2_Arcila_Yactayo/act1..5/README_act*.md` y reconstrucción de `LD2_Arcila_Yactayo/modelos/README_modelos.md`.
+
 

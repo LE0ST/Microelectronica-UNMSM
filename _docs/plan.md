@@ -10,31 +10,33 @@ Este documento registra la planificación general del curso, el estado de los en
 | :--- | :--- | :--- | :---: | :--- |
 | **LD1** | Inversor CMOS, márgenes de ruido, retardo transitorio, compuertas lógicas (NAND2/NOR2/AOI), fuga y oscilador de anillo | Leonardo Yactayo & Marco Arcila | **COMPLETO (100%)** | Entregado en LaTeX (12 págs.) + SPICE verificado |
 | **LD2** | Lógica CMOS Dinámica: Dominó Footed/Unfooted, Compartición de Carga, Balance Causal de Fugas, Keeper y Operación NTV (5 actividades) | Leonardo Yactayo & Marco Arcila | **COMPLETO (100%)** | Integrado en `main`, informe oficial (20 págs. IEEE) |
-| **LD3** | Caracterización y Simulación Comparativa de Transistores IGBT en LTspice (DPT, corriente de cola, $t_{d(\text{off})}$, $E_{\text{off}}$, $V_{CE,\text{peak}}$, $R_G$) | **Leonardo Yactayo** *(Individual)* | **EN PREPARACIÓN (Fase G1)** | Exposición de hallazgos: **21/10/2026** |
+| **LD3** | Caracterización y Simulación Comparativa de Transistores IGBT en LTspice (DPT, corriente de cola, $t_{d(\text{off})}$, $E_{\text{off}}$, $V_{CE,\text{peak}}$, $R_G$) | **Leonardo Yactayo** *(Individual)* | **COMPLETO (100%)** | Integrado en `main`, informe (15 págs.) y exposición (`21/10/2026`) |
 | **LD4** | Amplificadores y Diseños Avanzados (Tema por confirmar según calendario docente) | Por definir | *Planificado* | Post-Examen Parcial |
 
 ---
 
-## 2. Estado Detallado: Laboratorio Dirigido N.° 3 (LD3) — *En Preparación*
+## 2. Estado Detallado: Laboratorio Dirigido N.° 3 (LD3) — *Completado*
 
-* **Guía Oficial de Referencia:** [`Semana_07/Guia_Oficial_LD3/LabDirigidoNro03.pdf`](../Semana_07/Guia_Oficial_LD3/LabDirigidoNro03.pdf)
+* **Guía Oficial de Referencia:** `Semana_07/Guia_Oficial_LD3/LabDirigidoNro03.pdf` *(documento docente local excluido del repositorio público)*
+* **Informe Técnico Oficial:** [`LD3_Yactayo/informe/informe_ld3_yactayo.pdf`](../LD3_Yactayo/informe/informe_ld3_yactayo.pdf) (15 páginas) y presentación [`LD3_Yactayo/presentacion/LD3_IGBT_Yactayo.pdf`](../LD3_Yactayo/presentacion/LD3_IGBT_Yactayo.pdf).
 * **Modalidad:** Individual (Leonardo Sait Yactayo Tolentino).
 * **Entregables Exigidos:**
-  1. Tabla de resultados cuantitativos consolidada.
-  2. Gráficas comparativas transitorias claras ($V_{GE}, V_{CE}, I_C$) en LTspice / Python.
-  3. Análisis técnico y conclusiones fundamentadas con física de dispositivos ($\ge 1$ página física).
+  1. Tabla de resultados cuantitativos consolidada ([`LD3_Yactayo/tablas/tabla_resultados_ld3.md`](../LD3_Yactayo/tablas/tabla_resultados_ld3.md)).
+  2. Gráficas comparativas transitorias claras ($V_{GE}, V_{CE}, I_C$) en LTspice / Python (`LD3_Yactayo/figuras/`).
+  3. Análisis técnico y conclusiones fundamentadas con física de dispositivos ([`LD3_Yactayo/informe/conclusiones.md`](../LD3_Yactayo/informe/conclusiones.md), $\ge 1$ página física).
   4. Exposición oral de hallazgos el 21 de octubre de 2026.
-* **Modelos y Circuitos Involucrados:**
+* **Modelos y Circuitos Involucrados (Dependencias Locales):**
   - Teóricos / Genéricos: `nigbt.lib` (`XIRGBC20S`), `pigbt.lib` (`XPIGBT`).
   - Comerciales Fuji Electric Serie X (650 V): `FGW50XS65`, `FGW50XS65C` (50 A), `FGW75XS65`, `FGW75XS65C` (75 A).
   - Banco *Double Pulse Test* (DPT): Lado bajo (N-IGBT) y lado alto (P-IGBT).
 * **Hitos de Trabajo:**
   - [x] **Fase G0 (Auditoría Integral):** Identificación de fuente de verdad, modelos existentes y dependencias.
   - [x] **Fase G1 (Normalización y Trazabilidad):** Actualización documental, reglas operativas y matriz de trazabilidad.
-  - [ ] **Fase G2 (Banco DPT y Simulación N vs P):** Configuración de circuitos DPT, barridos transitorios de doble pulso y extracción de corriente de cola y $t_{d(\text{off})}$.
-  - [ ] **Fase G3 (Caracterización Fuji Serie X):** Evaluación comparativa 50 A vs 75 A, impacto de diodo co-empaquetado y sensibilidad a $R_G$.
-  - [ ] **Fase G4 (Post-procesamiento y Redacción):** Generación de figuras a 300 DPI, consolidación de tabla de resultados y redacción de conclusiones ($\ge 1$ página).
-  - [ ] **Fase G5 (Cierre y Preparación de Exposición):** Auditoría final y preparación de diapositivas/puntos clave para el 21/10/2026.
+  - [x] **Fase G2 (Banco DPT y Simulación N vs P):** Configuración de circuitos DPT, barridos transitorios de doble pulso y extracción de corriente de cola y $t_{d(\text{off})}$.
+  - [x] **Fase G3 (Caracterización Fuji Serie X):** Evaluación comparativa 50 A vs 75 A, impacto de diodo co-empaquetado y sensibilidad a $R_G$.
+  - [x] **Fase G4 (Post-procesamiento y Redacción):** Generación de figuras a 300 DPI, consolidación de tabla de resultados y redacción de conclusiones ($\ge 1$ página).
+  - [x] **Fase G5 (Cierre y Preparación de Exposición):** Auditoría final, presentación PPTX/PDF e integración en `main` (`LE0ST/Microelectronica-UNMSM`).
+* **Estado:** CERRADO, validado documentalmente e integrado en la rama `main`.
 
 ---
 
@@ -68,8 +70,8 @@ Este documento registra la planificación general del curso, el estado de los en
 
 ---
 
-## 5. Próximos Pasos y Registro de Tareas Inmediatas
+## 5. Estado de Publicación y Mantenimiento Documental
 
-1. **Infraestructura LD3:** Completar la normalización de `README.md`, `AGENTS.md`, `CLAUDE.md`, `process.md` y bitácora.
-2. **Matriz de Trazabilidad LD3:** Establecer la plantilla inicial con todos los ensayos en estado PENDIENTE.
-3. **Simulaciones DPT (G2):** Ejecutar los circuitos esquemáticos existentes en `Semana_02/.../05_Laboratorio_IGBT/` asegurando rutas relativas reproducibles.
+1. **Integración en `main`:** LD1, LD2 y LD3 publicados en `LE0ST/Microelectronica-UNMSM` con READMEs en inglés, informes originales en español y suite de validación en [`LD3_Yactayo/validation/README.md`](../LD3_Yactayo/validation/README.md).
+2. **Higiene de Licencias:** Modelos de terceros (PTM, Duncan, Fuji) y guías docentes excluidos del seguimiento público de Git; conservados localmente para reproducción.
+3. **Auditoría Documental (`docs/markdown-traceability`):** Corrección integral de enlaces Markdown, matriz de trazabilidad de LD3 y modernización de READMEs secundarios de LD2.

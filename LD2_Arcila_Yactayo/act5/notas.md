@@ -1,5 +1,7 @@
 # Notas de Trabajo — Actividad 5: Clock feedthrough, frecuencia mínima y régimen NTV
 
+> **[HISTÓRICO — Fase 1]** Plantilla de planificación previa a la ejecución de simulaciones; se conserva intacta como registro histórico. Para los resultados finales y verificados, véase el README_act*.md correspondiente (o ct6/README.txt en el caso de la Actividad 6 opcional, no desarrollada).
+
 ## 1. Objetivos de la Actividad
 - [ ] Medición de sobreimpulso y subimpulso de feedthrough con CL=0.5fF y tr=5ps.\n- [ ] Análisis de recorte por diodo drenador-sustrato D-B.\n- [ ] Barrido VDD de 1.0V a 0.35V en 45nm HP; medición de teval y thold.\n- [ ] Cálculo de fmax y fmin; graficación de la ventana de frecuencia e identificación de VDD,min.\n- [ ] Impacto del keeper y del proceso 45nm LP en NTV.\n- [ ] Redacción de la conclusión obligatoria de viabilidad en NTV (máximo 10 líneas).
 

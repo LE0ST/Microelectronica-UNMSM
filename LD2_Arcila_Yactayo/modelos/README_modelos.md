@@ -1,30 +1,38 @@
-# Modelos Tecnologicos PTM para LD2 (modelos/)
+# PTM Technology Models for LD2 (`modelos/`)
 
-Este directorio contiene los modelos predictivos BSIM4 (PTM) utilizados a lo largo del Laboratorio Dirigido N. 2, siguiendo estrictamente el requerimiento de la Seccion 4.1 de la guia oficial LabDirigido2.pdf.
+This directory is the local placement target for the **BSIM4 (Level 54)** Predictive Technology Model (PTM) libraries required to run the SPICE netlists in **Laboratory Project No. 2 (LD2)**, following Section 4.1 of the official guide (`LabDirigido2.pdf`).
+
+> [!IMPORTANT]
+> **Third-Party Model Exclusion:** The `.lib` model files (`ptm45hp.lib`, `ptm45lp.lib`, `ptm130.lib`, `ptm45hp_aux.lib`) are **not redistributed** in this public repository because ASU/Berkeley NIMO PTM cards do not include an explicit open-source redistribution license. Obtain the original `.pm` parameter cards from the official PTM distribution and generate the renamed `.lib` files locally before running LTspice.
 
 ---
 
-## 1. Regla de Prevencion de Colisiones (Seccion 4.1 de la Guia)
+## 1. Model Collision Prevention Rule (Guide Section 4.1)
 
-En SPICE, todas las tarjetas PTM originales declaran sus modelos como genericos:
-\\spice
+In SPICE, unmodified PTM model cards declare generic model names:
+
+```spice
 .model  nmos  nmos  level = 54
 .model  pmos  pmos  level = 54
-\Si se incluyen dos archivos originales en la misma simulacion (por ejemplo, para comparar 45nm HP frente a 45nm LP o 130nm), la ultima definicion sobreescribe silenciosamente a la primera. Por tal motivo, la guia impone como **obligatorio** el renombrado de modelos a archivos \.lib\.
+```
+
+If two unmodified files (e.g., 45 nm HP and 45 nm LP) are `.include`d in the same simulation, the second definition silently overrides the first. Therefore, each model card must be renamed into a collision-free `.lib` file.
 
 ---
 
-## 2. Modelos Generados y Mapeo de Nombres
+## 2. Local File Placement & Model Name Mapping
 
-| Archivo Original (\modelos/originales/\) | Archivo Renombrado (\modelos/\) | Nombre Modelo NMOS | Nombre Modelo PMOS | Nivel BSIM4 |
+Create or populate `LD2_Arcila_Yactayo/modelos/` (and copy `ptm45hp.lib`, `ptm45lp.lib`, `ptm130.lib` into `LD2_Arcila_Yactayo/` if running legacy root-relative scripts) with the following renamed libraries:
+
+| Original PTM Card | Local Target (`LD2_Arcila_Yactayo/modelos/`) | NMOS Model Name | PMOS Model Name | BSIM4 Level |
 | :--- | :--- | :--- | :--- | :---: |
-| %nm_HP.pm\ | \ptm45hp.lib\ | mos_45hp\ | \pmos_45hp\ | 54 |
-| %nm_LP.pm\ | \ptm45lp.lib\ | mos_45lp\ | \pmos_45lp\ | 54 |
-| Xnm_bulk.pm\ | \ptm130.lib\ | mos_130\ | \pmos_130\ | 54 |
+| `45nm_HP.pm` | `ptm45hp.lib` | `nmos_45hp` | `pmos_45hp` | 54 |
+| `45nm_LP.pm` | `ptm45lp.lib` | `nmos_45lp` | `pmos_45lp` | 54 |
+| `130nm_bulk.pm` | `ptm130.lib` | `nmos_130` | `pmos_130` | 54 |
 
-### Transformacion Aplicada
-Equivalente a los comandos sed estipulados en la Seccion 4.1:
-\\ash
+### Transformation Commands (Guide Section 4.1)
+
+```bash
 sed -e 's/^\.model  *nmos  *nmos/.model nmos_45hp nmos/' \
     -e 's/^\.model  *pmos  *pmos/.model pmos_45hp pmos/' 45nm_HP.pm > ptm45hp.lib
 
@@ -33,41 +41,34 @@ sed -e 's/^\.model  *nmos  *nmos/.model nmos_45lp nmos/' \
 
 sed -e 's/^\.model  *nmos  *nmos/.model nmos_130 nmos/' \
     -e 's/^\.model  *pmos  *pmos/.model pmos_130 pmos/' 130nm_bulk.pm > ptm130.lib
-\
-### Verificacion de Modelos Unicos (grep '^.model')
-Ejecutado sobre los archivos generados:
-\ptm45hp.lib: .model nmos_45hp nmos  level = 54
+```
+
+### Verification (`grep '^.model'`)
+
+```text
+ptm45hp.lib: .model nmos_45hp nmos  level = 54
 ptm45hp.lib: .model pmos_45hp pmos  level = 54
 ptm45lp.lib: .model nmos_45lp nmos  level = 54
 ptm45lp.lib: .model pmos_45lp pmos  level = 54
-ptm130.lib: .model nmos_130 nmos  level = 54
-ptm130.lib: .model pmos_130 pmos  level = 54
-\Resultado: **6 modelos independientes y distintos**, garantizando cero colisiones.
+ptm130.lib:  .model nmos_130  nmos  level = 54
+ptm130.lib:  .model pmos_130  pmos  level = 54
+```
+
+This yields **6 distinct, independent models** with zero `.model` name collisions.
 
 ---
 
-## 3. Verificacion de Parametros Clave (Tabla 4.2 de la Guia vs. Archivos Reales)
+## 3. Verified Reference Parameters (Guide Table 4.2 vs. Local Libraries)
 
-| Parametro | Guia: 45nm HP | Archivo: 45nm HP | Guia: 45nm LP | Archivo: 45nm LP | Guia: 130nm | Archivo: 130nm | Concordancia |
+| Parameter | Guide: 45 nm HP | 45 nm HP (`ptm45hp.lib`) | Guide: 45 nm LP | 45 nm LP (`ptm45lp.lib`) | Guide: 130 nm | 130 nm (`ptm130.lib`) | Match |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| VDD nominal | 1.0 V | (En netlist) | 1.1 V | (En netlist) | 1.3 V | (En netlist) | Si |
-| Vth0 NMOS | 0.469 V | 0.46893 V | 0.623 V | 0.62261 V | 0.378 V | 0.3782 V | Si |
-| Vth0 PMOS | -0.492 V | -0.49158 V | -0.587 V | -0.58700 V | -0.321 V | -0.3210 V | Si |
-| toxe NMOS | 1.25 nm | 1.25e-9 m | 1.80 nm | 1.80e-9 m | 2.25 nm | 2.25e-9 m | Si |
-| u0 NMOS (m^2/V*s) | 0.054 | 0.054 | 0.049 | 0.049 | 0.059 | 0.05928 | Si |
-| u0 PMOS (m^2/V*s) | 0.020 | 0.020 | 0.021 | 0.021 | 0.0084 | 0.00835 | Si |
-| vsat NMOS (m/s) | 1.7e5 | 170000 | 1.3e5 | 130000 | 1.0e5 | 100370 | Si |
-| nfactor NMOS | 2.22 | 2.22 | 1.60 | 1.60 | 1.50 | 1.50 | Si |
-| Lminima | 45 nm | 45 nm | 45 nm | 45 nm | 130 nm | 130 nm | Si |
+| Nominal $V_{DD}$ | 1.0 V | *(In netlist)* | 1.1 V | *(In netlist)* | 1.3 V | *(In netlist)* | Yes |
+| $V_{th0}$ NMOS | 0.469 V | 0.46893 V | 0.623 V | 0.62261 V | 0.378 V | 0.3782 V | Yes |
+| $V_{th0}$ PMOS | -0.492 V | -0.49158 V | -0.587 V | -0.58700 V | -0.321 V | -0.3210 V | Yes |
+| $t_{oxe}$ NMOS | 1.25 nm | $1.25 \times 10^{-9}\text{ m}$ | 1.80 nm | $1.80 \times 10^{-9}\text{ m}$ | 2.25 nm | $2.25 \times 10^{-9}\text{ m}$ | Yes |
+| $\mu_0$ NMOS ($\text{m}^2/\text{V}\cdot\text{s}$) | 0.054 | 0.054 | 0.049 | 0.049 | 0.059 | 0.05928 | Yes |
+| $\mu_0$ PMOS ($\text{m}^2/\text{V}\cdot\text{s}$) | 0.020 | 0.020 | 0.021 | 0.021 | 0.0084 | 0.00835 | Yes |
+| $v_{sat}$ NMOS (m/s) | $1.7 \times 10^5$ | 170000 | $1.3 \times 10^5$ | 130000 | $1.0 \times 10^5$ | 100370 | Yes |
+| `nfactor` NMOS | 2.22 | 2.22 | 1.60 | 1.60 | 1.50 | 1.50 | Yes |
 
-### Parametros Adicionales Extraidos para Calculos Analiticos
-* **Capacitancias de union drenador/fuente (Actividad 2):**
-  * cjd = cjs = 0.0005 F/m^2 = 0.5 fF/um^2 (45nm HP)
-  * cjswd = cjsws = 5e-10 F/m = 0.5 fF/um (45nm HP)
-  * cjswgd = cjswgs = 5e-10 F/m = 0.5 fF/um (45nm HP)
-* **Capacitancia de solapamiento compuerta-drenador (Actividad 5):**
-  * cgdo = 1.1e-10 F/m = 0.11 fF/um (45nm HP y LP)
-  * cgdo = 2.4e-10 F/m = 0.24 fF/um (130nm bulk)
-* **Parametros de fuga subumbral:**
-  * voff = -0.13 V (NMOS HP/LP/130nm)
-  * eta0 = 0.0055 (45nm HP), 0.0125 (45nm LP), 0.0092 (130nm)
+*Note: For historical parameter-inspection logs of the local `.lib` files prior to public release, see [`../verificacion_modelos.txt`](../verificacion_modelos.txt).*
