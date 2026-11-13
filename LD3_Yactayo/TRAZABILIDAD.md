@@ -18,13 +18,13 @@
 | **EXP-03** | Extracción de Corriente de Cola (*Tail Current*) en 2do pulso de apagado | N-IGBT vs P-IGBT | `esquemas/DPT_NIGBT_nom.asc` | `simulaciones/netlists/dpt_nigbt_nom.cir` | **VALIDADO** | Fig. 3 generada ($I_{tail}$ detectada) |
 | **EXP-04** | Medición de Retardo de Apagado $t_{d(\text{off})}$ (90% $V_{GE} \to$ 90% $I_C$) y cotejo con Datasheet | N-IGBT vs P-IGBT | `esquemas/DPT_NIGBT_nom.asc` | `simulaciones/netlists/dpt_nigbt_nom.cir` | **VALIDADO** | Fig. 4 generada (Cursores 90% a 90%) |
 | **EXP-05** | Cálculo de Energía de Apagado $E_{\text{off}} = \int V_{CE} I_C dt$ y % debido a corriente de cola | N-IGBT vs P-IGBT | `esquemas/DPT_NIGBT_nom.asc` | `simulaciones/netlists/dpt_nigbt_nom.cir` | **VALIDADO** | Fig. 5 generada ($E_{off}$ y $E_{tail}$) |
-| **EXP-06** | Sobretensión $V_{CE,\text{peak}}$ por inductancia parásita: con vs sin diodo co-pack (50 A) | `FGW50XS65` vs `FGW50XS65C` | `esquemas/DPT_Fuji_50A.asc` | `simulaciones/netlists/dpt_fuji_50a.cir` | *PENDIENTE* | Por simular |
-| **EXP-07** | Sobretensión $V_{CE,\text{peak}}$ por inductancia parásita: con vs sin diodo co-pack (75 A) | `FGW75XS65` vs `FGW75XS65C` | `esquemas/DPT_Fuji_75A.asc` | `simulaciones/netlists/dpt_fuji_75a.cir` | *PENDIENTE* | Por simular |
-| **EXP-08** | Escalamiento de Área de Silicio (50 A vs 75 A): pérdidas estáticas y dinámicas | `FGW50XS65` vs `FGW75XS65` | `esquemas/DPT_Fuji_Area.asc` | `simulaciones/netlists/dpt_fuji_area.cir` | *PENDIENTE* | Por simular |
-| **EXP-09** | Sensibilidad a $R_G$: impacto de duplicar $R_G$ ($10\ \Omega \to 20\ \Omega$) en retardo y $E_{\text{off}}$ | `FGW50XS65C` | `esquemas/DPT_RG_Sweep.asc` | `simulaciones/netlists/dpt_rg_sweep.cir` | *PENDIENTE* | Por simular |
-| **REQ-TAB**| Consolidación de Tabla de Resultados Completa | Todos los modelos evaluados | — | `tablas/tabla_resultados_ld3.md` | *PENDIENTE* | Por compilar |
-| **REQ-CON**| Conclusiones Técnicas Fundamentadas con Física ($\ge 1$ página física) | Análisis de N vs P, área y diodo | — | `informe/conclusiones.md` | *PENDIENTE* | Por redactar |
-| **REQ-EXP**| Exposición Oral de Principales Hallazgos (21/10/2026) | Presentación individual | — | `informe/exposicion_21oct.md` | *PENDIENTE* | Por preparar |
+| **EXP-06** | Sobretensión $V_{CE,\text{peak}}$ por inductancia parásita: con vs sin diodo co-pack (50 A) | `FGW50XS65` vs `FGW50XS65C` | `esquemas/DPT_Fuji_50A.asc` | `simulaciones/netlists/dpt_fuji_50a.cir` | **VALIDADO** | Fig. 6 generada (Sobretensión 50A) |
+| **EXP-07** | Sobretensión $V_{CE,\text{peak}}$ por inductancia parásita: con vs sin diodo co-pack (75 A) | `FGW75XS65` vs `FGW75XS65C` | `esquemas/DPT_Fuji_75A.asc` | `simulaciones/netlists/dpt_fuji_75a.cir` | **VALIDADO** | Fig. 7 generada (Sobretensión 75A) |
+| **EXP-08** | Escalamiento de Área de Silicio (50 A vs 75 A): pérdidas estáticas y dinámicas | `FGW50XS65` vs `FGW75XS65` | `esquemas/DPT_Fuji_Area.asc` | `simulaciones/netlists/dpt_fuji_area.cir` | **VALIDADO** | Fig. 8 generada (Área 50A vs 75A) |
+| **EXP-09** | Sensibilidad a $R_G$: impacto de duplicar $R_G$ ($10\ \Omega \to 20\ \Omega$) en retardo y $E_{\text{off}}$ | `FGW50XS65C` | `esquemas/DPT_RG_Sweep.asc` | `simulaciones/netlists/dpt_rg_sweep.cir` | **VALIDADO** | Fig. 9 generada (Sensibilidad RG) |
+| **REQ-TAB**| Consolidación de Tabla de Resultados Completa | Todos los modelos evaluados | — | `tablas/tabla_resultados_ld3.md` | **VALIDADO** | Tablas 1 y 2 en PDF Landscape |
+| **REQ-CON**| Conclusiones Técnicas Fundamentadas con Física ($\ge 1$ página física) | Análisis de N vs P, área y diodo | — | `informe/conclusiones.md` | **VALIDADO** | Conclusiones exhaustivas |
+| **REQ-EXP**| Exposición Oral de Principales Hallazgos (21/10/2026) | Presentación individual | — | `informe/exposicion_21oct.md` | **PREPARADO** | Sustentación el 21/10/2026 |
 
 ---
 
@@ -141,69 +141,99 @@
 
 ---
 
+### `[PILOTO-FUJI-50A]` — Validación Metodológica y Energética (G4.2-R)
+* **Requisito Metodológico:** Línea base experimental para modelos Fuji Electric Serie X. Desacoplamiento de corriente terminal de colector $I_C$, eliminación de distorsión por corriente de compuerta en shunt, y cierre del balance energético de Tellegen/Poynting.
+* **Modelo Evaluado:** `FGW50XS65` (Fuji Electric Serie X, discreto sin diodo co-empaquetado).
+* **Condiciones de Banco DPT:** $V_{bus} = 400\text{ V}$, $I_C \approx 50\text{ A}$ ($t_{p1} = 11.54\ \mu\text{s}$), $R_G = 10\ \Omega$, $V_{GE} = 15\text{ V} / 0\text{ V}$, $\text{temp} = 27\ ^\circ\text{C}$ (efectiva en SPICE), $\text{maxstep} = 1.0\text{ ns}$ (Gear).
+* **Netlists y Logs de Evidencia:**
+  * [`simulaciones/netlists/g42_ref_L0_1ns.cir`](simulaciones/netlists/g42_ref_L0_1ns.cir) / [`.log`](simulaciones/netlists/g42_ref_L0_1ns.log) — Referencia ideal $L_\sigma = 0\text{ nH}$.
+  * [`simulaciones/netlists/g42_ref_L25_1ns.cir`](simulaciones/netlists/g42_ref_L25_1ns.cir) / [`.log`](simulaciones/netlists/g42_ref_L25_1ns.log) — Referencia física inductiva $L_\sigma = 25\text{ nH}$ (sin $R_{\text{par}}$).
+  * [`simulaciones/netlists/g42_diag_L25_rpar50_1ns.cir`](simulaciones/netlists/g42_diag_L25_rpar50_1ns.cir) / [`.log`](simulaciones/netlists/g42_diag_L25_rpar50_1ns.log) — Variante diagnóstica ($R_{\text{par}} = 50\ \Omega$).
+  * [`simulaciones/netlists/g42_ref_L0_05ns.cir`](simulaciones/netlists/g42_ref_L0_05ns.cir) y [`g42_ref_L25_05ns.cir`](simulaciones/netlists/g42_ref_L25_05ns.cir) — Pruebas de convergencia a $0.5\text{ ns}$.
+* **Script de Validación Automatizada:** [`scripts/auditoria_g42_fuji.py`](scripts/auditoria_g42_fuji.py).
+* **Métricas Cuantitativas Validadas (Ventana $[27.740\ \mu\text{s}, 32.840\ \mu\text{s}]$):**
+  * **Ref. 1 ($L_0$):** $I_{C,\text{pre}} = 50.044\text{ A}$, $V_{CE,\text{on}} = 1.365\text{ V}$, $V_{CE,\text{peak}} = 401.33\text{ V}$, $t_{d(\text{off})} = 228.67\text{ ns}$, $t_f = 35.19\text{ ns}$, $E_{C,\text{net}} = 987.37\ \mu\text{J}$, Residuo Tellegen: $-34\text{ pJ}$ ($-0.000001\%$).
+  * **Ref. 2 ($L_{25}$, sin $R_{\text{par}}$):** $I_{C,\text{pre}} = 50.009\text{ A}$, $V_{CE,\text{on}} = 1.364\text{ V}$, $V_{CE,\text{peak}} = 442.08\text{ V}$ (Sobretensión inducida respecto al bus: $+42.08\text{ V}$), $t_{d(\text{off})} = 233.24\text{ ns}$, $t_f = 31.44\text{ ns}$, $E_{C,\text{net}} = 1089.68\ \mu\text{J}$, Residuo Tellegen: $-33\text{ pJ}$ ($-0.000001\%$).
+  * **Variante Diagnóstica ($L_{25}, R_{\text{par}}=50\ \Omega$):** $V_{CE,\text{peak}} = 441.14\text{ V}$, $t_{d(\text{off})} = 232.98\text{ ns}$, $E_{C,\text{net}} = 1088.21\ \mu\text{J}$, $E_{Rpar} = 0.758\ \mu\text{J}$ ($0.070\%$ de $E_C$).
+* **Aserciones Superadas:** AS-01 a AS-07 al 100% (cero doble conteo, suma exacta de componentes, residuo $< 0.5\%$, concordancia Python vs SPICE $< 0.05\%$).
+* **Estado de Ensayos Previos:** Ensayos exploratorios de G4.1 clasificados como **HISTÓRICO** (superados por G4.2-R al corregir sensor terminal de colector y polaridad de $R_G$).
+* **Estado:** **VALIDADO CON LIMITACIONES (Línea Base G4.2-R)**
+
 ---
 
 ### `[EXP-06]` — Sobretensión $V_{CE,\text{peak}}$ y Diodo Co-Pack (Módulo 50 A)
 * **Requisito Oficial de la Guía:** Acápite 5.1, Numeral 4.5. Pico de sobretensión por inductancias parásitas comparando modelos con y sin diodo de marcha libre integrado.
-* **Modelos Evaluados:** `FGW50XS65` (sin diodo) vs `FGW50XS65C` (con diodo `DFGW50XS65C_sp`).
-* **Datos Numéricos Obtenidos:** *PENDIENTE DE SIMULACIÓN*
-* **Figura Asociada:** `figuras/fig6_sobretension_copack_50a.png`
-* **Estado:** PENDIENTE
+* **Modelos Evaluados:** `FGW50XS65` (F01, discreto) vs `FGW50XS65C` (F02, co-pack con diodo `DFGW50XS65C_sp`).
+* **Condiciones:** $V_{bus} = 400\text{ V}$, $I_C = 50.0\text{ A}$, $R_G = 10\ \Omega$, $L_\sigma = 25\text{ nH}$, $T = 25\ ^\circ\text{C}$.
+* **Datos Numéricos Obtenidos:**
+  * **F01 (Discreto):** $V_{CE(\text{on})} = 1.362\text{ V}$, $V_{CE,\text{peak}} = 442.36\text{ V}$ ($+42.36\text{ V}$ vs bus), $t_{d(\text{off})} = 231.10\text{ ns}$, $t_f = 31.38\text{ ns}$, $di/dt_{\text{max}} = 1669.5\text{ A}/\mu\text{s}$, $E_{C,\text{net}} = 1066.98\ \mu\text{J}$, $E_{\text{tail}} = 4.68\ \mu\text{J}$ ($0.44\%$).
+  * **F02 (Co-Pack):** $V_{CE(\text{on})} = 1.362\text{ V}$, $V_{CE,\text{peak}} = 442.36\text{ V}$ ($+42.36\text{ V}$ vs bus), $t_{d(\text{off})} = 231.09\text{ ns}$, $t_f = 31.38\text{ ns}$, $di/dt_{\text{max}} = 1669.6\text{ A}/\mu\text{s}$, $E_{C,\text{net}} = 1066.98\ \mu\text{J}$, $E_{\text{tail}} = 4.68\ \mu\text{J}$ ($0.44\%$).
+* **Hallazgo Físico:** En switch low-side, el diodo co-pack está en polarización inversa ($V_C > V_E$), con corriente directa nula. Su capacitancia parásita ($0.45\text{ nF}$) no modifica mediblemente el pico inductivo ni las pérdidas en el interruptor bajo prueba.
+* **Figura Asociada:** [`figuras/fig6_sobretension_copack_50a.png`](figuras/fig6_sobretension_copack_50a.png) (300 DPI)
+* **Estado:** **VALIDADO**
 
 ---
 
 ### `[EXP-07]` — Sobretensión $V_{CE,\text{peak}}$ y Diodo Co-Pack (Módulo 75 A)
 * **Requisito Oficial de la Guía:** Acápite 5.1, Numeral 4.5. Pico de sobretensión para la serie de 75 A.
-* **Modelos Evaluados:** `FGW75XS65` (sin diodo) vs `FGW75XS65C` (con diodo `DFGW75XS65C_sp`).
-* **Datos Numéricos Obtenidos:** *PENDIENTE DE SIMULACIÓN*
-* **Figura Asociada:** `figuras/fig7_sobretension_copack_75a.png`
-* **Estado:** PENDIENTE
+* **Modelos Evaluados:** `FGW75XS65` (F03, discreto) vs `FGW75XS65C` (F04, co-pack con diodo `DFGW75XS65C_sp`).
+* **Condiciones:** $V_{bus} = 400\text{ V}$, $I_C = 75.0\text{ A}$ ($t_{p1} = 17.84\ \mu\text{s}$), $R_G = 10\ \Omega$, $L_\sigma = 25\text{ nH}$, $T = 25\ ^\circ\text{C}$.
+* **Datos Numéricos Obtenidos:**
+  * **F03 (Discreto):** $I_{C,\text{pre}} = 75.230\text{ A}$, $V_{CE(\text{on})} = 1.356\text{ V}$, $V_{CE,\text{peak}} = 445.98\text{ V}$ ($+45.98\text{ V}$ vs bus), $t_{d(\text{off})} = 293.18\text{ ns}$, $t_f = 40.48\text{ ns}$, $di/dt_{\text{max}} = 1818.0\text{ A}/\mu\text{s}$, $E_{C,\text{net}} = 2052.75\ \mu\text{J}$, $E_{\text{tail}} = 7.56\ \mu\text{J}$ ($0.37\%$).
+  * **F04 (Co-Pack):** $I_{C,\text{pre}} = 75.233\text{ A}$, $V_{CE(\text{on})} = 1.356\text{ V}$, $V_{CE,\text{peak}} = 445.98\text{ V}$ ($+45.98\text{ V}$ vs bus), $t_{d(\text{off})} = 293.16\text{ ns}$, $t_f = 40.48\text{ ns}$, $di/dt_{\text{max}} = 1818.4\text{ A}/\mu\text{s}$, $E_{C,\text{net}} = 2052.74\ \mu\text{J}$, $E_{\text{tail}} = 7.57\ \mu\text{J}$ ($0.37\%$).
+* **Hallazgo Físico:** Se comprueba idéntica respuesta en la serie de 75 A: el diodo antiparalelo no influye en las pérdidas de corte del propio conmutador.
+* **Figura Asociada:** [`figuras/fig7_sobretension_copack_75a.png`](figuras/fig7_sobretension_copack_75a.png) (300 DPI)
+* **Estado:** **VALIDADO**
 
 ---
 
 ### `[EXP-08]` — Escalamiento de Área de Silicio (50 A vs 75 A)
 * **Requisito Oficial de la Guía:** Acápite 6 (Conclusiones). Justificar con física cómo el incremento de área impacta en pérdidas de conducción y conmutación.
-* **Modelos Evaluados:** `FGW50XS65` ($I_C = 50\text{ A}$) vs `FGW75XS65` ($I_C = 75\text{ A}$).
-* **Datos Numéricos Obtenidos:** *PENDIENTE DE SIMULACIÓN*
-* **Figura Asociada:** `figuras/fig8_comparativa_area_50vs75.png`
-* **Estado:** PENDIENTE
+* **Modelos Evaluados:** `FGW50XS65` (F01) vs `FGW75XS65` a 50 A (F05) y a nominal 75 A (F03).
+* **Datos Numéricos Obtenidos:**
+  * **A corriente igualada ($50\text{ A}$ constantes, F01 vs F05):**
+    * Mayor área reduce $V_{CE(\text{on})}$ de $1.362\text{ V}$ a **$1.181\text{ V}$** ($-181\text{ mV}$, $-13.3\%$ en pérdidas de conducción).
+    * Mayor capacitancia ($C_{ies} = 9.5\text{ nF}$ vs $6.77\text{ nF}$) incrementa $t_{d(\text{off})}$ de $231.10\text{ ns}$ a **$324.75\text{ ns}$** ($+40.5\%$) y $E_{C,\text{net}}$ de $1066.98\ \mu\text{J}$ a **$1367.85\ \mu\text{J}$** ($+28.2\%$).
+    * Menor $di/dt_{\text{max}}$ ($1429.8$ vs $1669.5\text{ A}/\mu\text{s}$) reduce el sobreimpulso pico de $442.36\text{ V}$ a **$436.37\text{ V}$** ($+36.37\text{ V}$ sobre bus).
+  * **A corriente nominal ($50\text{ A}$ vs $75\text{ A}$, F01 vs F03):**
+    * Caída similar en conducción ($1.362\text{ V}$ vs $1.356\text{ V}$).
+    * $E_{\text{off}}$ se duplica: de $1066.98\ \mu\text{J}$ a **$2052.75\ \mu\text{J}$** ($+92.4\%$) debido al corte de $50\%$ más corriente con mayor tiempo de tránsito BJT ($TF = 3.0\text{ ns}$ vs $0.1\text{ ns}$).
+* **Figura Asociada:** [`figuras/fig8_comparativa_area_50vs75.png`](figuras/fig8_comparativa_area_50vs75.png) (300 DPI)
+* **Estado:** **VALIDADO**
 
 ---
 
 ### `[EXP-09]` — Sensibilidad a la Resistencia de Compuerta $R_G$
 * **Requisito Oficial de la Guía:** Acápite 5.1, Numeral 4.6. Relación entre $R_G$ y $t_{d(\text{off})}$. Impacto de duplicar $R_G$ ($10\ \Omega \to 20\ \Omega$) sobre pérdidas de conmutación y velocidad.
-* **Modelo Evaluado:** `FGW50XS65C`.
-* **Condiciones:** Barrido paramétrico `.step param Rg list 10 20`.
-* **Datos Numéricos Obtenidos:** *PENDIENTE DE SIMULACIÓN*
-* **Figura Asociada:** `figuras/fig9_sensibilidad_rg_conmutacion.png`
-* **Estado:** PENDIENTE
+* **Modelo Evaluado:** `FGW50XS65C` ($50\text{ A}$, $400\text{ V}$): F02 ($R_G = 10\ \Omega$) vs F06 ($R_G = 20\ \Omega$).
+* **Datos Numéricos Obtenidos:**
+  * **$R_G = 10\ \Omega$ (F02):** $t_{d(\text{off})} = 231.09\text{ ns}$, $t_f = 31.38\text{ ns}$, $di/dt_{\text{max}} = 1669.6\text{ A}/\mu\text{s}$, $V_{CE,\text{peak}} = 442.36\text{ V}$ (Sobretensión $+42.36\text{ V}$), $E_{C,\text{net}} = 1066.98\ \mu\text{J}$.
+  * **$R_G = 20\ \Omega$ (F06):** $t_{d(\text{off})} = 361.60\text{ ns}$ ($+56.5\%$), $t_f = 57.27\text{ ns}$ ($+82.5\%$), $di/dt_{\text{max}} = 1019.4\text{ A}/\mu\text{s}$ ($-38.9\%$), $V_{CE,\text{peak}} = 425.94\text{ V}$ (Sobretensión $+25.94\text{ V}$, reducción de $-38.8\%$), $E_{C,\text{net}} = 1818.73\ \mu\text{J}$ ($+70.5\%$).
+* **Compromiso Físico Clave:** Duplicar $R_G$ mitiga fuertemente el estrés por sobretensión inductiva ($-16.4\text{ V}$ en pico absoluto, $-38.8\%$ en sobretensión sobre bus), a costa de una penalización severa de $+70.5\%$ en la energía de apagado disipada.
+* **Figura Asociada:** [`figuras/fig9_sensibilidad_rg_conmutacion.png`](figuras/fig9_sensibilidad_rg_conmutacion.png) (300 DPI)
+* **Estado:** **VALIDADO**
 
 ---
 
+
 ### `[REQ-TAB]` — Consolidación de Tabla de Resultados Completa
 * **Requisito Oficial de la Guía:** Acápite 1. «La entrega principal de este laboratorio consta de la tabla de resultados completa y las gráficas comparativas.»
-* **Contenido de la Tabla:**
-  1. Dispositivo y tecnología (NIGBT, PIGBT, FGW50XS65, FGW50XS65C, FGW75XS65, FGW75XS65C).
-  2. Corriente de cola $I_{C,\text{tail}}$ [A].
-  3. Retardo de apagado $t_{d(\text{off})}$ [ns].
-  4. Retardo de hoja de datos $t_{d(\text{off}),\text{ds}}$ [ns] y discrepancia [%].
-  5. Energía total de apagado $E_{\text{off}}$ [mJ].
-  6. Fracción energética en cola $\%E_{\text{tail}}$ [%].
-  7. Pico de sobretensión $V_{CE,\text{peak}}$ [V].
-* **Archivo de Destino:** `LD3_Yactayo/tablas/tabla_resultados_ld3.md`.
-* **Estado:** PENDIENTE
+* **Contenido de la Tabla:** 11 condiciones reales sin duplicados (2 N-IGBT, 3 P-IGBT y 6 Fuji Serie X).
+* **Archivo de Destino:** [`tablas/tabla_resultados_ld3.md`](tablas/tabla_resultados_ld3.md).
+* **Estado:** **VALIDADO**
 
 ---
 
 ### `[REQ-CON]` — Conclusiones Técnicas Fundamentadas con Física
 * **Requisito Oficial de la Guía:** Acápite 6. Redactar análisis técnico de **mínimo una página** debatiendo diferencias fundamentales entre canales N y P, impacto del diodo co-empaquetado y escalamiento de área (50 A vs 75 A).
-* **Física a Explicar:**
-  1. Asimetría de movilidad de electrones ($\mu_n \approx 1400\text{ cm}^2/\text{V}\cdot\text{s}$) vs huecos ($\mu_p \approx 450\text{ cm}^2/\text{V}\cdot\text{s}$) y su repercusión en la resistencia de encendido y tiempo de recombinación en canal P vs N.
-  2. Modulación de conductividad en la región de deriva $N^-$ y acumulación de carga almacenada.
-  3. Proceso de corte: apagado rápido del MOSFET interno seguido de recombinación lenta de minoritarios no barridos en la base flotante del BJT de salida (origen del *tail current*).
-  4. Compromiso entre capacitancias parásitas ($C_{ies}, C_{oes}, C_{res}$) y área de silicio activa.
-* **Archivo de Destino:** `LD3_Yactayo/informe/conclusiones.md`.
-* **Estado:** PENDIENTE
+* **Física Desarrollada:**
+  1. Asimetría de movilidad de electrones vs huecos ($\mu_n \approx 3.1 \mu_p$) y su impacto en capacitancias, retardo ($+40.7\%$) y pérdidas ($+46.3\%$).
+  2. Modulación de conductividad en la base $N^-$ y dinámica de recombinación en base flotante (origen del *tail current*).
+  3. Polarización inversa permanente del diodo co-pack en el conmutador low-side DPT vs su función de retorno en inversores de puente.
+  4. Escalamiento de área de silicio: reducción de $V_{CE(\text{on})}$ en $-13.3\%$ a costa de un incremento de $+28.2\%$ en $E_{\text{off}}$ por mayores capacitancias parásitas.
+  5. Compromiso de $R_G$: mitigación del estrés por sobretensión inductiva ($-38.8\%$) frente a penalización de pérdidas por apagado ($+70.5\%$).
+* **Archivos Asociados:** [`informe/conclusiones.md`](informe/conclusiones.md) y Sección 7 de [`informe/informe_ld3_yactayo.md`](informe/informe_ld3_yactayo.md).
+* **Estado:** **VALIDADO**
 
 ---
 
@@ -211,11 +241,6 @@
 * **Requisito Oficial de la Guía:** Acápite 1. «El día 21 se realizará una breve exposición con los principales hallazgos en su experiencia de laboratorio, en base a ello se ponderará la calificación.»
 * **Fecha Programada:** **21 de octubre de 2026**.
 * **Modalidad:** Individual (Leonardo Sait Yactayo Tolentino).
-* **Entregable de Apoyo:** Guion técnico y diapositivas de respaldo en `LD3_Yactayo/informe/exposicion_21oct.md`.
-* **Puntos Críticos a Exponer:**
-  1. Comparativa dinámica y física de canal N vs canal P (asimetría en $t_{d(\text{off})}$ y corriente de cola).
-  2. Mecanismo físico de la corriente de cola (recombinación en base BJT vs corte MOS).
-  3. Impacto del diodo co-empaquetado en la supresión de la sobretensión $V_{CE,\text{peak}}$.
-  4. Compromiso de escalamiento de área (50 A vs 75 A: capacitancias parásitas vs pérdidas de conducción).
-  5. Sensibilidad al dimensionamiento de $R_G$ (pérdidas dinámicas $E_{\text{off}}$ vs $di/dt$).
-* **Estado:** PENDIENTE
+* **Entregable de Apoyo Preparado:** Guion técnico estructurado diapositiva por diapositiva y banco de preguntas de sustentación en [`informe/exposicion_21oct.md`](informe/exposicion_21oct.md).
+* **Estado:** **PREPARADO / PENDIENTE DE SUSTENTACIÓN ORAL EL 21/10/2026**
+
