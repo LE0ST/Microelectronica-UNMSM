@@ -1,75 +1,125 @@
-# Laboratorio Dirigido N.° 3: Transistores IGBT en LTspice
+# Laboratory Project No. 3: Comparative Characterization and Simulation of IGBT Transistors in LTspice
 
-**Universidad Nacional Mayor de San Marcos**<br>
-*Facultad de Ingeniería Electrónica y Eléctrica (FIEE)*<br>
-*Escuela Profesional de Ingeniería Electrónica*<br>
-*Curso: Microelectrónica y Sistemas Nanoelectrónicos (Semestre 2026-II)*
-
----
-
-## 1. Información General del Laboratorio
-
-* **Título Oficial:** *Caracterización y Simulación Comparativa de Transistores IGBT en LTspice*
-* **Docente Responsable:** MsC. Luz Adanaqué Infante
-* **Autor / Investigador:** **Leonardo Sait Yactayo Tolentino** (Código: `23190214`)
-* **Modalidad:** **Individual** (respaldado por la guía oficial: *«El laboratorio puede ser en parejas o individual»*)
-* **Estado:** **EN DESARROLLO** (fase de configuración de bancos DPT e inicialización de pruebas; simulaciones y resultados cuantitativos en proceso de ejecución)
-* **Fecha de Exposición:** **21 de octubre de 2026**
-* **Guía Oficial de Referencia:** [`Semana_07/Guia_Oficial_LD3/LabDirigidoNro03.pdf`](../Semana_07/Guia_Oficial_LD3/LabDirigidoNro03.pdf)
+**Institution:** Universidad Nacional Mayor de San Marcos (UNMSM) — FIEE  
+**Course:** Microelectronics and Nanoelectronic Systems (2026-II)  
+**Author:** **Leonardo Sait Yactayo Tolentino** (`23190214`) — *Individual Project*  
+**Official Technical Report (Spanish, 15 pages):** [`informe/informe_ld3_yactayo.pdf`](informe/informe_ld3_yactayo.pdf)  
+**Presentation Deck:** [`presentacion/LD3_IGBT_Yactayo.pdf`](presentacion/LD3_IGBT_Yactayo.pdf) | [`presentacion/LD3_IGBT_Yactayo.pptx`](presentacion/LD3_IGBT_Yactayo.pptx)
 
 ---
 
-## 2. Objetivos y Alcance Técnico
+## Overview
 
-El propósito de este laboratorio es la caracterización estática y dinámica de transistores bipolares de compuerta aislada (IGBT) en el entorno de simulación LTspice, analizando los compromisos de conmutación de potencia en régimen inductivo mediante el banco *Double Pulse Test* (DPT).
-
-### Fenómenos Físicos y Métricas Investigadas:
-1. **Dinámica de Conmutación en Canal N vs. Canal P:** Implementación del banco DPT en configuración de lado bajo (N-IGBT, polarización $0\to 15\text{ V}$) y lado alto (P-IGBT, polarización $0\to -15\text{ V}$).
-2. **Corriente de Cola (Tail Current):** Identificación del inicio de la fase asintótica de cola en el segundo pulso de apagado y justificación física basada en la recombinación de portadores minoritarios en la región de deriva no modulada.
-3. **Retardo de Apagado ($t_{d(\text{off})}$):** Medición con cursores y directivas `.meas` entre el 90% de $V_{GE}$ y el 90% de $I_C$, contrastando los resultados frente a las hojas de datos de fabricante.
-4. **Energía de Apagado ($E_{\text{off}}$):** Integración numérica del producto $V_{CE} \cdot I_C$ durante el periodo de conmutación y cálculo del porcentaje de energía disipada atribuible a la corriente de cola.
-5. **Sobretensión Transitoria por Inductancia Parásita:** Análisis del pico de voltaje $V_{CE,\text{peak}}$ provocado por $L \cdot di/dt$ durante el apagado brusco, contrastando los modelos con y sin diodo de marcha libre integrado (*co-pack*).
-6. **Sensibilidad a la Resistencia de Compuerta ($R_G$):** Evaluación del impacto de duplicar $R_G$ (de $10\ \Omega$ a $20\ \Omega$) sobre las pérdidas de energía y la velocidad de respuesta.
-7. **Escalamiento de Área de Silicio:** Contraste de pérdidas estáticas y dinámicas entre los módulos de 50 A (`FGW50XS65/C`) y 75 A (`FGW75XS65/C`) de la Serie X de Fuji Electric.
+This project characterizes the static and inductive switching dynamics of Insulated Gate Bipolar Transistors (IGBTs) in **LTspice** using a **Double Pulse Test (DPT)** bench ($V_{bus} = \pm 400\text{ V}$, $L_{\text{load}} = 100\ \mu\text{H}$). It compares classical behavioral N-channel and P-channel macromodels (Duncan Electronics) against commercial 650 V Trench Field-Stop IGBTs (Fuji Electric X-Series, 50 A and 75 A, discrete and co-packaged diode variants).
 
 ---
 
-## 3. Dispositivos y Modelos SPICE
+## DPT Methodology & Experiments
 
-1. **Modelos Teóricos / Genéricos (Duncan Electronics):**
-   * `N-IGBT`: Subcircuito `XIRGBC20S` (600 V, 19 A) en `nigbt.lib`.
-   * `P-IGBT`: Subcircuito `XPIGBT` (600 V, 40 A) en `pigbt.lib`.
-2. **Modelos Comerciales (Fuji Electric — Serie X Trench-FS 650 V):**
-   * `FGW50XS65`: 650 V, 50 A (sin diodo co-empaquetado).
-   * `FGW50XS65C`: 650 V, 50 A (con diodo rápido co-empaquetado).
-   * `FGW75XS65`: 650 V, 75 A (sin diodo co-empaquetado).
-   * `FGW75XS65C`: 650 V, 75 A (con diodo rápido co-empaquetado).
-
-*Nota de procedencia:* Los modelos se encuentran alojados en `Semana_02/Material_Adicional_Semestre/05_Laboratorio_IGBT/Circuitos_y_Modelos/` y se documentan en [`modelos/NOTAS_MODELOS.md`](modelos/NOTAS_MODELOS.md).
+1. **Part I — Duncan Electronics Behavioral Models (`EXP-01` to `EXP-05`):**
+   * **N-IGBT Low-Side (`XIRGBC20S`, 600 V / 19 A):** $V_{bus} = +400\text{ V}$, $V_{GE} = 0 \to +15\text{ V}$, $R_G = 10\ \Omega$, emitter shunt $R_E = 1\text{ m}\Omega$, $L_\sigma = 0\text{ nH}$, $T = 27\ ^\circ\text{C}$.
+   * **P-IGBT High-Side (`XPIGBT`, 600 V / 40 A):** $V_{bus} = -400\text{ V}$, $V_{GE} = 0 \to -15\text{ V}$, $R_G = 10\ \Omega$, corrected freewheeling diode polarity.
+   * **Metrics:** Turn-off delay $t_{d(\text{off})}$ (90% $V_{GE}$ to 90% $I_C$), fall time $t_f$, turn-off energy $E_{\text{off}} = \int V_{CE} I_C\,dt$, and tail current inflection ($|dI_C/dt| \le 5\% |dI/dt|_{\max}$).
+2. **Part II — Fuji Electric X-Series 650 V Trench-FS (`EXP-06` to `EXP-09`):**
+   * **Terminal-Isolated Sensing (G4.2-R):** Ideal 0 V sensors (`Vsens_C`, `Vsens_G`, `Vsens_E`) isolate collector current $I_C$ from gate displacement current.
+   * **Parasitic Loop Inductance:** $L_\sigma = 25\text{ nH}$ ($R_{\text{ser}} = 10\text{ m}\Omega$, no artificial parallel damping `Rpar`), Gear integration (`maxstep = 1.0 ns`), $T = 25\ ^\circ\text{C}$.
+   * **Studies:** Co-pack diode impact at 50 A (`FGW50XS65` vs. `FGW50XS65C`) and 75 A (`FGW75XS65` vs. `FGW75XS65C`), silicon die-area scaling (50 A vs. 75 A), and gate resistance sensitivity ($R_G = 10\ \Omega \to 20\ \Omega$).
 
 ---
 
-## 4. Estructura de Directorios de LD3
+## Key Results (Consolidated Master Table)
 
-```
+> [!IMPORTANT]
+> Direct quantitative comparisons should be made **within each model family** due to different instrumentation setups (emitter shunt vs. isolated `Vsens_C`, $L_\sigma = 0\text{ nH}$ vs. $25\text{ nH}$, $27\ ^\circ\text{C}$ vs. $25\ ^\circ\text{C}$). See [`tablas/tabla_resultados_ld3.md`](tablas/tabla_resultados_ld3.md) for full details.
+
+| Reg. | Family / Test | Configuration | Model | $I_{C,\text{pre}}$ [A] | $V_{CE(\text{on})}$ [V] | $V_{CE,\text{peak}}$ [V] | $t_{d(\text{off})}$ [ns] | $t_f$ [ns] | $E_{\text{off}}$ [µJ] | $I_{C,\text{tail}}$ [A] | $\%E_{\text{tail}}$ | Status |
+| :---: | :--- | :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| **01** | Duncan (`EXP-01/04`) | N-IGBT Nominal | `XIRGBC20S` | 19.00 | 1.88 | 400.99 | 150.83 | 185.24 | 691.5 | 0.94 | 4.73% | **PASS** |
+| **02** | Duncan (`EXP-01/05`) | N-IGBT Overcurrent | `XIRGBC20S` | 82.31 | 6.57 | 401.66 | 103.32 | 196.03 | 3402.5 | 2.31 | 2.25% | **Exploratory (Out-of-SOA)** |
+| **03** | Duncan (`EXP-02/04`) | P-IGBT Nominal | `XPIGBT` | 40.02 | 2.51 | 401.22 | 194.57 | 268.42 | 2115.3 | 1.81 | 4.33% | **PASS** |
+| **04** | Duncan (`EXP-02/05`) | P-IGBT Overcurrent | `XPIGBT` | 83.22 | 4.25 | 401.67 | 172.32 | 275.03 | 4698.9 | 2.86 | 2.99% | **Exploratory (Out-of-SOA)** |
+| **05** | Duncan (`EXP-02 Ctrl`) | P-IGBT Control 19A | `XPIGBT` | 19.48 | 1.72 | 401.01 | **N/V\*** | **N/V\*** | 1011.8 | **N/V\*** | **N/V\*** | **KNOWN LIMITATION (`N/V*`)** |
+| **06** | Fuji (`F01 / EXP-06`) | 50A Discrete | `FGW50XS65` | 50.013 | 1.362 | 442.36 | 231.10 | 31.38 | 1066.98 | 2.50 | 0.44% | **PASS** |
+| **07** | Fuji (`F02 / EXP-06/09`) | 50A Co-Pack ($R_G 10$) | `FGW50XS65C` | 50.012 | 1.362 | 442.36 | 231.09 | 31.38 | 1066.98 | 2.50 | 0.44% | **PASS** |
+| **08** | Fuji (`F03 / EXP-07/08`) | 75A Discrete Nom. | `FGW75XS65` | 75.230 | 1.356 | 445.98 | 293.18 | 40.48 | 2052.75 | 3.76 | 0.37% | **PASS** |
+| **09** | Fuji (`F04 / EXP-07`) | 75A Co-Pack Nom. | `FGW75XS65C` | 75.233 | 1.356 | 445.98 | 293.16 | 40.48 | 2052.74 | 3.76 | 0.37% | **PASS** |
+| **10** | Fuji (`F05 / EXP-08`) | 75A Discrete @ 50A | `FGW75XS65` | 50.362 | 1.181 | 436.37 | 324.75 | 34.18 | 1367.85 | 2.52 | 0.32% | **PASS** |
+| **11** | Fuji (`F06 / EXP-09`) | 50A Co-Pack ($R_G 20$) | `FGW50XS65C` | 50.123 | 1.392 | 425.94 | 361.60 | 57.27 | 1818.73 | 2.51 | 0.48% | **PASS** |
+
+* **Silicon Area Scaling (50 A matched, `F01` vs. `F05`):** Larger die area lowers $V_{CE(\text{on})}$ by **$-13.3\%$** ($1.362\text{ V} \to 1.181\text{ V}$), but higher $C_{ies}$ ($9.5\text{ nF}$ vs. $6.77\text{ nF}$) increases $t_{d(\text{off})}$ by **$+40.5\%$** and $E_{\text{off}}$ by **$+28.2\%$**.
+* **Gate Resistance Trade-off (`F02` vs. `F06`):** Doubling $R_G$ ($10\ \Omega \to 20\ \Omega$) cuts inductive bus overshoot by **$-38.8\%$** ($+42.36\text{ V} \to +25.94\text{ V}$) at the expense of **$+70.5\%$** higher $E_{\text{off}}$.
+* **Datasheet Comparison Conditions (Fuji X-Series):** At $V_{bus} = 400\text{ V}$, $R_G = 10\ \Omega$, $L_\sigma = 25\text{ nH}$, and $T = 25\ ^\circ\text{C}$, simulated $t_{d(\text{off})}$ aligns within $+4.7\%$ to $+5.0\%$ of typical $25\ ^\circ\text{C}$ catalog values (`231.10 ns` vs. `~220 ns` at 50 A; `293.18 ns` vs. `~280 ns` at 75 A), subject to standard test-fixture differences ($R_G$, $V_{CC}$, stray inductance).
+
+---
+
+## Representative Figures
+
+| N-IGBT Nominal DPT (`EXP-01`) | Turn-off Delay Cursor Verification (`EXP-04`) |
+| :---: | :---: |
+| ![N-IGBT DPT](figuras/fig1_dpt_nigbt_transitorios.png) | ![td_off cursors](figuras/fig4_medicion_cursores_tdoff.png) |
+| **50A Co-Pack vs. Discrete Overshoot (`EXP-06`)** | **Gate Resistance Sensitivity (`EXP-09`)** |
+| ![Co-pack 50A](figuras/fig6_sobretension_copack_50a.png) | ![RG sensitivity](figuras/fig9_sensibilidad_rg_conmutacion.png) |
+
+---
+
+## Technologies
+
+* **SPICE Simulator:** LTspice 24+ (Gear / Trapezoidal solvers, `.meas` extraction, ASCII `.raw` export)
+* **Post-Processing:** Python 3.10+ (`numpy`, `matplotlib`)
+* **Documentation:** LaTeX (`informe/informe_ld3_yactayo.tex`)
+
+---
+
+## Repository Structure
+
+```text
 LD3_Yactayo/
-├── esquemas/                               # Archivos .asc interactivos de LTspice
-├── simulaciones/                           # Netlists .cir por lote y resultados (.log / .meas)
-├── modelos/                                # Documentación de modelos y atribución de fuentes
-│   └── NOTAS_MODELOS.md                    # Registro oficial de modelos Fuji y Duncan
-├── scripts/                                # Post-procesamiento automatizado en Python
-├── figuras/                                # Curvas y formas de onda vectoriales (300 DPI)
-├── tablas/                                 # Tablas de resultados en Markdown y CSV
-├── informe/                                # Reporte técnico (conclusiones >= 1 pág.)
-├── README.md                               # [ESTE ARCHIVO] Presentación y runbooks de LD3
-└── TRAZABILIDAD.md                         # Matriz de trazabilidad experimental biunívoca
+├── README.md                    # This file
+├── TRAZABILIDAD.md              # Bijective experiment-to-figure matrix
+├── requirements.txt             # Python dependencies (numpy, matplotlib)
+├── esquemas/                    # LTspice .asc schematics, .plt views, NIGBT.asy / PIGBT.asy
+├── simulaciones/netlists/       # Reproducible .cir netlists (EXP-01..09 & exploratory)
+├── modelos/NOTAS_MODELOS.md     # Third-party SPICE model provenance & download guide
+├── scripts/                     # Portable Python analysis & plotting scripts (ltspice_config.py)
+├── validation/                  # Curated test cases, resolved failures & known limitations
+├── figuras/                     # 300 DPI figures (fig1–fig9) & evidencias_ltspice/
+├── tablas/                      # Consolidated master tables (Markdown)
+├── informe/                     # Final 15-page PDF report & LaTeX source
+└── presentacion/                # Defense slides (PDF, PPTX) & generator script
 ```
 
 ---
 
-## 5. Entregables Oficiales Según la Guía
+## Reproduction Instructions
 
-* [ ] **Tabla de Resultados Completa:** Matriz cuantitativa con todas las métricas de conmutación ($I_{C,\text{tail}}$, $t_{d(\text{off})}$, $E_{\text{off}}$, $\%E_{\text{tail}}$, $V_{CE,\text{peak}}$).
-* [ ] **Gráficas Comparativas de Transitorios:** Formas de onda claras de $V_{GE}$, $V_{CE}$ e $I_C$ priorizando la resolución temporal de conmutación.
-* [ ] **Conclusiones Técnicas Fundamentadas:** Mínimo una página física analizando las diferencias entre canal N y P, impacto del diodo co-pack e influencia del área de silicio con física de semiconductores.
-* [ ] **Exposición Oral de Hallazgos:** Presentación técnica programada para el **21 de octubre de 2026**.
+1. **Download Third-Party SPICE Models:**
+   * Follow [`modelos/NOTAS_MODELOS.md`](modelos/NOTAS_MODELOS.md) to download the **Fuji Electric** (`FGW50XS65*.LIB`, `FGW75XS65*.LIB`) and **Duncan Electronics** (`nigbt.lib`, `pigbt.lib`) libraries from their official websites and place them in:
+     `Semana_02/Material_Adicional_Semestre/05_Laboratorio_IGBT/Circuitos_y_Modelos/`
+2. **Configure Python & LTspice:**
+   ```powershell
+   pip install -r LD3_Yactayo/requirements.txt
+   $env:LTSPICE_EXE = "C:\Program Files\ADI\LTspice\LTspice.exe"   # or your local LTspice path
+   ```
+3. **Run Simulations & Validation:**
+   ```powershell
+   & "$env:LTSPICE_EXE" -b -ascii "LD3_Yactayo/simulaciones/netlists/dpt_nigbt_nom.cir"
+   & "$env:LTSPICE_EXE" -b -ascii "LD3_Yactayo/simulaciones/netlists/fuji_f01.cir"
+   python LD3_Yactayo/scripts/auditoria_g42_fuji.py
+   ```
+
+---
+
+## Validation & Limitations
+
+Full details of `PASS`, `RESOLVED FAILURE`, and `KNOWN LIMITATION` items are documented in [`validation/README.md`](validation/README.md). Key points:
+* **`N/V*` in P-IGBT 19.48 A (`Reg. 05`):** Static/integral `.meas` values are verified in `dpt_pigbt_19a.log`, while dynamic waveform metrics remain `N/V*` because `dpt_pigbt_19a.raw` is absent on disk.
+* **Exploratory 80 A Runs (`Reg. 02`, `Reg. 04`):** Exceed rated SOA (`IC = 19 A`, `ICM = 76 A` for `IRGBC20S`) and are strictly exploratory stress tests.
+* **Co-Pack Invariance (`EXP-06`, `EXP-07`):** In single-switch low-side DPT, the internal antiparallel diode remains reverse-biased and does not alter turn-off `Vce_peak` or `Eoff`.
+
+---
+
+## References & Third-Party Credits
+
+* **Fuji Electric Co., Ltd.:** X-Series Trench-FS 650 V IGBT PSpice Models (`FGW50XS65`, `FGW50XS65C`, `FGW75XS65`, `FGW75XS65C`) — *`(C) Fuji Electric Co., Ltd. All Rights Reserved.`* ([Official Portal](https://www.fujielectric.com/products/semiconductors_devices/semiconductor/product_series/model_power_discrete_technical_discrete_p-spice.html)).
+* **Duncan's Amp Pages:** Behavioral IGBT macromodels `XIRGBC20S` (`nigbt.lib`) and `XPIGBT` (`pigbt.lib`) ([Official Page](https://www.duncanamps.com/spicemosfet.html)).
+* **IRGBC20S Datasheet:** International Rectifier / Farnell 68617.
