@@ -5,7 +5,7 @@
 * **Docente:** MsC. Luz Adanaqué Infante  
 * **Alumno:** Leonardo Sait Yactayo Tolentino (Código: `23190214`) — *Modalidad Individual*  
 * **Institución:** Universidad Nacional Mayor de San Marcos (UNMSM) — FIEE  
-* **Requisito Oficial Asociado:** Acápite 6 de la guía oficial de laboratorio ([`Semana_07/Guia_Oficial_LD3/LabDirigidoNro03.pdf`](../../Semana_07/Guia_Oficial_LD3/LabDirigidoNro03.pdf)). Extensión efectiva $\ge 1$ página.
+* **Requisito Oficial Asociado:** Acápite 6 de la guía oficial de laboratorio (`Semana_07/Guia_Oficial_LD3/LabDirigidoNro03.pdf`, documento docente local excluido del repositorio público). Extensión efectiva $\ge 1$ página.
 
 ---
 

@@ -4,7 +4,7 @@
 **Curso:** Microelectrónica y Sistemas Nanoelectrónicos (2026-II)<br>
 **Autor:** Leonardo Sait Yactayo Tolentino (Código: `23190214`) — *Modalidad Individual*<br>
 **Herramientas:** LTspice 24 | Python 3.14<br>
-**Guía Oficial:** [`Semana_07/Guia_Oficial_LD3/LabDirigidoNro03.pdf`](../Semana_07/Guia_Oficial_LD3/LabDirigidoNro03.pdf)<br>
+**Guía Oficial:** `Semana_07/Guia_Oficial_LD3/LabDirigidoNro03.pdf` *(documento docente local, excluido del repositorio público por derechos de distribución)*<br>
 **Fecha de Exposición:** 21 de octubre de 2026
 
 ---
@@ -18,10 +18,10 @@
 | **EXP-03** | Extracción de Corriente de Cola (*Tail Current*) en 2do pulso de apagado | N-IGBT vs P-IGBT | `esquemas/DPT_NIGBT_nom.asc` | `simulaciones/netlists/dpt_nigbt_nom.cir` | **VALIDADO** | Fig. 3 generada ($I_{tail}$ detectada) |
 | **EXP-04** | Medición de Retardo de Apagado $t_{d(\text{off})}$ (90% $V_{GE} \to$ 90% $I_C$) y cotejo con Datasheet | N-IGBT vs P-IGBT | `esquemas/DPT_NIGBT_nom.asc` | `simulaciones/netlists/dpt_nigbt_nom.cir` | **VALIDADO** | Fig. 4 generada (Cursores 90% a 90%) |
 | **EXP-05** | Cálculo de Energía de Apagado $E_{\text{off}} = \int V_{CE} I_C dt$ y % debido a corriente de cola | N-IGBT vs P-IGBT | `esquemas/DPT_NIGBT_nom.asc` | `simulaciones/netlists/dpt_nigbt_nom.cir` | **VALIDADO** | Fig. 5 generada ($E_{off}$ y $E_{tail}$) |
-| **EXP-06** | Sobretensión $V_{CE,\text{peak}}$ por inductancia parásita: con vs sin diodo co-pack (50 A) | `FGW50XS65` vs `FGW50XS65C` | `esquemas/DPT_Fuji_50A.asc` | `simulaciones/netlists/dpt_fuji_50a.cir` | **VALIDADO** | Fig. 6 generada (Sobretensión 50A) |
-| **EXP-07** | Sobretensión $V_{CE,\text{peak}}$ por inductancia parásita: con vs sin diodo co-pack (75 A) | `FGW75XS65` vs `FGW75XS65C` | `esquemas/DPT_Fuji_75A.asc` | `simulaciones/netlists/dpt_fuji_75a.cir` | **VALIDADO** | Fig. 7 generada (Sobretensión 75A) |
-| **EXP-08** | Escalamiento de Área de Silicio (50 A vs 75 A): pérdidas estáticas y dinámicas | `FGW50XS65` vs `FGW75XS65` | `esquemas/DPT_Fuji_Area.asc` | `simulaciones/netlists/dpt_fuji_area.cir` | **VALIDADO** | Fig. 8 generada (Área 50A vs 75A) |
-| **EXP-09** | Sensibilidad a $R_G$: impacto de duplicar $R_G$ ($10\ \Omega \to 20\ \Omega$) en retardo y $E_{\text{off}}$ | `FGW50XS65C` | `esquemas/DPT_RG_Sweep.asc` | `simulaciones/netlists/dpt_rg_sweep.cir` | **VALIDADO** | Fig. 9 generada (Sensibilidad RG) |
+| **EXP-06** | Sobretensión $V_{CE,\text{peak}}$ por inductancia parásita: con vs sin diodo co-pack (50 A) | `FGW50XS65` vs `FGW50XS65C` | — *(netlist `.cir`)* | `simulaciones/netlists/fuji_f01.cir`, `simulaciones/netlists/fuji_f02.cir` | **VALIDADO** | Fig. 6 generada (Sobretensión 50A) |
+| **EXP-07** | Sobretensión $V_{CE,\text{peak}}$ por inductancia parásita: con vs sin diodo co-pack (75 A) | `FGW75XS65` vs `FGW75XS65C` | — *(netlist `.cir`)* | `simulaciones/netlists/fuji_f03.cir`, `simulaciones/netlists/fuji_f04.cir` | **VALIDADO** | Fig. 7 generada (Sobretensión 75A) |
+| **EXP-08** | Escalamiento de Área de Silicio (50 A vs 75 A): pérdidas estáticas y dinámicas | `FGW50XS65` vs `FGW75XS65` | — *(netlist `.cir`)* | `simulaciones/netlists/fuji_f01.cir`, `simulaciones/netlists/fuji_f05.cir`, `simulaciones/netlists/fuji_f03.cir` | **VALIDADO** | Fig. 8 generada (Área 50A vs 75A) |
+| **EXP-09** | Sensibilidad a $R_G$: impacto de duplicar $R_G$ ($10\ \Omega \to 20\ \Omega$) en retardo y $E_{\text{off}}$ | `FGW50XS65C` | — *(netlist `.cir`)* | `simulaciones/netlists/fuji_f02.cir`, `simulaciones/netlists/fuji_f06.cir` | **VALIDADO** | Fig. 9 generada (Sensibilidad RG) |
 | **REQ-TAB**| Consolidación de Tabla de Resultados Completa | Todos los modelos evaluados | — | `tablas/tabla_resultados_ld3.md` | **VALIDADO** | Tablas 1 y 2 en PDF Landscape |
 | **REQ-CON**| Conclusiones Técnicas Fundamentadas con Física ($\ge 1$ página física) | Análisis de N vs P, área y diodo | — | `informe/conclusiones.md` | **VALIDADO** | Conclusiones exhaustivas |
 | **REQ-EXP**| Exposición Oral de Principales Hallazgos (21/10/2026) | Presentación individual | — | `informe/exposicion_21oct.md` | **PREPARADO** | Sustentación el 21/10/2026 |
@@ -33,7 +33,7 @@
 ### `[EXP-01]` — Banco Double Pulse Test N-IGBT (Low-Side)
 * **Requisito Oficial de la Guía:** Acápite 5.1, Numeral 1. Configurar esquema N-IGBT con emisor a tierra mediante resistencia de prueba $R = 0.001\ \Omega$. Inductor de carga en serie con $V_{DC}$ alta conectado al colector y diodo en paralelo. Excitación de compuerta en serie con $R_G$ en modo PULSE ($0\to 15\text{ V}$).
 * **Modelo Utilizado:** `XIRGBC20S` en `nigbt.lib` (Duncan Electronics / IR, 600 V, 19 A).
-* **Fuente del Modelo:** `Semana_02/Material_Adicional_Semestre/05_Laboratorio_IGBT/Circuitos_y_Modelos/nigbt.lib`.
+* **Fuente del Modelo:** `modelos/nigbt.lib` *(dependencia local de terceros excluida del repositorio público; ver [`modelos/NOTAS_MODELOS.md`](modelos/NOTAS_MODELOS.md))*.
 * **Condiciones Experimentales:**
   * Tensión de barraje: $V_{DC} = 400\text{ V}$
   * Inductor de carga: $L = 100\ \mu\text{H}$ ($R_{ser} = 1\text{ m}\Omega$)
@@ -59,7 +59,7 @@
 ### `[EXP-02]` — Banco Double Pulse Test P-IGBT (High-Side)
 * **Requisito Oficial de la Guía:** Acápite 5.1, Numeral 2. Configurar P-IGBT en lado alto. Fuente de disparo $V_{GE}$ entre compuerta (con $R_G$) y emisor, con niveles de 0 V (apagado) a $-15\text{ V}$ (encendido).
 * **Modelo Utilizado:** `XPIGBT` en `pigbt.lib` (Duncan Electronics, 600 V, 40 A).
-* **Fuente del Modelo:** `Semana_02/Material_Adicional_Semestre/05_Laboratorio_IGBT/Circuitos_y_Modelos/pigbt.lib`.
+* **Fuente del Modelo:** `modelos/pigbt.lib` *(dependencia local de terceros excluida del repositorio público; ver [`modelos/NOTAS_MODELOS.md`](modelos/NOTAS_MODELOS.md))*.
 * **Condiciones Experimentales:**
   * Tensión de bus negativo: $V_{bus} = -400\text{ V}$ (referenciado a emisor en tierra)
   * Inductor de carga: $L = 100\ \mu\text{H}$ ($R_{ser} = 1\text{ m}\Omega$)
@@ -145,16 +145,20 @@
 * **Requisito Metodológico:** Línea base experimental para modelos Fuji Electric Serie X. Desacoplamiento de corriente terminal de colector $I_C$, eliminación de distorsión por corriente de compuerta en shunt, y cierre del balance energético de Tellegen/Poynting.
 * **Modelo Evaluado:** `FGW50XS65` (Fuji Electric Serie X, discreto sin diodo co-empaquetado).
 * **Condiciones de Banco DPT:** $V_{bus} = 400\text{ V}$, $I_C \approx 50\text{ A}$ ($t_{p1} = 11.54\ \mu\text{s}$), $R_G = 10\ \Omega$, $V_{GE} = 15\text{ V} / 0\text{ V}$, $\text{temp} = 27\ ^\circ\text{C}$ (efectiva en SPICE), $\text{maxstep} = 1.0\text{ ns}$ (Gear).
-* **Netlists y Logs de Evidencia:**
-  * [`simulaciones/netlists/g42_ref_L0_1ns.cir`](simulaciones/netlists/g42_ref_L0_1ns.cir) / [`.log`](simulaciones/netlists/g42_ref_L0_1ns.log) — Referencia ideal $L_\sigma = 0\text{ nH}$.
-  * [`simulaciones/netlists/g42_ref_L25_1ns.cir`](simulaciones/netlists/g42_ref_L25_1ns.cir) / [`.log`](simulaciones/netlists/g42_ref_L25_1ns.log) — Referencia física inductiva $L_\sigma = 25\text{ nH}$ (sin $R_{\text{par}}$).
-  * [`simulaciones/netlists/g42_diag_L25_rpar50_1ns.cir`](simulaciones/netlists/g42_diag_L25_rpar50_1ns.cir) / [`.log`](simulaciones/netlists/g42_diag_L25_rpar50_1ns.log) — Variante diagnóstica ($R_{\text{par}} = 50\ \Omega$).
-  * [`simulaciones/netlists/g42_ref_L0_05ns.cir`](simulaciones/netlists/g42_ref_L0_05ns.cir) y [`g42_ref_L25_05ns.cir`](simulaciones/netlists/g42_ref_L25_05ns.cir) — Pruebas de convergencia a $0.5\text{ ns}$.
+* **Netlists Curados Reproducibles (`validation/cases/`):**
+  * [`validation/cases/g42_ref_L0_1ns.cir`](validation/cases/g42_ref_L0_1ns.cir) — Referencia ideal $L_\sigma = 0\text{ nH}$.
+  * [`validation/cases/g42_ref_L25_1ns.cir`](validation/cases/g42_ref_L25_1ns.cir) — Referencia física inductiva $L_\sigma = 25\text{ nH}$ (sin $R_{\text{par}}$).
+  * [`validation/cases/g42_diag_L25_rpar50_1ns.cir`](validation/cases/g42_diag_L25_rpar50_1ns.cir) — Variante diagnóstica ($R_{\text{par}} = 50\ \Omega$).
+  * [alidation/cases/g42_ref_L25_05ns.cir](validation/cases/g42_ref_L25_05ns.cir) — Prueba de convergencia a .5\\text{ ns}$ *(nota: g42_ref_L0_05ns.cir y los archivos .log/.raw son evidencia local histórica excluida del árbol público por .gitignore)*.
 * **Script de Validación Automatizada:** [`scripts/auditoria_g42_fuji.py`](scripts/auditoria_g42_fuji.py).
 * **Métricas Cuantitativas Validadas (Ventana $[27.740\ \mu\text{s}, 32.840\ \mu\text{s}]$):**
-  * **Ref. 1 ($L_0$):** $I_{C,\text{pre}} = 50.044\text{ A}$, $V_{CE,\text{on}} = 1.365\text{ V}$, $V_{CE,\text{peak}} = 401.33\text{ V}$, $t_{d(\text{off})} = 228.67\text{ ns}$, $t_f = 35.19\text{ ns}$, $E_{C,\text{net}} = 987.37\ \mu\text{J}$, Residuo Tellegen: $-34\text{ pJ}$ ($-0.000001\%$).
-  * **Ref. 2 ($L_{25}$, sin $R_{\text{par}}$):** $I_{C,\text{pre}} = 50.009\text{ A}$, $V_{CE,\text{on}} = 1.364\text{ V}$, $V_{CE,\text{peak}} = 442.08\text{ V}$ (Sobretensión inducida respecto al bus: $+42.08\text{ V}$), $t_{d(\text{off})} = 233.24\text{ ns}$, $t_f = 31.44\text{ ns}$, $E_{C,\text{net}} = 1089.68\ \mu\text{J}$, Residuo Tellegen: $-33\text{ pJ}$ ($-0.000001\%$).
-  * **Variante Diagnóstica ($L_{25}, R_{\text{par}}=50\ \Omega$):** $V_{CE,\text{peak}} = 441.14\text{ V}$, $t_{d(\text{off})} = 232.98\text{ ns}$, $E_{C,\text{net}} = 1088.21\ \mu\text{J}$, $E_{Rpar} = 0.758\ \mu\text{J}$ ($0.070\%$ de $E_C$).
+  * **Ref. 1 ($L_0$):** $V_{CE,\text{on}} = 1.365\text{ V}$, $V_{CE,\text{peak}} = 401.33\text{ V}$, $t_f = 35.19\text{ ns}$, $E_{C,\text{net}} = 987.37\ \mu\text{J}$, Residuo Tellegen: $-34\text{ pJ}$ ($-0.000001\%$).
+    * *$t_{d(\text{off})}$ (SPICE `.meas`, $I_{C,\text{pre}} = 50.006\text{ A}$ en $27.690\ \mu\text{s}$, $V_{GE} = 13.5\text{ V}$):* **$229.72\text{ ns}$**.
+    * *$t_{d(\text{off})}$ (Python `compute_delay_python`, $I_{C,\text{pre}} = 50.044\text{ A}$ en $27.700\ \mu\text{s}$, $0.90 \cdot V_{GE,\text{pre}} = 13.44\text{ V}$):* **$228.67\text{ ns}$**.
+  * **Ref. 2 ($L_{25}$, sin $R_{\text{par}}$):** $V_{CE,\text{on}} = 1.364\text{ V}$, $V_{CE,\text{peak}} = 442.08\text{ V}$ (Sobretensión inducida respecto al bus: $+42.08\text{ V}$), $t_f = 31.44\text{ ns}$, $E_{C,\text{net}} = 1089.68\ \mu\text{J}$, Residuo Tellegen: $-33\text{ pJ}$ ($-0.000001\%$).
+    * *$t_{d(\text{off})}$ (SPICE `.meas`, $I_{C,\text{pre}} = 49.970\text{ A}$ en $27.690\ \mu\text{s}$, $V_{GE} = 13.5\text{ V}$):* **$234.30\text{ ns}$**.
+    * *$t_{d(\text{off})}$ (Python `compute_delay_python`, $I_{C,\text{pre}} = 50.009\text{ A}$ en $27.700\ \mu\text{s}$, $0.90 \cdot V_{GE,\text{pre}} = 13.44\text{ V}$):* **$233.24\text{ ns}$**.
+  * **Variante Diagnóstica ($L_{25}, R_{\text{par}}=50\ \Omega$):** $V_{CE,\text{peak}} = 441.14\text{ V}$, $t_{d(\text{off})} = 232.98\text{ ns}$ *(Python criterion, as in the L0/L25 Python values above)* / $234.04\text{ ns}$ *(SPICE `.meas`, from the local `g42_diag_L25_rpar50_1ns.log`)*, $E_{C,\text{net}} = 1088.21\ \mu\text{J}$, $E_{Rpar} = 0.758\ \mu\text{J}$ ($0.070\%$ de $E_C$).
 * **Aserciones Superadas:** AS-01 a AS-07 al 100% (cero doble conteo, suma exacta de componentes, residuo $< 0.5\%$, concordancia Python vs SPICE $< 0.05\%$).
 * **Estado de Ensayos Previos:** Ensayos exploratorios de G4.1 clasificados como **HISTÓRICO** (superados por G4.2-R al corregir sensor terminal de colector y polaridad de $R_G$).
 * **Estado:** **VALIDADO CON LIMITACIONES (Línea Base G4.2-R)**
@@ -241,6 +245,6 @@
 * **Requisito Oficial de la Guía:** Acápite 1. «El día 21 se realizará una breve exposición con los principales hallazgos en su experiencia de laboratorio, en base a ello se ponderará la calificación.»
 * **Fecha Programada:** **21 de octubre de 2026**.
 * **Modalidad:** Individual (Leonardo Sait Yactayo Tolentino).
-* **Entregable de Apoyo Preparado:** Guion técnico estructurado diapositiva por diapositiva y banco de preguntas de sustentación en [`informe/exposicion_21oct.md`](informe/exposicion_21oct.md).
-* **Estado:** **PREPARADO / PENDIENTE DE SUSTENTACIÓN ORAL EL 21/10/2026**
+* **Entregable de Apoyo Preparado:** Guion técnico estructurado diapositiva por diapositiva y banco de preguntas de sustentación en [`informe/exposicion_21oct.md`](informe/exposicion_21oct.md) y presentación final en [`presentacion/LD3_IGBT_Yactayo.pdf`](presentacion/LD3_IGBT_Yactayo.pdf).
+* **Estado:** **VALIDADO / ENTREGADO (Exposición oral 21/10/2026)**
 

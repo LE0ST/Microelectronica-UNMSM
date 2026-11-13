@@ -5,7 +5,7 @@
 * **Institución:** Universidad Nacional Mayor de San Marcos (UNMSM) — Facultad de Ingeniería Electrónica y Eléctrica (FIEE)
 * **Autor:** Leonardo Sait Yactayo Tolentino (`23190214`)
 * **Docente:** MsC. Luz Adanaqué Infante
-* **Requisito Oficial Asociado:** Acápite 1 y Requisito `[REQ-TAB]` de la guía oficial ([`Semana_07/Guia_Oficial_LD3/LabDirigidoNro03.pdf`](../../Semana_07/Guia_Oficial_LD3/LabDirigidoNro03.pdf)).
+* **Requisito Oficial Asociado:** Acápite 1 y Requisito `[REQ-TAB]` de la guía oficial (`Semana_07/Guia_Oficial_LD3/LabDirigidoNro03.pdf`, documento docente local excluido del repositorio público).
 * **Inventario Total de Condiciones:** **11 registros verificados** (5 condiciones para macromodelos Duncan Electronics y 6 condiciones para macromodelos Fuji Electric Serie X).
 
 ---
