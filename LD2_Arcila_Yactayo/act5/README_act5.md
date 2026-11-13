@@ -1,173 +1,95 @@
-# Documentación Técnica — Actividad 5: Efectos Parásitos y Operación en Tensión Reducida (NTV)
+# Activity 5 — Parasitic Effects and Near-Threshold Voltage (NTV) Operation
 
-**Curso:** Microelectrónica y Sistemas Nanoelectrónicos (Semestre 2026-II)  
-**Institución:** Universidad Nacional Mayor de San Marcos (UNMSM) — Facultad de Ingeniería Electrónica y Eléctrica (FIEE)  
-**Autores:** Leonardo Sait Yactayo Tolentino (23190214) & Marco Antonio Arcila Santander (23190140)  
-**Tecnología Base:** PTM 45nm High-Performance (HP) & Low-Power (LP), $T \in \{27^\circ\text{C}, 85^\circ\text{C}\}$, $V_{DD} \in [0.35\,\text{V}, 1.00\,\text{V}]$  
-**Guía Oficial:** [`Semana_04/Guia_Oficial_LD2/LabDirigido2.pdf`](file:///G:/Proyectos/MicroNano/Semana_04/Guia_Oficial_LD2/LabDirigido2.pdf) (Sección 9, págs. 10–13)
+**Course:** Microelectronics and Nanoelectronic Systems (Semester 2026-II)  
+**Institution:** Universidad Nacional Mayor de San Marcos (UNMSM) — Faculty of Electrical and Electronic Engineering (FIEE)  
+**Authors:** Leonardo Sait Yactayo Tolentino (`23190214`) & Marco Antonio Arcila Santander (`23190140`)  
+**Base Technology:** PTM 45 nm High-Performance (HP) & Low-Power (LP), $T \in \{27^\circ\text{C}, 85^\circ\text{C}\}$, $V_{DD} \in [0.35\,\text{V}, 1.00\,\text{V}]$  
+**Official Guide:** `Semana_04/Guia_Oficial_LD2/LabDirigido2.pdf` (Section 9, pp. 10–13; local teaching document excluded from public repository)
 
 ---
 
-## 1. Objetivos y Matriz de Requisitos
+## 1. Objectives and Requirements Matrix
 
-| ID Requisito | Tarea Guía LD2 | Enunciado Técnico de la Guía | Archivos SPICE Base (Marco) | Archivos SPICE Nuevos (`act5/`) | Estado |
+| Req. ID | LD2 Guide Task | Technical Statement | External Historical Netlists (`laboratorio5/`) | Published Netlists (`act5/circuitos/`) | Status |
 |:---:|:---:|:---|:---|:---|:---:|
-| **REQ-22** | §9.1 (Tarea 1) | Caracterización de sobreimpulso (*clock feedthrough*) en el nodo dinámico acoplado por $C_{gd}$ del PMOS de precarga; cuantificación del recorte por diodo $D_{DB}$ y amortiguamiento por el keeper PMOS. | `9.1 Tarea 1.cir` | `act5_feedthrough_keeper.cir` | **CONCILIADO** |
-| **REQ-23** | §9.2 (Tareas 1–2) | Evaluación de la retención dinámica $t_{\text{hold}}$ ante fuga subumbral a $27^\circ\text{C}$ y $85^\circ\text{C}$; determinación analítica y experimental de $f_{\min}$ y $f_{\max}$ para delimitar la ventana de frecuencia operable $[f_{\min}, f_{\max}]$. | `9.2 Tarea 1 thold.cir` | `act5_ntv_thold_fmin.cir`<br>`act5_ntv_thold_85c.cir` | **CONCILIADO** |
-| **REQ-24** | §9.2 (Tarea 3) | Barrido en régimen *Near-Threshold Voltage* ($V_{DD} \in [0.35, 1.00]\,\text{V}$), cuantificación de $t_{\text{eval}}$, contención de keeper ($W_{kp} \in \{45, 90\}\,\text{nm}$) y verificación del límite de margen $10\times t_{\text{eval}}$. | `9.2 Tarea 1 teval.cir`<br>`9.2 Tarea 3 teval keeper...` | `act5_ntv_teval_fmax.cir` | **CONCILIADO** |
-| **REQ-25** | §9.2 (Tarea 4) | Comparativa subumbral a $V_{DD} = 0.50\,\text{V}$ entre 45nm HP y 45nm LP; caracterización de $I_{\text{on}}$, $I_{\text{off}}$, selectividad $I_{\text{on}}/I_{\text{off}}$, $t_{\text{eval}}$ y escalado de energía por ciclo $E_{\text{sw}}$. | `9.2 Tarea 4.cir` | `act5_hp_vs_lp_subumbral.cir`<br>`act5_energia_ntv.cir` | **CONCILIADO** |
+| **REQ-22** | §9.1 (Task 1) | Characterize clock feedthrough overshoot at `dyn` coupled via precharge PMOS $C_{gd}$; quantify $D_{DB}$ diode clamping and PMOS keeper damping. | `9.1 Tarea 1.cir` | [`act5_feedthrough_keeper.cir`](circuitos/act5_feedthrough_keeper.cir) | **RECONCILED** |
+| **REQ-23** | §9.2 (Tasks 1–2) | Evaluate dynamic retention $t_{\text{hold}}$ under subthreshold leakage at $27^\circ\text{C}$ and $85^\circ\text{C}$; determine $f_{\min}$ and $f_{\max}$ to bound $[f_{\min}, f_{\max}]$. | `9.2 Tarea 1 thold.cir` | [`act5_ntv_thold_fmin.cir`](circuitos/act5_ntv_thold_fmin.cir)<br>[`act5_ntv_thold_85c.cir`](circuitos/act5_ntv_thold_85c.cir) | **RECONCILED** |
+| **REQ-24** | §9.2 (Task 3) | Near-Threshold Voltage sweep ($V_{DD} \in [0.35, 1.00]\,\text{V}$), $t_{\text{eval}}$ quantification, keeper contention ($W_{kp} \in \{45, 90\}\,\text{nm}$), and $10\times t_{\text{eval}}$ margin check. | `9.2 Tarea 1 teval.cir`<br>`9.2 Tarea 3 teval keeper...` | [`act5_ntv_teval_fmax.cir`](circuitos/act5_ntv_teval_fmax.cir) | **RECONCILED** |
+| **REQ-25** | §9.2 (Task 4) | Subthreshold comparison at $V_{DD} = 0.50\,\text{V}$ between 45 nm HP and 45 nm LP ($I_{\text{on}}, I_{\text{off}}, I_{\text{on}}/I_{\text{off}}, t_{\text{eval}}$) and cycle energy scaling $E_{\text{sw}}$. | `9.2 Tarea 4.cir` | [`act5_hp_vs_lp_subumbral.cir`](circuitos/act5_hp_vs_lp_subumbral.cir)<br>[`act5_energia_ntv.cir`](circuitos/act5_energia_ntv.cir) | **RECONCILED** |
 
 ---
 
-## 2. Auditoría Científica de los Circuitos Históricos de Marco (`laboratorio5`)
+## 2. Scientific Audit of External Historical Circuits (`laboratorio5/`, Outside Repository)
 
-Se auditó de manera exhaustiva el repositorio original desarrollado por Marco Antonio Arcila en `G:\Proyectos\Micro\laboratorio5`. Todos los archivos fueron analizados en modo de solo lectura.
+The historical suite originally developed by Marco Antonio Arcila (`laboratorio5/`, external to this repository) was audited against the published `act5/` control suite:
 
-```
-laboratorio5/
-├── 9.1 Tarea 1.cir / .log / .raw                      # Clock feedthrough base
-├── 9.2 Tarea 1 teval.cir / .log / .raw                # Barrido VDD teval sin keeper (celda sin inversor)
-├── 9.2 Tarea 1 thold.cir / .log / .raw                # Barrido VDD thold sin keeper a 27°C
-├── 9.2 Tarea 3 teval keeper 45nm.cir / .log / .raw    # Barrido VDD teval con keeper 45nm
-├── 9.2 Tarea 3 teval keeper 90nm.cir / .log / .raw    # Barrido VDD teval con keeper 90nm
-├── 9.2 Tarea 3 thold keeper 45nm.cir / .log / .raw    # Retención thold keeper 45nm (no cruce en 15us)
-├── 9.2 Tarea 3 thold keeper 90nm.cir / .log / .raw    # Retención thold keeper 90nm (no cruce en 15us)
-└── 9.2 Tarea 4.cir / .log / .raw                      # Comparativa LP vs HP teval a 0.5V
-```
-
-### Clasificación y Diagnóstico por Archivo
-
-1. **`9.1 Tarea 1.cir` / `.log` (Clock Feedthrough):**
-   * *Código de medición Marco:*
-     - `.meas TRAN subimpulso MIN V(dyn) FROM=0n TO=4n` $\implies \mathbf{9.47\,\text{mV}}$ ($V_{\min} = 0.99053\,\text{V}$).
-     - `.meas TRAN sobreimpulso MAX V(dyn) FROM=0n TO=4n` $\implies \mathbf{61.30\,\text{mV}}$ ($V_{\max} = 1.06130\,\text{V}$).
-   * *Control nuevo (`act5_feedthrough_keeper.log`):* Sobreimpulso de **$+64.31\,\text{mV}$** ($V_{\max} = 1.06431\,\text{V}$).
-   * *Diagnóstico Científico:* Existe una estrecha concordancia experimental entre ambos ensayos con una discrepancia de $3.01\,\text{mV}$ ($4.9\%$). No se atribuye esta diferencia a una causa única sin un control que la aísle, documentándose objetivamente las dos mediciones bajo sus respectivas opciones de simulación.
-   * *Aclaración Metodológica:* El "subimpulso" de $9.47\,\text{mV}$ reportado por Marco en una ventana general de 4 ns no corresponde a una pérdida de nivel en la evaluación activa, sino al flanco descendente del reloj al reingresar a la fase de precarga ($CLK: 1 \to 0$ a $t=2.0\,\text{ns}$), donde el acoplamiento negativo tira momentáneamente del nodo antes de que $Mp$ conduzca plenamente. Marco no incluyó la comparación con keeper ni aisló la corriente del diodo sustrato-drenaje $D_{DB}$.
-
-2. **`9.2 Tarea 1 teval.cir` / `.log` (Barrido NTV de $t_{\text{eval}}$ sin keeper):**
-   * *Barrido:* 7 niveles de $V_{DD}$ ($0.35$ a $1.00\,\text{V}$).
-   * *Resultados Marco:* $t_{\text{eval}} = 33.56\,\text{ps}$ ($1.0\,\text{V}$) hasta $1783.72\,\text{ps}$ ($0.35\,\text{V}$).
-   * *Diagnóstico:* Marco simuló una etapa dinámica NAND3 aislada (sin inversor estático de salida ni carga asociada). Sus valores son exactos para esa topología, pero no computó $t_{pLH,\text{inv}}$ ni $f_{\max}$.
-
-3. **`9.2 Tarea 1 thold.cir` / `.log` (Barrido NTV de $t_{\text{hold}}$ a 27°C sin keeper):**
-   * *Barrido:* 7 niveles de $V_{DD}$.
-   * *Resultados Marco:* $t_{\text{hold}} = 1.11755\,\mu\text{s}$ ($1.0\,\text{V}$) a $1.97349\,\mu\text{s}$ ($0.35\,\text{V}$).
-   * *Fórmula de frecuencia mínima:* Aplicada a los valores de Marco, proporciona $f_{\min,\text{Marco}} = \frac{1}{2 \cdot t_{\text{hold}}} = \mathbf{447.41\,\text{kHz}}$ ($1.0\,\text{V}$) y $\mathbf{253.36\,\text{kHz}}$ ($0.35\,\text{V}$). Faltó la caracterización a $85^\circ\text{C}$ (peor caso térmico industrial).
-
-4. **`9.2 Tarea 3 teval keeper 45nm.cir` y `90nm.cir` (Contención en NTV):**
-   * *Resultados Marco:*
-     - Con $W_{kp} = 45\,\text{nm}$: $t_{\text{eval}} = 36.83\,\text{ps}$ ($1.0\,\text{V}$) a $1902.29\,\text{ps}$ ($0.35\,\text{V}$) [penalización del $+9.7\%$ a $+6.6\%$].
-     - Con $W_{kp} = 90\,\text{nm}$: $t_{\text{eval}} = 44.74\,\text{ps}$ ($1.0\,\text{V}$) a $2102.60\,\text{ps}$ ($0.35\,\text{V}$) [penalización del $+33.3\%$ a $+17.9\%$].
-   * *Diagnóstico:* Cuantifica rigurosamente el compromiso de velocidad por contención de corriente (*keeper contention*).
-
-5. **`9.2 Tarea 3 thold keeper 45nm.cir` y `90nm.cir` (Retención con Keeper):**
-   * *Observación en LOG:* `.meas TRAN t_hold... FAIL'ed`.
-   * *Diagnóstico Físico y Lectura de RAW:*
-     - La simulación se ejecutó con $T_{\text{stop}} = 15.0\,\mu\text{s}$.
-     - El comando `.meas` buscaba el instante en que $V(dyn)$ cayera a $V_{DD}/2$.
-     - La inspección directa de las formas de onda en el archivo RAW demuestra que a los $15\,\mu\text{s}$ el nodo $V(dyn)$ apenas descendió:
-       - En $V_{DD} = 1.0\,\text{V}$: $V(dyn) = 0.999977\,\text{V}$ (caída de solo $\mathbf{0.023\,\text{mV}}$).
-       - En $V_{DD} = 0.35\,\text{V}$: $V(dyn) = 0.349440\,\text{V}$ (caída de solo $\mathbf{0.560\,\text{mV}}$).
-     - **Conclusión sustentable:** No existió ningún error de convergencia o fallo numérico del simulador; simplemente **no se observó el cruce del umbral $V_{DD}/2$ durante la ventana simulada de $15\,\mu\text{s}$**.
-     - Se establece una cota inferior finita observada de $t_{\text{hold}} > 15\,\mu\text{s}$, lo que sitúa la frecuencia mínima observada por debajo de $f_{\min} < \frac{1}{2 \times 15\,\mu\text{s}} \approx \mathbf{33.3\,\text{kHz}}$ dentro de dicha ventana. No se afirma un $t_{\text{hold}}$ infinito ni un $f_{\min} = 0\,\text{Hz}$ no medido.
-
-6. **`9.2 Tarea 4.cir` / `.log` (Comparativa LP vs HP a 0.50V):**
-   * *Medición Marco:* $t_{\text{eval,LP}} = 8.64761\,\text{ns}$ ($8647.61\,\text{ps}$).
-   * *Control complementario (`act5_hp_vs_lp_subumbral.log`):* $t_{\text{eval,LP}} = 8.48841\,\text{ns}$, $t_{\text{eval,HP}} = 0.16157\,\text{ns}$ (ratio: $52.54\times$).
-   * *Diagnóstico:* Los valores coinciden estrechamente ($1.8\%$ de diferencia). Marco omitió las corrientes $I_{\text{on}}$ e $I_{\text{off}}$ requeridas por la guía.
+1. **`9.1 Tarea 1.cir` (Clock Feedthrough):**  
+   Historical run measured $+61.30\,\text{mV}$ overshoot ($V_{\max} = 1.06130\,\text{V}$) vs. $+64.31\,\text{mV}$ ($V_{\max} = 1.06431\,\text{V}$) in `act5_feedthrough_keeper.cir` ($3.01\,\text{mV}$ / $4.9\%$ difference across simulation setups). The reported $9.47\,\text{mV}$ "undershoot" ($V_{\min} = 0.99053\,\text{V}$) occurred at the falling clock edge returning to precharge ($t=2.0\,\text{ns}$), not during active evaluation.
+2. **`9.2 Tarea 1 teval.cir` (NTV $t_{\text{eval}}$ without keeper):**  
+   7-step $V_{DD}$ sweep ($0.35$–$1.00\,\text{V}$) on an isolated dynamic NAND3 (no output inverter): $t_{\text{eval}} = 33.56\,\text{ps}$ ($1.0\,\text{V}$) to $1783.72\,\text{ps}$ ($0.35\,\text{V}$).
+3. **`9.2 Tarea 1 thold.cir` ($t_{\text{hold}}$ at $27^\circ\text{C}$ without keeper):**  
+   $t_{\text{hold}} = 1.11755\,\mu\text{s}$ ($1.0\,\text{V}$) to $1.97349\,\mu\text{s}$ ($0.35\,\text{V}$), giving $f_{\min,\text{Marco}} = 447.41\,\text{kHz}$ ($1.0\,\text{V}$) and $253.36\,\text{kHz}$ ($0.35\,\text{V}$).
+4. **`9.2 Tarea 3 teval keeper 45nm.cir` and `90nm.cir` (NTV Contention):**  
+   * $W_{kp} = 45\,\text{nm}$: $t_{\text{eval}} = 36.83\,\text{ps}$ ($1.0\,\text{V}$) to $1902.29\,\text{ps}$ ($0.35\,\text{V}$) ($+9.7\%$ to $+6.6\%$ penalty).
+   * $W_{kp} = 90\,\text{nm}$: $t_{\text{eval}} = 44.74\,\text{ps}$ ($1.0\,\text{V}$) to $2102.60\,\text{ps}$ ($0.35\,\text{V}$) ($+33.3\%$ to $+17.9\%$ penalty).
+5. **`9.2 Tarea 3 thold keeper 45nm.cir` and `90nm.cir` (Retention with Keeper):**  
+   `.meas TRAN t_hold` returned `FAIL'ed` over $T_{\text{stop}} = 15.0\,\mu\text{s}$ because $V(dyn)$ never crossed $V_{DD}/2$: at $15\,\mu\text{s}$, $V(dyn) = 0.999977\,\text{V}$ ($\Delta V = 0.023\,\text{mV}$ at $1.0\,\text{V}$) and $0.349440\,\text{V}$ ($\Delta V = 0.560\,\text{mV}$ at $0.35\,\text{V}$). This establishes a finite observed lower bound $t_{\text{hold}} > 15\,\mu\text{s}$ ($f_{\min} < 33.3\,\text{kHz}$).
+6. **`9.2 Tarea 4.cir` (LP vs. HP at $0.50\,\text{V}$):**  
+   Historical $t_{\text{eval,LP}} = 8.64761\,\text{ns}$ closely matches `act5_hp_vs_lp_subumbral.cir` ($8.48841\,\text{ns}$, $1.8\%$ difference).
 
 ---
 
-## 3. Fundamentos Físicos y Modelado Analítico
+## 3. Physical Fundamentals and Analytical Modeling
 
-### A. Mecanismo de Clock Feedthrough y Recorte por Diodo
+### A. Clock Feedthrough and Diode Clamping
+* **PTM 45 nm HP overlap capacitance:** $C_{gd} = (cgdo + cgdl) \cdot W_p \approx \mathbf{0.0507\,\text{fF}}$ ($W_p = 135\,\text{nm}$).
+* **Capacitive divider:**
+  $$\Delta V_{\text{feedthrough}} \approx \frac{C_{gd}}{C_{\text{total}}} \Delta V_{clk} \approx \frac{0.0507\,\text{fF}}{0.85 - 1.05\,\text{fF}} \times 1.0\,\text{V} \approx \mathbf{50 - 60\,\text{mV}}$$
+  Consistent with the simulated **$+64.31\,\text{mV}$** overshoot ($V_{\max} = 1.0643\,\text{V}$) without keeper.
+* **Transient $D_{DB}$ diode clamping:** Exceeding $V_{DD}$ by $64.3\,\text{mV}$ weakly forward-biases the drain-body p-n junction, injecting up to **$2.841\,\mu\text{A}$** transiently into $V_{DD}$ (not general gate-oxide overvoltage protection).
+* **PMOS keeper damping ($W_{kp} = 45\,\text{nm}$):** Added capacitance attenuates overshoot to **$+49.31\,\text{mV}$** ($V_{\max} = 1.0493\,\text{V}$, **$-23.3\%$** passive reduction).
 
-1. **Parámetros del Modelo PTM 45nm HP:**
-   * Capacitancia de solapamiento compuerta-drenaje: $C_{gd} = (cgdo + cgdl) \cdot W_p \approx \mathbf{0.0507\,\text{fF}}$ ($W_p = 135\,\text{nm}$).
-2. **Divisor Capacitivo:**
-   $$\Delta V_{\text{feedthrough}} \approx \frac{C_{gd}}{C_{\text{total}}} \Delta V_{clk} \approx \frac{0.0507\,\text{fF}}{0.85 - 1.05\,\text{fF}} \times 1.0\,\text{V} \approx \mathbf{50 - 60\,\text{mV}}$$
-   Predice consistentemente el sobreimpulso simulado de **$+64.31\,\text{mV}$** ($V_{\max} = 1.0643\,\text{V}$) sin keeper.
-3. **Recorte Transitorio Específico por Diodo $D_{DB}$:**
-   Al sobrepasar $V_{DD}$ en $64.3\,\text{mV}$, la unión p-n drenaje-cuerpo entra en polarización directa parcial, inyectando un pico transitorio de hasta **$2.841\,\mu\text{A}$** hacia la fuente $V_{DD}$. Esto constituye un recorte transitorio específico debido a la unión intrínseca de difusión, pero no debe interpretarse como una protección general del óxido de compuerta ante sobretensiones severas.
-4. **Amortiguamiento con Keeper ($W_{kp} = 45\,\text{nm}$):**
-   La capacitancia añadida por el keeper atenúa el sobreimpulso a **$+49.31\,\text{mV}$** ($V_{\max} = 1.0493\,\text{V}$), lo que representa una reducción pasiva del **$-23.3\%$**.
-
----
-
-### B. Ventana de Frecuencia Operable $[f_{\min}, f_{\max}]$ y Régimen NTV
-
-La guía oficial (Fig. 9) define la ventana de frecuencia de un bloque dominó mediante:
+### B. Operable Frequency Window $[f_{\min}, f_{\max}]$ and NTV Regime
 $$f_{\max} \approx \frac{1}{2(t_{\text{eval}} + t_{pLH,\text{inv}})}, \qquad f_{\min} \approx \frac{1}{2 t_{\text{hold}}}$$
 
-1. **Frecuencia Máxima ($f_{\max}$):**
-   En el control complementario con compuerta completa (NAND3 dominó + inversor estático), para $V_{DD} = 1.00\,\text{V}$:
-   $$t_{\text{eval}} = 23.21\,\text{ps}, \quad t_{pLH,\text{inv}} = 4.52\,\text{ps} \implies t_{\text{pd}} = 27.72\,\text{ps}$$
-   $$f_{\max} = \frac{1}{2 \times 27.7235 \times 10^{-12}\,\text{s}} = \mathbf{18.035\,\text{GHz}}$$
-   A $V_{DD} = 0.35\,\text{V}$:
-   $$t_{\text{eval}} = 1739.95\,\text{ps}, \quad t_{pLH,\text{inv}} = 1347.25\,\text{ps} \implies t_{\text{pd}} = 3087.20\,\text{ps}$$
-   $$f_{\max} = \frac{1}{2 \times 3087.20 \times 10^{-12}\,\text{s}} = \mathbf{161.96\,\text{MHz}}$$
+1. **Maximum Frequency ($f_{\max}$, full domino cell in `act5/`):**
+   * At $V_{DD} = 1.00\,\text{V}$: $t_{\text{eval}} = 23.21\,\text{ps}$, $t_{pLH,\text{inv}} = 4.52\,\text{ps} \implies t_{\text{pd}} = 27.72\,\text{ps} \implies f_{\max} = \mathbf{18.035\,\text{GHz}}$.
+   * At $V_{DD} = 0.35\,\text{V}$: $t_{\text{eval}} = 1739.95\,\text{ps}$, $t_{pLH,\text{inv}} = 1347.25\,\text{ps} \implies t_{\text{pd}} = 3087.20\,\text{ps} \implies f_{\max} = \mathbf{161.96\,\text{MHz}}$.
+2. **Minimum Frequency ($f_{\min}$):**
+   * At $27^\circ\text{C}$ ($t_{\text{hold}} = 1.096\,\mu\text{s}$ at $1.0\,\text{V}$; $1.930\,\mu\text{s}$ at $0.35\,\text{V}$): $f_{\min} = \mathbf{456.21\,\text{kHz}}$ ($1.0\,\text{V}$), $\mathbf{259.12\,\text{kHz}}$ ($0.35\,\text{V}$).
+   * At $85^\circ\text{C}$ ($t_{\text{hold}} = 0.305\,\mu\text{s}$ at $1.0\,\text{V}$; $0.440\,\mu\text{s}$ at $0.35\,\text{V}$): $f_{\min} = \mathbf{1638.94\,\text{kHz}}$ ($\approx 1.64\,\text{MHz}$ at $1.0\,\text{V}$), $\mathbf{1136.28\,\text{kHz}}$ ($\approx 1.14\,\text{MHz}$ at $0.35\,\text{V}$). Thermal retention ratio $27^\circ\text{C}/85^\circ\text{C}$ is $\mathbf{3.59\times}$ ($3.66\times$ with historical data).
+   * Additional static retention steps ($0.30\,\text{V}$ and $0.25\,\text{V}$): $t_{\text{hold}} = 1.889\,\mu\text{s}$ ($27^\circ\text{C}$) / $0.424\,\mu\text{s}$ ($85^\circ\text{C}$) at $0.30\,\text{V}$; $1.802\,\mu\text{s}$ ($27^\circ\text{C}$) / $0.398\,\mu\text{s}$ ($85^\circ\text{C}$) at $0.25\,\text{V}$.
+3. **Window Margin ($V_{DD} \in [0.35, 1.00]\,\text{V}$):**
+   * The operable window stays wide open ($161.96\,\text{MHz} \gg 1.14\,\text{MHz}$ at $0.35\,\text{V}, 85^\circ\text{C}$).
+   * Safety ratio $t_{\text{hold}}/t_{\text{eval}}$ ($27^\circ\text{C}$): $\approx \mathbf{47,200} \gg 10$ at $1.00\,\text{V}$ and $\approx \mathbf{1,109} \gg 10$ at $0.35\,\text{V}$. Because $t_{\text{eval}}$ and $f_{\max}$ were not simulated below $0.35\,\text{V}$, the bidirectional window $[f_{\min}, f_{\max}]$ is strictly bounded on $[0.35, 1.00]\,\text{V}$ without extrapolation.
 
-2. **Frecuencia Mínima ($f_{\min}$):**
-   * A $27^\circ\text{C}$ ($t_{\text{hold}} = 1.096\,\mu\text{s}$ a $1.0\text{V}$, $1.930\,\mu\text{s}$ a $0.35\text{V}$):
-     $$f_{\min} = \mathbf{456.21\,\text{kHz}} \quad (1.0\,\text{V}), \qquad f_{\min} = \mathbf{259.12\,\text{kHz}} \quad (0.35\,\text{V})$$
-   * A $85^\circ\text{C}$ (peor caso térmico, $t_{\text{hold}} = 0.305\,\mu\text{s}$ a $1.0\text{V}$, $0.440\,\mu\text{s}$ a $0.35\text{V}$):
-     $$f_{\min} = \mathbf{1638.94\,\text{kHz}} \approx \mathbf{1.64\,\text{MHz}} \quad (1.0\,\text{V}), \qquad f_{\min} = \mathbf{1136.28\,\text{kHz}} \approx \mathbf{1.14\,\text{MHz}} \quad (0.35\,\text{V})$$
-   * *Aclaración Térmica:* La razón de tiempos de retención entre $27^\circ\text{C}$ y $85^\circ\text{C}$ es de $\frac{1.096}{0.305} \approx \mathbf{3.59\times}$ (o $3.66\times$ con los datos de Marco). Esto eleva la frecuencia mínima en un factor de $\sim 3.6\times$. No se afirma que la corriente $I_{\text{off}}$ se haya cuadruplicado exactamente, sino que el tiempo de descarga efectivo se redujo en ese factor térmico medido.
-   * *Pasos adicionales en retención estática ($0.30\,\text{V}$ y $0.25\,\text{V}$):* Los circuitos `act5_ntv_thold_fmin` y `act5_ntv_thold_85c` incluyeron 9 pasos ejecutados satisfactoriamente:
-     - A $0.30\,\text{V}$: $t_{\text{hold}} = 1.889\,\mu\text{s}$ ($f_{\min} = 264.68\,\text{kHz}$) a $27^\circ\text{C}$, y $t_{\text{hold}} = 0.424\,\mu\text{s}$ ($f_{\min} = 1.179\,\text{MHz}$) a $85^\circ\text{C}$.
-     - A $0.25\,\text{V}$: $t_{\text{hold}} = 1.802\,\mu\text{s}$ ($f_{\min} = 277.42\,\text{kHz}$) a $27^\circ\text{C}$, y $t_{\text{hold}} = 0.398\,\mu\text{s}$ ($f_{\min} = 1.257\,\text{MHz}$) a $85^\circ\text{C}$.
+### C. Subthreshold Comparison at $V_{DD} = 0.50\,\text{V}$: 45 nm HP vs. 45 nm LP
 
-3. **Análisis de Cierre de la Ventana Operable:**
-   * En todo el rango completamente caracterizado ($V_{DD} \in [0.35, 1.00]\,\text{V}$), la ventana operable $[f_{\min}, f_{\max}]$ **permanece abierta**: a $0.35\,\text{V}$ y $85^\circ\text{C}$, $f_{\max} = 161.96\,\text{MHz}$ es aún $142\times$ mayor que $f_{\min} = 1.14\,\text{MHz}$.
-   * El criterio de seguridad $t_{\text{hold}} \ge 10 \cdot t_{\text{eval}}$ se cumple con holgura en todo el intervalo $[0.35, 1.00]\,\text{V}$:
-     - A $V_{DD} = 1.00\,\text{V}$ ($27^\circ\text{C}$): $\frac{t_{\text{hold}}}{t_{\text{eval}}} = \frac{1.096\,\mu\text{s}}{23.21\,\text{ps}} = \frac{1.096\,\mu\text{s}}{0.00002321\,\mu\text{s}} \approx \mathbf{47,200} \gg 10$ (con datos de Marco: $\frac{1.118\,\mu\text{s}}{33.56\,\text{ps}} = \frac{1.118\,\mu\text{s}}{0.00003356\,\mu\text{s}} \approx \mathbf{33,300} \gg 10$).
-     - A $V_{DD} = 0.35\,\text{V}$ ($27^\circ\text{C}$): $\frac{t_{\text{hold}}}{t_{\text{eval}}} = \frac{1.930\,\mu\text{s}}{1739.95\,\text{ps}} = \frac{1.930\,\mu\text{s}}{0.001740\,\mu\text{s}} \approx \mathbf{1,109} \gg 10$ (con datos de Marco: $\frac{1.973\,\mu\text{s}}{1783.72\,\text{ps}} = \frac{1.973\,\mu\text{s}}{0.001784\,\mu\text{s}} \approx \mathbf{1,106} \gg 10$).
-   * *Precisión sobre la frontera inferior y disponibilidad de métricas:* Si bien se obtuvieron métricas de retención estática ($t_{\text{hold}}$ y $f_{\min}$) a $0.30\,\text{V}$ y $0.25\,\text{V}$, el barrido de retardo de evaluación activo (`act5_ntv_teval_fmax` y las netlists originales de Marco) solo contempló 7 pasos ($0.35\,\text{V}$ a $1.00\,\text{V}$). Por consiguiente, **no se dispone de mediciones de $t_{\text{eval}}$ ni de estimaciones de $f_{\max}$ en $0.25\,\text{V}$ ni $0.30\,\text{V}$**. La ventana operable bidireccional $[f_{\min}, f_{\max}]$ y el margen $10\times t_{\text{eval}}$ solo están cuantitativamente delimitados y verificados entre $0.35\,\text{V}$ y $1.00\,\text{V}$. No se extrapola un punto de cruce exacto (por ejemplo, a $0.20\,\text{V}$) sin contar con datos físicos de retardo en ese régimen subumbral profundo.
-
----
-
-### C. Caracterización Subumbral a $V_{DD} = 0.50\,\text{V}$: 45nm HP vs 45nm LP
-
-Simulación homóloga bajo idéntico estímulo y polarización:
-
-| Parámetro Físico ($V_{DD} = 0.50\,\text{V}$) | Nodo 45nm HP | Nodo 45nm LP | Razón Comparativa (LP / HP) |
+| Physical Parameter ($V_{DD} = 0.50\,\text{V}$) | 45 nm HP Node | 45 nm LP Node | Comparative Ratio (LP / HP) |
 |:---|:---:|:---:|:---:|
-| **Tensión de Umbral ($V_{thn}$)** | $0.469\,\text{V}$ | $0.623\,\text{V}$ | $+154\,\text{mV}$ (Subumbral profundo en LP) |
-| **Corriente ON ($I_{\text{on}}$)** | $\mathbf{4.898\,\mu\text{A}}$ | $\mathbf{0.0986\,\mu\text{A}}$ ($98.6\,\text{nA}$) | $\mathbf{0.0201\times}$ ($-98.0\%$) |
-| **Corriente OFF ($I_{\text{off}}$)** | $\mathbf{125.05\,\text{pA}}$ | $\mathbf{0.671\,\text{pA}}$ ($671\,\text{fA}$) | $\mathbf{0.0054\times}$ ($-99.5\%$, **$186.4\times$ menor**) |
-| **Selectividad ($I_{\text{on}} / I_{\text{off}}$)** | **$39,168.5$** | **$146,950.1$** | $\mathbf{3.75\times}$ Superior en LP |
-| **Retardo de Evaluación ($t_{\text{eval}}$)** | $\mathbf{161.57\,\text{ps}}$ | $\mathbf{8488.41\,\text{ps}}$ ($8.49\,\text{ns}$) | $\mathbf{52.54\times}$ Más Lento en LP |
+| **Threshold Voltage ($V_{thn}$)** | $0.469\,\text{V}$ | $0.623\,\text{V}$ | $+154\,\text{mV}$ (Deep subthreshold in LP) |
+| **ON Current ($I_{\text{on}}$)** | $\mathbf{4.898\,\mu\text{A}}$ | $\mathbf{0.0986\,\mu\text{A}}$ ($98.6\,\text{nA}$) | $\mathbf{0.0201\times}$ ($-98.0\%$) |
+| **OFF Current ($I_{\text{off}}$)** | $\mathbf{125.05\,\text{pA}}$ | $\mathbf{0.671\,\text{pA}}$ ($671\,\text{fA}$) | $\mathbf{0.0054\times}$ ($-99.5\%$, **$186.4\times$ lower**) |
+| **Selectivity ($I_{\text{on}} / I_{\text{off}}$)** | **$39,168.5$** | **$146,950.1$** | $\mathbf{3.75\times}$ higher in LP |
+| **Evaluation Delay ($t_{\text{eval}}$)** | $\mathbf{161.57\,\text{ps}}$ | $\mathbf{8488.41\,\text{ps}}$ ($8.49\,\text{ns}$) | $\mathbf{52.54\times}$ slower in LP |
 
-*Nota sobre datos históricos:* Marco midió $t_{\text{eval,LP}} = 8647.61\,\text{ps}$ en su circuito aislado, concordando con el nuevo control ($8488.41\,\text{ps}$) con una desviación de solo $1.8\%$.
+### D. Energy Scaling Toward NTV ($T_{\text{clk}} = 10.0\,\text{ns}$)
 
----
-
-### D. Escalado Energético hacia Régimen NTV
-
-La energía total por ciclo $E_{\text{sw}}$ se obtuvo por integración numérica de la corriente total suministrada por la fuente $V_{DD}$ en un periodo completo de conmutación ($T_{\text{clk}} = 10.0\,\text{ns}$):
-$$E_{\text{sw}} = \int_{0}^{T_{\text{clk}}} V_{DD} \cdot [-I(V_{DD})]\,dt$$
-Esta magnitud engloba la energía de carga y descarga capacitiva ($C V_{DD}^2$), la energía disipada en contención transitoria (*crowbar*) con el keeper y la fuga estática durante el intervalo de $10\,\text{ns}$.
-
-| $V_{DD}$ (V) | Corriente Pico $I_{\text{pk}}$ ($\mu\text{A}$) | Energía por Ciclo $E_{\text{sw}}$ (fJ) | Potencia Promedio $P_{\text{avg}}$ (nW) | Ahorro Energético Relativo |
+| $V_{DD}$ (V) | Peak Current $I_{\text{pk}}$ ($\mu\text{A}$) | Energy/Cycle $E_{\text{sw}}$ (fJ) | Avg. Power $P_{\text{avg}}$ (nW) | Relative Energy Savings |
 |:---:|:---:|:---:|:---:|:---:|
-| **$1.00$** | $37.29$ | $\mathbf{0.7259}$ | $72.59$ | $0.0\%$ (Referencia) |
+| **$1.00$** | $37.29$ | $\mathbf{0.7259}$ | $72.59$ | $0.0\%$ (Reference) |
 | **$0.80$** | $18.74$ | $\mathbf{0.4533}$ | $45.33$ | $-37.6\%$ |
 | **$0.60$** | $6.44$ | $\mathbf{0.2876}$ | $28.76$ | $-60.4\%$ |
 | **$0.50$** | $2.25$ | $\mathbf{0.2018}$ | $20.18$ | $-72.2\%$ |
 | **$0.45$** | $0.99$ | $\mathbf{0.1533}$ | $15.33$ | $-78.9\%$ |
 | **$0.40$** | $0.70$ | $\mathbf{0.1076}$ | $10.76$ | $-85.2\%$ |
-| **$0.35$** | $0.62$ | $\mathbf{0.0719}$ | $7.19$ | $\mathbf{-90.1\%}$ ($\mathbf{10.1\times}$ de reducción) |
+| **$0.35$** | $0.62$ | $\mathbf{0.0719}$ | $7.19$ | $\mathbf{-90.1\%}$ ($\mathbf{10.1\times}$ reduction) |
 
 ---
 
-## 4. Matriz Maestra Consolidada y Conciliada
+## 4. Consolidated Master Matrix (NTV Sweep)
 
-La siguiente tabla presenta los resultados conciliados, separando de manera estricta el control complementario de la celda completa (`act5`) y la campaña histórica de la etapa aislada de Marco (`laboratorio5`):
-
-### A. Tiempos y Frecuencias Operables en Barrido NTV
-
-| $V_{DD}$ (V) | $t_{\text{eval}}$ Act5 (ps) | $t_{pLH,\text{inv}}$ (ps) | $t_{\text{pd}}$ (ps) | $f_{\max}$ Act5 (GHz) | $t_{\text{eval}}$ Marco (ps) | $t_{\text{hold}}$ 27°C Act5 ($\mu\text{s}$) | $f_{\min}$ 27°C Act5 (kHz) | $t_{\text{hold}}$ 27°C Marco ($\mu\text{s}$) | $f_{\min}$ 27°C Marco (kHz) | $t_{\text{hold}}$ 85°C ($\mu\text{s}$) | $f_{\min}$ 85°C (kHz) |
+| $V_{DD}$ (V) | $t_{\text{eval}}$ Act5 (ps) | $t_{pLH,\text{inv}}$ (ps) | $t_{\text{pd}}$ (ps) | $f_{\max}$ Act5 (GHz) | $t_{\text{eval}}$ Hist. (ps) | $t_{\text{hold}}$ 27°C Act5 ($\mu\text{s}$) | $f_{\min}$ 27°C Act5 (kHz) | $t_{\text{hold}}$ 27°C Hist. ($\mu\text{s}$) | $f_{\min}$ 27°C Hist. (kHz) | $t_{\text{hold}}$ 85°C ($\mu\text{s}$) | $f_{\min}$ 85°C (kHz) |
 |:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
 | **$1.00$** | $23.21$ | $4.52$ | $27.72$ | **$18.035$** | $33.56$ | $1.096$ | **$456.21$** | $1.118$ | **$447.23$** | $0.305$ | **$1638.94$** |
 | **$0.80$** | $33.31$ | $9.80$ | $43.11$ | **$11.599$** | $43.65$ | $1.429$ | **$349.93$** | $1.458$ | **$342.94$** | $0.375$ | **$1334.82$** |
@@ -177,46 +99,30 @@ La siguiente tabla presenta los resultados conciliados, separando de manera estr
 | **$0.40$** | $686.10$ | $505.22$ | $1191.33$ | **$0.420$** | $708.53$ | $1.935$ | **$258.37$** | $1.979$ | **$252.65$** | $0.448$ | **$1115.75$** |
 | **$0.35$** | $1739.95$ | $1347.25$ | $3087.20$ | **$0.162$** | $1783.72$ | $1.930$ | **$259.12$** | $1.973$ | **$253.42$** | $0.440$ | **$1136.28$** |
 
-*Comprobación de Fórmulas:*
-* $f_{\max} = \frac{1}{2 \cdot t_{\text{pd}}} = \frac{1}{2(t_{\text{eval}} + t_{pLH,\text{inv}})}$ se satisface exactamente en todos los puntos de la columna $f_{\max}$ Act5.
-* $f_{\min} = \frac{1}{2 \cdot t_{\text{hold}}}$ se satisface exactamente tanto para Act5 ($f_{\min}$ Act5 vs $t_{\text{hold}}$ Act5) como para Marco ($f_{\min}$ Marco vs $t_{\text{hold}}$ Marco) y para $85^\circ\text{C}$.
-* En retención estática pura ($t_{\text{hold}}$), las simulaciones cubrieron adicionalmente $V_{DD} = 0.30\,\text{V}$ ($f_{\min,27^\circ\text{C}} = 264.68\,\text{kHz}$, $f_{\min,85^\circ\text{C}} = 1.179\,\text{MHz}$) y $0.25\,\text{V}$ ($f_{\min,27^\circ\text{C}} = 277.42\,\text{kHz}$, $f_{\min,85^\circ\text{C}} = 1.257\,\text{MHz}$), no incluidos en la tabla comparativa por carecer de mediciones homólogas de $t_{\text{eval}}$ ni $f_{\max}$ en dichos voltajes.
+### Supplementary Preserved Details
+
+* **Historical subthreshold/NTV values:** historical $t_{\text{eval,LP}} = 8.64761\,\text{ns}$ ($8647.61\,\text{ps}$) vs. `act5_hp_vs_lp_subumbral.log`: $t_{\text{eval,LP}} = 8.48841\,\text{ns}$, $t_{\text{eval,HP}} = 0.16157\,\text{ns}$ (ratio $52.54\times$); historical run omitted $I_{\text{on}}$ and $I_{\text{off}}$ required by the guide.
+* **$f_{\max}$ arithmetic at $1.00\,\text{V}$:** $f_{\max} = 1/(2 \times 27.7235 \times 10^{-12}\,\text{s}) = 18.035\,\text{GHz}$ ($18035\,\text{MHz}$); at $0.35\,\text{V}$ the operable band is $[1.14\,\text{MHz}, 161.96\,\text{MHz}]$ at $85^\circ\text{C}$, i.e., $f_{\max}$ is $142\times$ larger than $f_{\min}$; at $1.00\,\text{V}$ the band is $[1.64\,\text{MHz}, 18035\,\text{MHz}]$.
+* **Thermal retention ratio:** $1.096/0.305 \approx 3.59\times$ ($3.66\times$ with historical data), raising $f_{\min}$ by $\sim 3.6\times$; it is not claimed that $I_{\text{off}}$ quadrupled exactly, only that the effective discharge time shrank by the measured factor.
+* **Additional static-retention steps** ($0.30\,\text{V}$ and $0.25\,\text{V}$; 9 steps executed): $f_{\min} = 264.68\,\text{kHz}$ ($27^\circ\text{C}$) and $1.179\,\text{MHz}$ ($85^\circ\text{C}$) at $0.30\,\text{V}$; $277.42\,\text{kHz}$ and $1.257\,\text{MHz}$ at $0.25\,\text{V}$. No $t_{\text{eval}}$ or $f_{\max}$ data exist at these voltages, so no exact crossing point (e.g., at $0.20\,\text{V}$) is extrapolated.
+* **$t_{\text{hold}}/t_{\text{eval}}$ margin arithmetic:** $1.096\,\mu\text{s}/23.21\,\text{ps} = 1.096\,\mu\text{s}/0.00002321\,\mu\text{s} \approx 47{,}200$ (historical: $1.118\,\mu\text{s}/33.56\,\text{ps} = 1.118/0.00003356 \approx 33{,}300$) at $1.00\,\text{V}$; $1.930\,\mu\text{s}/1739.95\,\text{ps} = 1.930/0.001740 \approx 1{,}109$ (historical: $1.973\,\mu\text{s}/1783.72\,\text{ps} = 1.973/0.001784 \approx 1{,}106$) at $0.35\,\text{V}$.
+* **Verified formulas:** $f_{\max} = 1/(2 t_{\text{pd}})$ and $f_{\min} = 1/(2 t_{\text{hold}})$ hold exactly for all rows of the matrix above (Act5, historical, and $85^\circ\text{C}$).
+* **Historical overshoot/damping:** the keeper reduces overshoot from $64.3\,\text{mV}$ to $49.3\,\text{mV}$ ($-23.3\%$).
+* **Energy scaling:** $E_{\text{sw}}$ falls from $0.726\,\text{fJ}$ ($1.00\,\text{V}$) to $0.072\,\text{fJ}$ ($0.35\,\text{V}$), a $10.1\times$ reduction.
+* **Historical keeper retention:** the unmodified historical runs with $W_{kp}=45$ and $90\,\text{nm}$ used $T_{\text{stop}}=15.0\,\mu\text{s}$ (bound $f_{\min} < 1/(2\times 15\,\mu\text{s}) \approx 33.3\,\text{kHz}$).
 
 ---
 
-## 5. Figuras Científicas Validadas y Regeneradas
+## 5. Generated Scientific Figures (300 DPI)
 
-Generadas por [`act5/scripts/generar_figuras_act5.py`](file:///G:/Proyectos/MicroNano/LD2_Arcila_Yactayo/act5/scripts/generar_figuras_act5.py) a 300 DPI:
-
-1. **[`fig1_act5_feedthrough_energia.png`](file:///G:/Proyectos/MicroNano/LD2_Arcila_Yactayo/act5/figuras/fig1_act5_feedthrough_energia.png):**
-   * *Panel (a):* Dinámica transitoria de *clock feedthrough* en el nodo dinámico con y sin keeper PMOS, indicando el sobreimpulso de $+64.3\,\text{mV}$, la amortiguación pasiva a $+49.3\,\text{mV}$ ($-23.3\%$) y la acción de recorte del diodo $D_{DB}$.
-   * *Panel (b):* Escalado de energía por ciclo $E_{\text{sw}}$ y corriente pico $I_{\text{pk}}$ vs $V_{DD}$, demostrando la reducción de $10.1\times$ en consumo ($0.726\,\text{fJ} \to 0.072\,\text{fJ}$).
-2. **[`fig2_act5_ventana_frecuencia_ntv.png`](file:///G:/Proyectos/MicroNano/LD2_Arcila_Yactayo/act5/figuras/fig2_act5_ventana_frecuencia_ntv.png):**
-   * *Panel (a):* Curvas semilogarítmicas de $t_{\text{eval}}$ (sin y con keeper) y $t_{\text{hold}}$ ($27^\circ\text{C}$ y $85^\circ\text{C}$) frente a $V_{DD}$, evidenciando que el margen $10\times t_{\text{eval}}$ se conserva en todo el rango medido.
-   * *Panel (b):* Ventana de frecuencia operable $[f_{\min}, f_{\max}]$ en MHz reales frente a $V_{DD}$ (reproducción de Fig. 9 de la guía). Ilustra la banda operable $[1.14\,\text{MHz}, 161.96\,\text{MHz}]$ a $0.35\,\text{V}$ y $[1.64\,\text{MHz}, 18035\,\text{MHz}]$ a $1.00\,\text{V}$.
+Generated by [`scripts/generar_figuras_act5.py`](scripts/generar_figuras_act5.py):
+1. [`figuras/fig1_act5_feedthrough_energia.png`](figuras/fig1_act5_feedthrough_energia.png): Clock feedthrough dynamics with/without PMOS keeper and NTV cycle energy / peak current scaling.
+2. [`figuras/fig2_act5_ventana_frecuencia_ntv.png`](figuras/fig2_act5_ventana_frecuencia_ntv.png): Semilog $t_{\text{eval}}$ / $t_{\text{hold}}$ curves and operable frequency window $[f_{\min}, f_{\max}]$ vs. $V_{DD}$.
 
 ---
 
-## 6. Inventario de Archivos en `act5/`
+## 6. Published File Inventory (`act5/`)
 
-```
-act5/
-├── README_act5.md                              # [ESTE ARCHIVO] Documentación técnica conciliada
-├── circuitos/
-│   ├── act5_feedthrough_keeper.cir            # Feedthrough, diodo D_DB y keeper
-│   ├── act5_ntv_teval_fmax.cir                # Barrido teval, tpLH, fmax y contención
-│   ├── act5_ntv_thold_fmin.cir                # Barrido thold y fmin a 27°C
-│   ├── act5_ntv_thold_85c.cir                 # Barrido thold y fmin a 85°C (peor caso)
-│   ├── act5_hp_vs_lp_subumbral.cir            # Comparativa rigurosa HP vs LP a 0.5V
-│   └── act5_energia_ntv.cir                   # Integración de energía dinámica en NTV
-├── resultados/
-│   ├── datos/
-│   │   └── act5_metricas.json                 # Base de datos JSON conciliada
-│   ├── logs/                                  # 6 archivos .log respaldados
-│   └── raw/                                   # 6 archivos .raw preservados
-├── scripts/
-│   └── generar_figuras_act5.py                # Generador Python de figuras 1 y 2 (300 DPI)
-└── figuras/
-    ├── fig1_act5_feedthrough_energia.png      # Figura 1 compuesta
-    └── fig2_act5_ventana_frecuencia_ntv.png   # Figura 2 compuesta
-```
+* **Netlists (`circuitos/`):** `act5_feedthrough_keeper.cir`, `act5_ntv_teval_fmax.cir`, `act5_ntv_thold_fmin.cir`, `act5_ntv_thold_85c.cir`, `act5_hp_vs_lp_subumbral.cir`, `act5_energia_ntv.cir`.
+* **Data & Scripts:** [`resultados/datos/act5_metricas.json`](resultados/datos/act5_metricas.json), [`scripts/generar_figuras_act5.py`](scripts/generar_figuras_act5.py).
+* **Figures:** [`figuras/fig1_act5_feedthrough_energia.png`](figuras/fig1_act5_feedthrough_energia.png), [`figuras/fig2_act5_ventana_frecuencia_ntv.png`](figuras/fig2_act5_ventana_frecuencia_ntv.png).

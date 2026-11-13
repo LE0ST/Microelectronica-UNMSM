@@ -17,8 +17,8 @@ Validar exhaustiva y empíricamente la infraestructura de simulación, modelos r
 ## 2. Resultados por Objetivo Específico
 
 ### Objetivo 1: Validación de Modelos PTM Renombrados
-* **Netlist:** [`auxiliares/validaciones_modelos/val_modelos_concurrente.cir`](file:///g:/Proyectos/MicroNano/LD2_Arcila_Yactayo/auxiliares/validaciones_modelos/val_modelos_concurrente.cir)
-* **Log:** [`auxiliares/validaciones_modelos/val_modelos_concurrente.log`](file:///g:/Proyectos/MicroNano/LD2_Arcila_Yactayo/auxiliares/validaciones_modelos/val_modelos_concurrente.log)
+* **Netlist:** [`validaciones_modelos/val_modelos_concurrente.cir`](validaciones_modelos/val_modelos_concurrente.cir)
+* **Log:** `auxiliares/validaciones_modelos/val_modelos_concurrente.log` *(generado localmente al ejecutar LTspice; excluido por `.gitignore`)*
 * **Verificación:** Se incluyeron concurrentemente `ptm45hp.lib`, `ptm45lp.lib` y `ptm130.lib` en un único esquemático polarizando 6 transistores activos (NMOS y PMOS en cada tecnología).
 * **Evidencia cuantitativa de conducción:**
   * 45nm HP ($V_{DD}=1.0\text{ V}$): $I_{on,n} = 112.08\,\mu\text{A}$, $I_{on,p} = 122.86\,\mu\text{A}$ ($W_n=90\text{n}, W_p=135\text{n}$).
@@ -29,7 +29,7 @@ Validar exhaustiva y empíricamente la infraestructura de simulación, modelos r
 ---
 
 ### Objetivo 2: Caracterización del Inversor de Salida de Referencia
-* **Directorio:** [`auxiliares/caracterizacion_inversor/`](file:///g:/Proyectos/MicroNano/LD2_Arcila_Yactayo/auxiliares/caracterizacion_inversor/)
+* **Directorio:** [`caracterizacion_inversor/`](caracterizacion_inversor/)
 * **Dimensionamiento oficial LD2 (§4.3):** $L_n = 45\text{ nm}, W_n = 90\text{ nm}, W_p = 135\text{ nm}$ ($\beta = 1.5$, a diferencia de $\beta = 2.5$ en LD1). Para 130nm: $L_n = 130\text{ nm}, W_n = 260\text{ nm}, W_p = 390\text{ nm}$.
 * **Criterio matemático de extracción:**
   * $V_M$: Voltaje de entrada donde $V_{out} = V_{in}$ (`.meas dc VM FIND V(in) WHEN V(out)=V(in)`).
@@ -53,8 +53,8 @@ Validar exhaustiva y empíricamente la infraestructura de simulación, modelos r
 ---
 
 ### Objetivo 3: Validación de Criterios Temporales
-* **Netlist:** [`auxiliares/validacion_temporizacion/val_temporizacion.cir`](file:///g:/Proyectos/MicroNano/LD2_Arcila_Yactayo/auxiliares/validacion_temporizacion/val_temporizacion.cir)
-* **Log:** [`auxiliares/validacion_temporizacion/val_temporizacion.log`](file:///g:/Proyectos/MicroNano/LD2_Arcila_Yactayo/auxiliares/validacion_temporizacion/val_temporizacion.log)
+* **Netlist:** [`validacion_temporizacion/val_temporizacion.cir`](validacion_temporizacion/val_temporizacion.cir)
+* **Log:** `auxiliares/validacion_temporizacion/val_temporizacion.log` *(generado localmente al ejecutar LTspice; excluido por `.gitignore`)*
 * **Resultados numéricos comparativos (Ciclo 2, $T_{clk}=2\text{ ns}$):**
   * Conteo absoluto de flancos (§5 de la guía):
     * $t_{pHL} = 22.563\text{ ps}$ (TRIG $clk$ RISE=2 en $2.01\text{ ns}$, TARG $dyn$ FALL=1 en $2.0326\text{ ns}$).
@@ -69,8 +69,8 @@ Validar exhaustiva y empíricamente la infraestructura de simulación, modelos r
 ---
 
 ### Objetivo 4: Validación de Convención de Corriente y Potencia
-* **Netlist:** [`auxiliares/validacion_corriente/val_corriente.cir`](file:///g:/Proyectos/MicroNano/LD2_Arcila_Yactayo/auxiliares/validacion_corriente/val_corriente.cir)
-* **Log:** [`auxiliares/validacion_corriente/val_corriente.log`](file:///g:/Proyectos/MicroNano/LD2_Arcila_Yactayo/auxiliares/validacion_corriente/val_corriente.log)
+* **Netlist:** [`validacion_corriente/val_corriente.cir`](validacion_corriente/val_corriente.cir)
+* **Log:** `auxiliares/validacion_corriente/val_corriente.log` *(generado localmente al ejecutar LTspice; excluido por `.gitignore`)*
 * **Comprobación experimental:**
   * Corriente directa LTspice: $\text{AVG}(I(V_{dd})) = -10.00\text{ mA}$.
   * Corriente suministrada: $\text{AVG}(-I(V_{dd})) = +10.00\text{ mA}$.
@@ -83,7 +83,7 @@ Validar exhaustiva y empíricamente la infraestructura de simulación, modelos r
 ---
 
 ### Objetivo 5: Experimento Controlado sobre $g_{min}$
-* **Netlists:** [`auxiliares/experimento_gmin/test_gmin_gmin_1e12.cir`](file:///g:/Proyectos/MicroNano/LD2_Arcila_Yactayo/auxiliares/experimento_gmin/test_gmin_gmin_1e12.cir) y `test_gmin_gmin_1e15.cir`.
+* **Netlists:** [`experimento_gmin/test_gmin_gmin_1e12.cir`](experimento_gmin/test_gmin_gmin_1e12.cir) y [`experimento_gmin/test_gmin_gmin_1e15.cir`](experimento_gmin/test_gmin_gmin_1e15.cir).
 * **Circuito de prueba:** NAND3 dinámica footed en 45nm LP con reloj detenido en evaluación ($CLK=1, V_{DD}=1.1\text{ V}$) y PDN abierta ($A=B=C=0$), en ventana de retención de $1\,\mu\text{s}$.
 
 #### Resultados Cuantitativos a 27 °C
@@ -110,13 +110,13 @@ Validar exhaustiva y empíricamente la infraestructura de simulación, modelos r
 
 ### Objetivo 6: Validación de Extracción Automática
 * **Parsers implementados:**
-  * [`scripts/lectura_resultados/parse_spice_raw.py`](file:///g:/Proyectos/MicroNano/LD2_Arcila_Yactayo/scripts/lectura_resultados/parse_spice_raw.py): Detección automática de codificación de cabecera UTF-16-LE vs ASCII, conteo dinámico de variables y puntos, y lectura binaria/ascii sin offsets fijos.
-  * [`scripts/lectura_resultados/parse_spice_log.py`](file:///g:/Proyectos/MicroNano/LD2_Arcila_Yactayo/scripts/lectura_resultados/parse_spice_log.py): Extracción automática de mediciones `.meas` (escalares y tabulares con `.step`), filtrado estricto de opciones del solver, detección de `FAIL'ed` y captura de advertencias de convergencia.
-  * [`scripts/extraccion_metricas/generar_tablas_calibracion.py`](file:///g:/Proyectos/MicroNano/LD2_Arcila_Yactayo/scripts/extraccion_metricas/generar_tablas_calibracion.py): Script de consolidación que lee JSON/CSV y genera tablas en Markdown/LaTeX sin intervención manual.
+  * [`../scripts/lectura_resultados/parse_spice_raw.py`](../scripts/lectura_resultados/parse_spice_raw.py): Detección automática de codificación de cabecera UTF-16-LE vs ASCII, conteo dinámico de variables y puntos, y lectura binaria/ascii sin offsets fijos.
+  * [`../scripts/lectura_resultados/parse_spice_log.py`](../scripts/lectura_resultados/parse_spice_log.py): Extracción automática de mediciones `.meas` (escalares y tabulares con `.step`), filtrado estricto de opciones del solver, detección de `FAIL'ed` y captura de advertencias de convergencia.
+  * [`../scripts/extraccion_metricas/generar_tablas_calibracion.py`](../scripts/extraccion_metricas/generar_tablas_calibracion.py): Script de consolidación que lee JSON/CSV y genera tablas en Markdown/LaTeX sin intervención manual.
 * **Estado:** Verificado con 100% de éxito sobre los logs y raws generados en esta fase.
 
 ---
 
 ### Objetivo 7: Registro de Ensayos
-* **Archivo:** [`documentacion/registro_ensayos.csv`](file:///g:/Proyectos/MicroNano/LD2_Arcila_Yactayo/documentacion/registro_ensayos.csv)
+* **Archivo:** [`../documentacion/registro_ensayos.csv`](../documentacion/registro_ensayos.csv)
 * **Estado:** Actualizado con los 11 ensayos de calibración (`ENS-CAL-01` al `ENS-CAL-11`), todos en estado **PASS**.

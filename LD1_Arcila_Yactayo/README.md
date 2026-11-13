@@ -67,9 +67,8 @@ LD1_Arcila_Yactayo/
 
 1. **Obtain & Place PTM Models (Third-Party Dependency):**
    * Predictive Technology Model (PTM) BSIM4 parameter files (ASU/Berkeley NIMO Group) are **not redistributed** in this public repository due to the absence of an explicit redistribution license.
-   * Download the PTM parameter files (`22nm_HP.pm`, `45nm_HP.pm`, `45nm_LP.pm`, `90nm_bulk.pm`, `130nm_bulk.pm`, etc.) from the official PTM distribution and place them in:
-     * `LD1_Arcila_Yactayo/modelos/`
-     * And inside the corresponding activity folders (`LD1_Arcila_Yactayo/simulaciones/A1_Inversor_VTC/` through `A5_Potencia_y_RO/`) as referenced by each `.cir` `.include` directive.
+   * Download the PTM parameter files (`22nm_HP.pm`, `45nm_HP.pm`, `45nm_LP.pm`, `90nm_bulk.pm`, `130nm_bulk.pm`, etc.) from the official PTM distribution.
+   * Note that `LD1_Arcila_Yactayo/modelos/` is **not created automatically** by `git clone` because Git does not track empty directories after third-party `.pm`/`.lib` files are excluded. Create `LD1_Arcila_Yactayo/modelos/` manually (`mkdir LD1_Arcila_Yactayo/modelos`) and place the downloaded model cards there **and** inside the corresponding activity folders (`LD1_Arcila_Yactayo/simulaciones/A1_Inversor_VTC/` through `A5_Potencia_y_RO/`) as referenced by each `.cir` `.include` directive.
 2. **Run any SPICE netlist in batch mode (LTspice):**
    ```powershell
    & "$env:LTSPICE_EXE" -b "LD1_Arcila_Yactayo/simulaciones/A1_Inversor_VTC/A1_VTC.cir"

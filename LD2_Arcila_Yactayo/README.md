@@ -47,11 +47,24 @@ LD2_Arcila_Yactayo/
 ├── README.txt                   # Original Spanish delivery runbook
 ├── trazabilidad_figuras.txt     # Bijective Figure -> Netlist -> Script matrix
 ├── verificacion_modelos.txt     # BSIM4 Level 54 parameter verification
-├── modelos/                     # Collision-free renamed PTM libraries (.lib)
-├── act1/ ... act5/              # Activities 1–5 (circuitos/, scripts/, resultados/, figuras/)
-├── act6/                        # Optional Activity 6 placeholder (not developed)
+├── modelos/                     # Local PTM library directory (see modelos/README_modelos.md)
+├── act1/                        # Activity 1: Footed Dynamic NAND3 -> act1/README_act1.md
+├── act2/                        # Activity 2: Charge Sharing -> act2/README_act2.md
+├── act3/                        # Activity 3: Leakage & Keeper Sizing -> act3/README_act3.md
+├── act4/                        # Activity 4: Monotonicity & Skew -> act4/README_act4.md
+├── act5/                        # Activity 5: Feedthrough & NTV -> act5/README_act5.md
+├── act6/                        # Optional Activity 6 placeholder (not developed) -> act6/README.txt
 └── informe_latex/               # Master IEEE LaTeX source & main.pdf (20 pages)
 ```
+
+### Activity Documentation
+* [**Activity 1 — Footed Dynamic NAND3 (`act1/README_act1.md`)**](act1/README_act1.md)
+* [**Activity 2 — Charge Sharing (`act2/README_act2.md`)**](act2/README_act2.md)
+* [**Activity 3 — Keeper Sizing & Contention (`act3/README_act3.md`)**](act3/README_act3.md)
+* [**Activity 4 — Monotonicity & Clock Skew (`act4/README_act4.md`)**](act4/README_act4.md)
+* [**Activity 5 — Feedthrough & NTV Operation (`act5/README_act5.md`)**](act5/README_act5.md)
+* [**Activity 6 — Optional / Not Developed (`act6/README.txt`)**](act6/README.txt)
+* [**PTM Models Setup (`modelos/README_modelos.md`)**](modelos/README_modelos.md)
 
 ---
 

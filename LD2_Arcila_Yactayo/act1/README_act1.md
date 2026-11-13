@@ -1,175 +1,174 @@
-# Actividad 1 — NAND3 Dinámica Footed: Fases, Asimetría y Consumo
+# Activity 1 — Footed Dynamic NAND3: Phases, Asymmetry, and Power Consumption
 
-**Curso:** Microelectrónica y Sistemas Nanoelectrónicos (Semestre 2026-II)  
-**Institución:** Universidad Nacional Mayor de San Marcos (UNMSM) — FIEE  
-**Docente:** MsC. Luz Adanaqué Infante  
-**Autores:** Leonardo Sait Yactayo Tolentino (23190214) & Marco Antonio Arcila Santander (23190140)  
-**Directorio de Trabajo:** [`LD2_Arcila_Yactayo/act1/`](file:///g:/Proyectos/MicroNano/LD2_Arcila_Yactayo/act1/)  
-**Tecnología Principal:** PTM 45nm HP ($V_{DD} = 1.0\text{ V}$, $T = 27^\circ\text{C}$)
-
----
-
-## 1. Topología y Dimensionamiento de Circuitos
-
-### A. NAND3 Dinámica Footed con Inversor Dominó (Guía Oficial, Sec. 5)
-* **Red de Descarga (PDN) y Footer ($M_f$):**
-  * 4 transistores NMOS en serie ($M_1, M_2, M_3, M_f$) dimensionados según la guía con $W = 3 W_n = 3 \times 90\text{ nm} = 270\text{ nm}$, $L = 45\text{ nm}$.
-  * La resistencia equivalente de descarga emula la corriente de un NMOS unitario de referencia ($W_n = 90\text{ nm}$).
-* **Transistor de Precarga ($M_p$):**
-  * PMOS conectado a $V_{DD}$ con $W = W_p = 135\text{ nm}$, $L = 45\text{ nm}$ ($\beta = 1.5$ por compensación de movilidad de huecos).
-* **Inversor Dominó de Salida:**
-  * $M_{pi}$: PMOS con $W = W_p = 135\text{ nm}$, $L = 45\text{ nm}$.
-  * $M_{ni}$: NMOS con $W = W_n = 90\text{ nm}$, $L = 45\text{ nm}$.
-* **Condiciones de Carga Capacitiva (Especificación de la Guía):**
-  * Carga externa en el nodo dinámico: $C_L = 2\text{ fF}$ (especificada en el encabezado oficial `.param CL=2f`).
-  * Carga de compuerta del inversor dominó conectada al nodo $dyn$ ($W_p = 135\text{ nm}, W_n = 90\text{ nm}$).
-  * Carga de salida dominó: $C_{out} = 1\text{ fF}$ (especificada como `Cout out 0 1f`).
-* **Conteo de Transistores:**
-  * Núcleo dinámico footed solo: **5 transistores** (4 NMOS + 1 PMOS).
-  * Etapa dominó completa (incluyendo inversor restaurador): **7 transistores**.
-
-### B. NAND3 CMOS Estática Equivalente
-* **PUN:** 3 transistores PMOS en paralelo ($M_{Pa}, M_{Pb}, M_{Pc}$) con $W = W_p = 135\text{ nm}$, $L = 45\text{ nm}$.
-* **PDN:** 3 transistores NMOS en serie ($M_{Na}, M_{Nb}, M_{Nc}$) con $W = 3 W_n = 270\text{ nm}$, $L = 45\text{ nm}$.
-* **Carga de Salida:** $C_{out} = 1\text{ fF}$.
-* **Conteo Total de Transistores:** 3 (PUN) + 3 (PDN) = **6 transistores**.
+**Course:** Microelectronics and Nanoelectronic Systems (Semester 2026-II)  
+**Institution:** Universidad Nacional Mayor de San Marcos (UNMSM) — FIEE  
+**Instructor:** MsC. Luz Adanaqué Infante  
+**Authors:** Leonardo Sait Yactayo Tolentino (`23190214`) & Marco Antonio Arcila Santander (`23190140`)  
+**Working Directory:** [`act1/`](.)  
+**Primary Technology:** PTM 45 nm HP ($V_{DD} = 1.0\text{ V}$, $T = 27^\circ\text{C}$)
 
 ---
 
-## 2. Tabla Comparativa Oficial: Dinámica vs Estática (Tarea 3)
+## 1. Circuit Topology and Sizing
 
-Todas las métricas numéricas fueron extraídas mediante el pipeline automatizado validado (`parse_spice_log.py` y `parse_spice_raw.py`) a partir de simulaciones en LTspice 26.0.2:
+### A. Footed Dynamic NAND3 with Domino Inverter (Official Guide, Sec. 5)
+* **Pull-Down Network (PDN) and Footer ($M_f$):**
+  * 4 series NMOS transistors ($M_1, M_2, M_3, M_f$) sized per the guide at $W = 3 W_n = 3 \times 90\text{ nm} = 270\text{ nm}$, $L = 45\text{ nm}$.
+  * The equivalent pull-down resistance emulates the current of a unit reference NMOS ($W_n = 90\text{ nm}$).
+* **Precharge Transistor ($M_p$):**
+  * PMOS connected to $V_{DD}$ with $W = W_p = 135\text{ nm}$, $L = 45\text{ nm}$ ($\beta = 1.5$ for hole mobility compensation).
+* **Output Domino Inverter:**
+  * $M_{pi}$: PMOS with $W = W_p = 135\text{ nm}$, $L = 45\text{ nm}$.
+  * $M_{ni}$: NMOS with $W = W_n = 90\text{ nm}$, $L = 45\text{ nm}$.
+* **Capacitive Load Conditions (Guide Specification):**
+  * External load at the dynamic node: $C_L = 2\text{ fF}$ (`.param CL=2f`).
+  * Gate capacitance of the domino inverter connected to node `dyn` ($W_p = 135\text{ nm}, W_n = 90\text{ nm}$).
+  * Domino output load: $C_{out} = 1\text{ fF}$ (`Cout out 0 1f`).
+* **Transistor Count:**
+  * Footed dynamic core alone: **5 transistors** (4 NMOS + 1 PMOS).
+  * Complete domino stage (including restoring inverter): **7 transistors**.
 
-| Métrica Evaluada | NAND3 Dinámica (Domino) | NAND3 Estática Equivalente | Cociente (Dyn / Stat) | Notas / Procedencia |
+### B. Equivalent Static CMOS NAND3
+* **PUN:** 3 parallel PMOS transistors ($M_{Pa}, M_{Pb}, M_{Pc}$) with $W = W_p = 135\text{ nm}$, $L = 45\text{ nm}$.
+* **PDN:** 3 series NMOS transistors ($M_{Na}, M_{Nb}, M_{Nc}$) with $W = 3 W_n = 270\text{ nm}$, $L = 45\text{ nm}$.
+* **Output Load:** $C_{out} = 1\text{ fF}$.
+* **Total Transistor Count:** 3 (PUN) + 3 (PDN) = **6 transistors**.
+
+---
+
+## 2. Official Comparative Table: Dynamic vs. Static (Task 3)
+
+All numerical metrics were extracted from LTspice 26.0.2 simulations (`circuitos/*.cir`) and stored in `resultados/datos/`:
+
+| Evaluated Metric | Dynamic NAND3 (Domino) | Equivalent Static NAND3 | Ratio (Dyn / Stat) | Notes / Provenance |
 | :--- | :---: | :---: | :---: | :--- |
-| **N.º de Transistores** | **5** (núcleo) / **7** (total) | **6** | **0.833** / **1.167** | Guía oficial Sec. 5 |
-| **$t_{pHL}$ (Evaluación en nodo $dyn$)** | **22.17 ps** | **9.61 ps** | **2.307** | $t_{pHL,dyn}$ oficial vs $t_{pHL,stat}$ (ENS-A1-07) |
-| **$t_{pLH}$ (Precarga en nodo $dyn$)** | **25.13 ps** | **12.40 ps** | **2.027** | $t_{pLH,dyn}$ oficial vs $t_{pLH,stat}$ (ENS-A1-07) |
-| **Retardo en Salidas Lógicas (Triggers Asimétricos)** | **35.89 ps** (salida $out$<br>desde flanco $CLK\uparrow$) | **9.61 ps** (salida $out\_stat$<br>desde flanco $A\uparrow$) | **3.734** | Ambos observados en salida lógica ($C_{out}=1\text{ fF}$); eventos de disparo distintos ($CLK\uparrow$ vs $A\uparrow$, cociente descriptivo) |
-| **Control sin carga externa $C_L$ en $dyn$ (ENS-A1-08)** | $t_{pHL,dyn}=11.26\text{ ps}$<br>$t_{pd,\text{eval}}=21.27\text{ ps}$ | — | — | Control con $C_L=0$; el nodo $dyn$ conserva difusiones, capacidades MOS y compuerta del inversor |
-| **Capacitancia de Entrada $C_{in}(A)$** | **0.3417 fF** | **0.5936 fF** | **0.5756** (-42.4%) | Integración $Q=\int I\,dt$ (ENS-A1-HIG-01; hist. 0.3415 fF en ENS-A1-04) |
-| **$P_{\text{avg}}$ con $A$ conmutando ($T_A=8\text{ ns}$)** | **1.2393 $\mu$W** | **0.2692 $\mu$W** | **4.604** | Estímulo idéntico de $125\text{ MHz}$ (ENS-A1-07) |
-| *$P_{\text{avg}}$ Estática con $A$ a 500 MHz (Histórico)* | *1.2393 $\mu$W* | *0.8206 $\mu$W* | *1.510* | *Referencia histórica preliminar (ENS-A1-02)* |
-| **$P_{\text{avg}}$ @ 500 MHz (Entradas fijas en 1)** | **2.7255 $\mu$W** | **1.7004 nW** | **1602.9** | Trampa de potencia: $\alpha=1$ vs $\alpha=0$ (ENS-A1-03) |
+| **Transistor Count** | **5** (core) / **7** (total) | **6** | **0.833** / **1.167** | Official Guide Sec. 5 |
+| **$t_{pHL}$ (Evaluation at node `dyn`)** | **22.17 ps** | **9.61 ps** | **2.307** | Official $t_{pHL,dyn}$ vs $t_{pHL,stat}$ (`ENS-A1-07`) |
+| **$t_{pLH}$ (Precharge at node `dyn`)** | **25.13 ps** | **12.40 ps** | **2.027** | Official $t_{pLH,dyn}$ vs $t_{pLH,stat}$ (`ENS-A1-07`) |
+| **Logic Output Delay (Asymmetric Triggers)** | **35.89 ps** (output `out` from $CLK\uparrow$) | **9.61 ps** (output `out_stat` from $A\uparrow$) | **3.734** | Both observed at logic output ($C_{out}=1\text{ fF}$); distinct trigger events ($CLK\uparrow$ vs $A\uparrow$, descriptive ratio) |
+| **Control without external $C_L$ on `dyn` (`ENS-A1-08`)** | $t_{pHL,dyn}=11.26\text{ ps}$<br>$t_{pd,\text{eval}}=21.27\text{ ps}$ | — | — | Control with $C_L=0$; `dyn` retains diffusions, MOS capacitances, and inverter gate load |
+| **Input Capacitance $C_{in}(A)$** | **0.3417 fF** | **0.5936 fF** | **0.5756** (-42.4%) | Integration $Q=\int I\,dt$ (`ENS-A1-HIG-01`; hist. 0.3415 fF in `ENS-A1-04`) |
+| **$P_{\text{avg}}$ with $A$ switching ($T_A=8\text{ ns}$)** | **1.2393 $\mu$W** | **0.2692 $\mu$W** | **4.604** | Identical $125\text{ MHz}$ stimulus (`ENS-A1-07`) |
+| *$P_{\text{avg}}$ Static with $A$ at 500 MHz (Historical)* | *1.2393 $\mu$W* | *0.8206 $\mu$W* | *1.510* | *Preliminary historical reference (`ENS-A1-02`)* |
+| **$P_{\text{avg}}$ @ 500 MHz (Inputs fixed at 1)** | **2.7255 $\mu$W** | **1.7004 nW** | **1602.9** | Power trap: $\alpha=1$ vs $\alpha=0$ (`ENS-A1-03`) |
 
-#### Precisiones Metodológicas sobre la Comparación de Retardos:
-1. **Eventos de Disparo (Triggers) Asimétricos:**
-   * En la **NAND3 dominó**, el retardo medido es:
-     $$\text{Retardo de evaluación desde } CLK\uparrow \text{ hasta } OUT\uparrow = \mathbf{35.89\text{ ps}}$$
-     (dado que la entrada $A$ ya se encuentra estabilizada en alto durante la fase de precarga).
-   * En la **NAND3 estática**, el retardo medido es:
-     $$\text{Retardo de propagación desde } A\uparrow \text{ hasta } OUT\_STAT\downarrow = \mathbf{9.61\text{ ps}}$$
-   * *Aclaración:* Si bien ambos tiempos se miden en los terminales lógicos finales con carga de $1\text{ fF}$, los eventos de disparo físico son de distinta naturaleza ($CLK\uparrow$ sincrónico frente a $A\uparrow$ asíncrono de dato). Por tanto, el cociente ($3.734\times$) es de carácter descriptivo sobre la respuesta temporal de cada topología y no constituye una comparación estrictamente idéntica de camino de datos (*data-to-output*).
-2. **Control de Retardo Sin Carga Externa $C_L$ (ENS-A1-08):**
-   * Al fijar $C_L = 0\text{ fF}$ en el nodo $dyn$, el retardo de evaluación se reduce a $t_{pHL,dyn} = 11.26\text{ ps}$ y $t_{pd,\text{eval}} = 21.27\text{ ps}$.
-   * *Aclaración:* Este ensayo se denomina rigurosamente **control de retardo sin carga externa $C_L$**. Aun sin el condensador concentrado de $2\text{ fF}$, el nodo $dyn$ no carece de capacitancia: retiene las capacitancias parásitas de difusión de $M_p$ y $M_1$, las capacitancias parásitas MOS inherentes a la tecnología BSIM4/PTM 45nm y la capacitancia de compuerta de entrada de los transistores del inversor dominó ($M_{pi}$, $M_{ni}$).
-
----
-
-## 3. Análisis de Fases y Formas de Onda (Tarea 1)
-
-En la simulación oficial de la guía (`nand3_dinamica_base.cir`), el reloj conmuta a $500\text{ MHz}$ ($T_{clk} = 2\text{ ns}$) y la entrada $A$ tiene un retardo intencional de $1.1\text{ ns}$ ($0.55 T_{clk}$). Esto permite observar las cuatro fases operativas fundamentales (ver Figura 1):
-
-1. **Fase I: Evaluación con PDN Abierta ($t \in [0.0, 1.0\text{ ns}]$):**
-   * Reloj $CLK = 1$ ($M_p$ en corte, footer $M_f$ en conducción).
-   * Entrada $A = 0 \implies$ el transistor $M_1$ está en corte, impidiendo cualquier camino hacia tierra.
-   * **Estado del Nodo Dinámico:** El nodo $dyn$ queda **FLOTANTE en nivel alto ($V_{DD} = 1.0\text{ V}$)**.
-   * Se aprecia un ligero sobreimpulso a $1.022\text{ V}$ debido al acoplamiento capacitivo (*clock feedthrough*) inducido por el flanco ascendente de $CLK$ a través de $C_{gd}(M_p)$.
-2. **Fase II: Precarga con $A=1$ ($t \in [1.0, 2.0\text{ ns}]$):**
-   * Reloj $CLK = 0$ ($M_p$ en conducción activa hacia $V_{DD}$, footer $M_f$ en corte).
-   * A $t = 1.1\text{ ns}$, la entrada $A$ conmuta a nivel 1. Aunque $A=B=C=1$, el footer $M_f$ permanece cortado por $CLK=0$, por lo que la red a tierra no se activa. El nodo $dyn$ se mantiene conectado a $V_{DD}$ por $M_p$.
-3. **Fase III: Evaluación con Descarga Completa ($t \in [2.0, 3.0\text{ ns}]$):**
-   * Reloj $CLK = 1$ (flanco de subida en $t = 2.0\text{ ns}$).
-   * Como $A=B=C=1$, toda la PDN ($M_1, M_2, M_3, M_f$) conduce simultáneamente.
-   * El nodo dinámico $dyn$ se descarga hacia $0\text{ V}$ con un retardo de $t_{pHL,dyn} = 22.17\text{ ps}$.
-   * La salida del inversor dominó $out$ conmuta monótonamente de $0$ a $1$ con $t_{pLH,out} = 35.89\text{ ps}$.
-4. **Fase IV: Precarga y Restauración ($t \in [3.0, 4.0\text{ ns}]$):**
-   * Reloj $CLK = 0$ (flanco de bajada en $t = 3.0\text{ ns}$).
-   * $M_p$ se enciende y recarga el nodo $dyn$ desde $0\text{ V}$ hacia $V_{DD}$ con un retardo de precarga $t_{pLH,dyn} = 25.13\text{ ps}$.
-   * El inversor dominó restaura la salida $out$ hacia $0\text{ V}$ con $t_{pHL,out} = 38.06\text{ ps}$.
+#### Methodological Clarifications on Delay Comparison:
+1. **Asymmetric Trigger Events:**
+   * In the **domino NAND3**, the measured delay is:
+     $$\text{Evaluation delay from } CLK\uparrow \text{ to } OUT\uparrow = \mathbf{35.89\text{ ps}}$$
+     (since input $A$ is already stabilized high during the precharge phase).
+   * In the **static NAND3**, the measured delay is:
+     $$\text{Propagation delay from } A\uparrow \text{ to } OUT\_STAT\downarrow = \mathbf{9.61\text{ ps}}$$
+   * *Clarification:* Although both times are measured at the final logic terminals with a $1\text{ fF}$ load, the physical trigger events differ ($CLK\uparrow$ synchronous vs. $A\uparrow$ asynchronous data). Hence, the $3.734\times$ ratio is descriptive of each topology's temporal response and does not represent a strictly identical data-to-output path comparison.
+2. **Delay Control Without External $C_L$ (`ENS-A1-08`):**
+   * Setting $C_L = 0\text{ fF}$ on node `dyn` reduces evaluation delay to $t_{pHL,dyn} = 11.26\text{ ps}$ and $t_{pd,\text{eval}} = 21.27\text{ ps}$.
+   * *Clarification:* Even without the lumped $2\text{ fF}$ capacitor, `dyn` is not capacitance-free: it retains the drain diffusion capacitances of $M_p$ and $M_1$, intrinsic BSIM4/PTM 45 nm MOS capacitances, and the input gate capacitance of the domino inverter ($M_{pi}$, $M_{ni}$).
 
 ---
 
-## 4. Asimetría Temporal y Rol de $t_{pLH}$ en Lógica Dominó (Tarea 2)
+## 3. Phase Analysis and Waveforms (Task 1)
 
-* **¿Por qué $t_{pLH}$ del nodo dinámico "no cuenta" como retardo lógico en dominó?**
-  En lógica dominó, el cómputo lógico de propagación de datos ocurre exclusivamente durante la fase de evaluación ($CLK=1$), en la cual las salidas conmutan monótonamente en flanco ascendente ($0 \to 1$). La precarga ($t_{pLH}$ en $dyn$, que se traduce en $t_{pHL}$ en $out$) ocurre mientras el reloj está en nivel bajo ($CLK=0$). Durante este semi-periodo, el circuito se encuentra en fase de restauración global ("tiempo muerto" de cómputo lógico); por tanto, la precarga no pertenece a la ruta crítica combinacional de avance de datos.
-* **Restricción que impone sobre el ciclo de reloj ($T_{clk}$):**
-  El semi-periodo de precarga ($T_{clk}/2$) debe ser estrictamente suficiente para que $M_p$ restaure el nodo $dyn$ completamente a $V_{DD}$:
-  $$\frac{T_{clk}}{2} \ge t_{\text{precarga}} \approx 3 \text{ a } 4 \times \tau_{\text{pre}}$$
-  Si la frecuencia de reloj se incrementa excesivamente de modo que $T_{clk}/2 < t_{\text{precarga}}$, la evaluación comenzará con carga incompleta ($V(dyn) < V_{DD}$), degradando el margen de ruido $NM_H$ y provocando disparos espurios en compuertas en cascada.
+In the official simulation ([`circuitos/nand3_dinamica_base.cir`](circuitos/nand3_dinamica_base.cir)), the clock switches at $500\text{ MHz}$ ($T_{clk} = 2\text{ ns}$) and input $A$ has an intentional $1.1\text{ ns}$ delay ($0.55 T_{clk}$), revealing the four fundamental operating phases (see Figure 1):
 
----
-
-## 5. La Trampa de Potencia y Comparación Analítica vs Medida (Tarea 4)
-
-### A. Explicación de la Trampa
-Con las entradas fijas permanentemente en nivel alto ($A=1, B=1, C=1$):
-* En la **NAND3 estática**, la salida permanece fija en $0\text{ V}$. Al no existir transiciones en ningún nodo, su factor de actividad dinámico es nulo ($\alpha = 0$). Su consumo se reduce a la corriente de fuga subumbral y de compuerta ($P_{\text{stat}} = 1.7004\text{ nW}$).
-* En la **NAND3 dinámica footed**, aunque las entradas de datos sean constantes, el reloj conmuta periódicamente a $500\text{ MHz}$. En cada periodo:
-  * Durante precarga ($CLK=0$), $M_p$ carga el nodo dinámico a $V_{DD}$.
-  * Durante evaluación ($CLK=1$), la PDN descarga el nodo dinámico a tierra.
-  Por lo tanto, la compuerta dinámica conmuta con un **factor de actividad forzado de $\alpha = 1$ en cada periodo de reloj**, consumiendo $2.7255\text{ }\mu\text{W}$ (un factor de **$1602.9\times$** mayor que la estática).
-
-### B. Potencia Teórica de la Carga Nominal vs Potencia Medida
-La potencia dinámica teórica requerida para cargar y descargar la capacitancia concentrada explícita impuesta por la guía ($C_L = 2.0\text{ fF}$) con $\alpha = 1$, $V_{DD} = 1.0\text{ V}$ y $f = 500\text{ MHz}$ es:
-$$P_{\text{teor}}(C_L) = \alpha \cdot C_L \cdot V_{DD}^2 \cdot f = 1 \times (2.0\text{ fF}) \times (1.0\text{ V})^2 \times (500\times 10^6\text{ s}^{-1}) = \mathbf{1.0000\text{ }\mu\text{W}}$$
-
-La potencia total media suministrada por $V_{DD}$, medida por LTspice mediante `.meas TRAN Pavg AVG -I(Vdd)*V(vdd)`, es:
-$$P_{\text{medida,total}} = \mathbf{2.7255\text{ }\mu\text{W}}$$
-
-### C. Justificación Física Cualitativa de la Discrepancia
-La diferencia entre la potencia elemental de $C_L$ ($1.000\text{ }\mu\text{W}$) y la potencia total suministrada por la fuente ($2.7255\text{ }\mu\text{W}$) se debe a los siguientes mecanismos físicos no concentrados:
-1. **Capacitancias parásitas del nodo dinámico ($C_{par,dyn}$):** Capacitancias de difusión de drenaje de $M_p$ y $M_1$, más la capacitancia de compuerta de los transistores del inversor dominó ($M_{pi}$ y $M_{ni}$).
-2. **Conmutación del inversor dominó de salida:** En cada ciclo de reloj, la salida $out$ conmuta entre $0\text{ V}$ y $V_{DD}$, cargando y descargando la capacitancia externa $C_{out} = 1\text{ fF}$ y las difusiones de drenaje del inversor.
-3. **Corriente de cortocircuito en el inversor dominó:** Durante las transiciones del nodo $dyn$, existe un intervalo finito en que tanto $M_{pi}$ como $M_{ni}$ conducen simultáneamente entre $V_{DD}$ y tierra.
-4. **Carga y descarga parcial de difusiones internas:** Los nodos intermedios de la PDN en serie ($n_1, n_2, n_3$) experimentan redistribución y carga de sus capacidades de difusión.
-5. **Fugas estáticas:** Corrientes de fuga subumbral y túnel de compuerta en todos los dispositivos conectados a $V_{DD}$.
-
-*Nota Metodológica:* De acuerdo con el principio de integridad física del laboratorio, no se presentan valores numéricos desagregados inventados o forzados aritméticamente, reconociendo que cada mecanismo contribuye al total medido de $2.7255\text{ }\mu\text{W}$.
+1. **Phase I: Evaluation with Open PDN ($t \in [0.0, 1.0\text{ ns}]$):**
+   * Clock $CLK = 1$ ($M_p$ off, footer $M_f$ conducting).
+   * Input $A = 0 \implies$ transistor $M_1$ is off, blocking any path to ground.
+   * **Dynamic Node State:** `dyn` remains **FLOATING high ($V_{DD} = 1.0\text{ V}$)**.
+   * A slight overshoot to $1.022\text{ V}$ appears due to capacitive clock feedthrough through $C_{gd}(M_p)$ on the rising $CLK$ edge.
+2. **Phase II: Precharge with $A=1$ ($t \in [1.0, 2.0\text{ ns}]$):**
+   * Clock $CLK = 0$ ($M_p$ actively pulling up to $V_{DD}$, footer $M_f$ off).
+   * At $t = 1.1\text{ ns}$, input $A$ switches to 1. Although $A=B=C=1$, $M_f$ remains off ($CLK=0$), so no pull-down path forms and `dyn` stays driven to $V_{DD}$ by $M_p$.
+3. **Phase III: Evaluation with Full Discharge ($t \in [2.0, 3.0\text{ ns}]$):**
+   * Clock $CLK = 1$ (rising edge at $t = 2.0\text{ ns}$).
+   * Since $A=B=C=1$, the entire PDN ($M_1, M_2, M_3, M_f$) conducts simultaneously.
+   * Dynamic node `dyn` discharges to $0\text{ V}$ with delay $t_{pHL,dyn} = 22.17\text{ ps}$.
+   * The domino inverter output `out` transitions monotonically $0 \to 1$ with $t_{pLH,out} = 35.89\text{ ps}$.
+4. **Phase IV: Precharge and Restoration ($t \in [3.0, 4.0\text{ ns}]$):**
+   * Clock $CLK = 0$ (falling edge at $t = 3.0\text{ ns}$).
+   * $M_p$ turns on and recharges `dyn` from $0\text{ V}$ to $V_{DD}$ with precharge delay $t_{pLH,dyn} = 25.13\text{ ps}$.
+   * The domino inverter restores `out` back to $0\text{ V}$ with $t_{pHL,out} = 38.06\text{ ps}$.
 
 ---
 
-## 6. Retención con PDN Abierta y Degradación por Fugas (Tarea 5)
+## 4. Timing Asymmetry and Role of $t_{pLH}$ in Domino Logic (Task 2)
 
-En este ensayo se fijó $V_c = 0\text{ V}$ (corte en el transistor inferior $M_3$), abriendo permanentemente la ruta a tierra de la PDN.
-
-### Comparativa de Retención a 27°C:
-1. **Reloj Nominal ($T_{clk} = 2\text{ ns}$, $f = 500\text{ MHz}$):**
-   * En la fase de evaluación ($1\text{ ns}$ de duración), el nodo dinámico permanece flotante en nivel alto.
-   * Tensión mínima alcanzada: $V(dyn)_{\text{min}} = \mathbf{0.9936\text{ V}}$, lo que representa una caída de apenas $\Delta V = \mathbf{6.41\text{ mV}}$.
-   * La salida $out$ se mantiene inalterada en $\approx 0\text{ V}$ ($V_{out,\text{max}} = 0.31\text{ mV}$).
-   * **Conclusión:** Para frecuencias del orden de $500\text{ MHz}$, la ventana de evaluación es lo bastante breve como para que las fugas no comprometan la retención.
-2. **Reloj Lento ($T_{clk} = 400\text{ ns}$, ventana de evaluación continua de $200\text{ ns}$):**
-   * Durante los $200\text{ ns}$ en que el nodo $dyn$ intenta retener el nivel alto flotante, las corrientes de fuga subumbral ($I_{off}$) de la PDN y el footer drenan progresivamente la carga del nodo.
-   * La tensión decae monótonamente hasta $V(dyn)_{\text{final}} = \mathbf{0.8837\text{ V}}$, sufriendo una pérdida neta de $\Delta V = \mathbf{116.28\text{ mV}}$.
-   * A $27^\circ\text{C}$, la tensión final ($0.884\text{ V}$) aún se encuentra por encima del umbral de conmutación del inversor ($V_M = 0.48\text{ V}$), por lo que la salida $out$ permanece en reposo ($V_{out} \approx 0.04\text{ mV}$).
-   * **Conclusión Experimental:** Una ventana de evaluación más prolongada produce una pérdida de carga acumulativa cuantificable. Este comportamiento demuestra experimentalmente que un nodo dinámico flotante no puede retener indefinidamente su estado, motivando el estudio de una frecuencia mínima de operación ($f_{min}$) y el dimensionamiento de transistores de compensación (*keepers*), aspectos que se profundizarán en las Actividades 2 y 3.
+* **Why does $t_{pLH}$ of the dynamic node "not count" as logic delay in domino?**  
+  In domino logic, data propagation occurs exclusively during the evaluation phase ($CLK=1$), where outputs switch monotonically on rising edges ($0 \to 1$). Precharge ($t_{pLH}$ at `dyn`, corresponding to $t_{pHL}$ at `out`) occurs while $CLK=0$, a global restoration half-cycle outside the combinational data critical path.
+* **Constraint imposed on the clock period ($T_{clk}$):**  
+  The precharge half-period ($T_{clk}/2$) must be strictly sufficient for $M_p$ to restore `dyn` completely to $V_{DD}$:
+  $$\frac{T_{clk}}{2} \ge t_{\text{precharge}} \approx 3 \text{ to } 4 \times \tau_{\text{pre}}$$
+  If clock frequency increases such that $T_{clk}/2 < t_{\text{precharge}}$, evaluation begins with incomplete charge ($V(dyn) < V_{DD}$), degrading $NM_H$ and risking spurious firing in cascaded gates.
 
 ---
 
-## 7. Ventaja en Capacitancia de Entrada $C_{in}(A)$
+## 5. The Power Trap and Analytical vs. Measured Comparison (Task 4)
 
-* **Diferencia Estructural:**
-  * En la compuerta estática, la entrada $A$ comanda un NMOS de la PDN ($W = 270\text{ nm}$) y un PMOS de la PUN ($W = 135\text{ nm}$), totalizando un ancho de compuerta de $405\text{ nm}$.
-  * En la compuerta dinámica footed, la PUN se reemplaza por el PMOS de precarga global gobernado por el reloj. La entrada $A$ comanda únicamente el transistor NMOS de la PDN ($W = 270\text{ nm}$).
-* **Resultado Canónico Corregido (ENS-A1-HIG-01):**
-  * Medido en `nand3_extraccion_cin_corregido.cir` ($M_{ni}$ a $W=90\text{ nm}$ en estricta coherencia con la topología de compuerta base) mediante integración de corriente ante rampa de $50\text{ ps}$ ($Q_{in} = \int_{90\text{ ps}}^{170\text{ ps}} -I(V_a)\,dt$):
-    $$C_{in,\text{dyn}} = \mathbf{0.3417\text{ fF}} \quad \text{vs} \quad C_{in,\text{stat}} = \mathbf{0.5936\text{ fF}} \implies \text{Cociente } \mathbf{0.5756} \quad (-\mathbf{42.4\%})$$
-  * *Referencia histórica preliminar (ENS-A1-04):* Obtenido con $M_{ni} = 270\text{ nm}$, arrojó $C_{in,\text{dyn}} = 0.3415\text{ fF}$ ($-42.5\%$), confirmando que la carga vista desde $A$ está casi totalmente gobernada por $M_1$.
-* **Estimación Geométrica Orientativa vs Medición SPICE:**
-  * Estimación analítica ideal ($C_{geom} \approx C_{ox,n} W_n L + C_{ox,p} W_p L$), con parámetros extraídos de `modelos/ptm45hp.lib` ($t_{oxe,n} = 1.25\text{ nm}$, $t_{oxe,p} = 1.30\text{ nm}$, $\epsilon_{ox} = 3.9 \cdot \epsilon_0$):
-    $$C_{ox,n} = \frac{3.9 \times 8.854 \times 10^{-12}\text{ F/m}}{1.25 \times 10^{-9}\text{ m}} \approx 27.63\text{ fF/\mu m}^2$$
-    $$C_{ox,p} = \frac{3.9 \times 8.854 \times 10^{-12}\text{ F/m}}{1.30 \times 10^{-9}\text{ m}} \approx 26.56\text{ fF/\mu m}^2$$
-    $$C_{in,\text{dyn,geom}} \approx C_{ox,n} \cdot W_n \cdot L = (27.63\text{ fF/\mu m}^2)(0.270\,\mu\text{m} \times 0.045\,\mu\text{m}) \approx \mathbf{0.336\text{ fF}}$$
-    $$C_{in,\text{stat,geom}} \approx C_{ox,n} W_n L + C_{ox,p} W_p L = 0.3356\text{ fF} + (26.56\text{ fF/\mu m}^2)(0.135\,\mu\text{m} \times 0.045\,\mu\text{m}) = 0.3356\text{ fF} + 0.1614\text{ fF} \approx \mathbf{0.497\text{ fF}}$$
-  * La diferencia con la medición SPICE proviene de que la integración en gran señal incorpora la formación de canal en inversión fuerte, capacidades de solapamiento compuerta-fuente/drenador ($C_{ov}$) y capacitancias marginales (*fringing*), no contempladas en el cálculo geométrico 1D elemental.
+### A. Explanation of the Power Trap
+With inputs permanently fixed high ($A=1, B=1, C=1$):
+* In the **static NAND3**, the output remains fixed at $0\text{ V}$. With zero node transitions, dynamic activity is zero ($\alpha = 0$), leaving only subthreshold and gate leakage ($P_{\text{stat}} = 1.7004\text{ nW}$).
+* In the **footed dynamic NAND3**, even with constant data inputs, the clock switches periodically at $500\text{ MHz}$:
+  * During precharge ($CLK=0$), $M_p$ charges `dyn` to $V_{DD}$.
+  * During evaluation ($CLK=1$), the PDN discharges `dyn` to ground.
+  Thus, the dynamic gate switches with a **forced activity factor $\alpha = 1$ every clock cycle**, consuming $2.7255\ \mu\text{W}$ (**$1602.9\times$** higher than static).
+
+### B. Theoretical Load Power vs. Measured Power
+The theoretical dynamic power required to charge and discharge the explicit lumped load ($C_L = 2.0\text{ fF}$) at $\alpha = 1$, $V_{DD} = 1.0\text{ V}$, and $f = 500\text{ MHz}$ is:
+$$P_{\text{theor}}(C_L) = \alpha \cdot C_L \cdot V_{DD}^2 \cdot f = 1 \times (2.0\text{ fF}) \times (1.0\text{ V})^2 \times (500\times 10^6\text{ s}^{-1}) = \mathbf{1.0000\ \mu\text{W}}$$
+
+Total average power supplied by $V_{DD}$, measured in LTspice via `.meas TRAN Pavg AVG -I(Vdd)*V(vdd)`, is:
+$$P_{\text{measured,total}} = \mathbf{2.7255\ \mu\text{W}}$$
+
+### C. Physical Justification of the Discrepancy
+The difference between elementary $C_L$ power ($1.000\ \mu\text{W}$) and total source power ($2.7255\ \mu\text{W}$) arises from:
+1. **Dynamic node parasitics ($C_{par,dyn}$):** Drain diffusion capacitances of $M_p$ and $M_1$, plus input gate capacitance of the domino inverter ($M_{pi}, M_{ni}$).
+2. **Output domino inverter switching:** Every cycle, `out` switches between $0\text{ V}$ and $V_{DD}$, driving $C_{out} = 1\text{ fF}$ and inverter drain diffusions.
+3. **Short-circuit current in the domino inverter:** Finite simultaneous conduction of $M_{pi}$ and $M_{ni}$ during `dyn` transitions.
+4. **Internal PDN diffusion charging/discharging:** Intermediate series nodes ($n_1, n_2, n_3$) undergo partial charge redistribution.
+5. **Static leakage:** Subthreshold and gate tunneling currents across all devices connected to $V_{DD}$.
+
+*Methodological Note:* Consistent with physical integrity rules, no fabricated arithmetic breakdown is assigned to individual sub-components; each physical mechanism contributes to the measured $2.7255\ \mu\text{W}$ total.
 
 ---
 
-## 8. Figuras Oficiales Generadas (300 DPI)
+## 6. Retention with Open PDN and Leakage Degradation (Task 5)
 
-Ubicadas en [`LD2_Arcila_Yactayo/act1/figuras/`](file:///g:/Proyectos/MicroNano/LD2_Arcila_Yactayo/act1/figuras/):
-1. `fig1_act1_fases_formas_onda.png`: Formas de onda $V(clk), V(a), V(dyn), V(out)$ con bandas sombreadas y rotulación explícita de las cuatro fases de operación (evaluación con nodo flotante, precarga, evaluación con descarga y precarga final).
-2. `fig2_act1_dinamica_vs_estatica.png`: Comparación temporal sincronizada con el **mismo estímulo de entrada** $V(a)$ ($T_A=8\text{ ns}$), mostrando la conmutación dominó goberanda por reloj frente a la conmutación asíncrona estática.
-3. `fig3_act1_retencion_pdn_abierta.png`: Pérdida de carga en el nodo dinámico flotante a $T_{clk}=2\text{ ns}$ ($\Delta V = 6.4\text{ mV}$) frente a $T_{clk}=400\text{ ns}$ ($\Delta V = 116.3\text{ mV}$).
+In this test, $V_c = 0\text{ V}$ (bottom transistor $M_3$ off), permanently opening the PDN path to ground.
+
+### Retention Comparison at $27^\circ\text{C}$:
+1. **Nominal Clock ($T_{clk} = 2\text{ ns}$, $f = 500\text{ MHz}$):**
+   * During the $1\text{ ns}$ evaluation phase, `dyn` floats high.
+   * Minimum voltage reached: $V(dyn)_{\text{min}} = \mathbf{0.9936\text{ V}}$, a drop of only $\Delta V = \mathbf{6.41\text{ mV}}$.
+   * Output `out` stays near $0\text{ V}$ ($V_{out,\text{max}} = 0.31\text{ mV}$).
+   * **Conclusion:** At $500\text{ MHz}$, the evaluation window is short enough that leakage does not compromise retention.
+2. **Slow Clock ($T_{clk} = 400\text{ ns}$, continuous $200\text{ ns}$ evaluation window):**
+   * Over $200\text{ ns}$ of floating retention, subthreshold leakage ($I_{off}$) through the PDN and footer drains node charge.
+   * Voltage decays monotonically to $V(dyn)_{\text{final}} = \mathbf{0.8837\text{ V}}$, a net loss of $\Delta V = \mathbf{116.28\text{ mV}}$.
+   * At $27^\circ\text{C}$, the final voltage ($0.884\text{ V}$) remains above the inverter switching threshold ($V_M = 0.48\text{ V}$), so `out` stays quiescent ($V_{out} \approx 0.04\text{ mV}$).
+   * **Experimental Conclusion:** Longer evaluation windows produce measurable cumulative charge loss, demonstrating that a floating dynamic node cannot hold state indefinitely and motivating minimum frequency ($f_{min}$) and keeper sizing studies in Activities 2 and 3.
+
+---
+
+## 7. Input Capacitance Advantage $C_{in}(A)$
+
+* **Structural Difference:**
+  * In the static gate, input $A$ drives one PDN NMOS ($W = 270\text{ nm}$) and one PUN PMOS ($W = 135\text{ nm}$), totaling $405\text{ nm}$ of gate width.
+  * In the footed dynamic gate, the PUN is replaced by the clock-driven precharge PMOS; input $A$ drives only the PDN NMOS ($W = 270\text{ nm}$).
+* **Canonical Corrected Result (`ENS-A1-HIG-01`):**
+  * Measured in [`circuitos/nand3_extraccion_cin_corregido.cir`](circuitos/nand3_extraccion_cin_corregido.cir) ($M_{ni}$ at $W=90\text{ nm}$ consistent with the base topology) via current integration over a $50\text{ ps}$ ramp ($Q_{in} = \int_{90\text{ ps}}^{170\text{ ps}} -I(V_a)\,dt$):
+    $$C_{in,\text{dyn}} = \mathbf{0.3417\text{ fF}} \quad \text{vs.} \quad C_{in,\text{stat}} = \mathbf{0.5936\text{ fF}} \implies \text{Ratio } \mathbf{0.5756} \quad (-\mathbf{42.4\%})$$
+  * *Preliminary historical reference (`ENS-A1-04`):* With $M_{ni} = 270\text{ nm}$, yielded $C_{in,\text{dyn}} = 0.3415\text{ fF}$ ($-42.5\%$), confirming input load at $A$ is dominated by $M_1$.
+* **Geometric Estimate vs. SPICE Measurement:**
+  * Using parameters from `../modelos/ptm45hp.lib` (local dependency, excluded from Git; $t_{oxe,n} = 1.25\text{ nm}$, $t_{oxe,p} = 1.30\text{ nm}$, $\epsilon_{ox} = 3.9 \cdot \epsilon_0$):
+    $$C_{ox,n} = \frac{3.9 \times 8.854 \times 10^{-12}\text{ F/m}}{1.25 \times 10^{-9}\text{ m}} \approx 27.63\text{ fF}/\mu\text{m}^2, \qquad C_{ox,p} = \frac{3.9 \times 8.854 \times 10^{-12}\text{ F/m}}{1.30 \times 10^{-9}\text{ m}} \approx 26.56\text{ fF}/\mu\text{m}^2$$
+    $$C_{in,\text{dyn,geom}} \approx C_{ox,n} W_n L = (27.63\text{ fF}/\mu\text{m}^2)(0.270\,\mu\text{m} \times 0.045\,\mu\text{m}) \approx \mathbf{0.336\text{ fF}}$$
+    $$C_{in,\text{stat,geom}} \approx 0.3356\text{ fF} + (26.56\text{ fF}/\mu\text{m}^2)(0.135\,\mu\text{m} \times 0.045\,\mu\text{m}) = 0.3356\text{ fF} + 0.1614\text{ fF} \approx \mathbf{0.497\text{ fF}}$$
+  * Differences with SPICE arise because large-signal integration includes strong-inversion channel formation, gate-source/drain overlap capacitances ($C_{ov}$), and fringing capacitances omitted in the 1D geometric estimate.
+
+---
+
+## 8. Generated Figures (300 DPI)
+
+Located in `act1/figuras/`:
+1. [`figuras/fig1_act1_fases_formas_onda.png`](figuras/fig1_act1_fases_formas_onda.png): Waveforms $V(clk), V(a), V(dyn), V(out)$ with shaded bands labeling the four operating phases.
+2. [`figuras/fig2_act1_dinamica_vs_estatica.png`](figuras/fig2_act1_dinamica_vs_estatica.png): Synchronized temporal comparison under the **same input stimulus** $V(a)$ ($T_A=8\text{ ns}$).
+3. [`figuras/fig3_act1_retencion_pdn_abierta.png`](figuras/fig3_act1_retencion_pdn_abierta.png): Charge loss on the floating dynamic node at $T_{clk}=2\text{ ns}$ ($\Delta V = 6.4\text{ mV}$) vs. $T_{clk}=400\text{ ns}$ ($\Delta V = 116.3\text{ mV}$).
