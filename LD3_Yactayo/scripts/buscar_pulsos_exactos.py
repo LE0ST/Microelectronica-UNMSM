@@ -1,6 +1,9 @@
 import subprocess
 import os
 import re
+import sys
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from ltspice_config import resolve_ltspice_exe
 
 net_dir = os.path.abspath('LD3_Yactayo/simulaciones/netlists')
 
@@ -33,7 +36,7 @@ def check_n(tp1):
     cir = os.path.join(net_dir, 'check_n.cir')
     with open(cir, 'w') as f:
         f.write(net)
-    subprocess.run(['G:\\LTspice\\LTspice.exe', '-b', cir], timeout=15)
+    subprocess.run([resolve_ltspice_exe(), '-b', cir], timeout=15)
     with open(cir.replace('.cir', '.log'), 'r') as f:
         log = f.read()
     m = re.search(r'ic_before_off:\s*I\(R2\)\s*=\s*([\d\.\+\-e]+)', log, re.I)
@@ -70,7 +73,7 @@ def check_p(tp1):
     cir = os.path.join(net_dir, 'check_p.cir')
     with open(cir, 'w') as f:
         f.write(net)
-    subprocess.run(['G:\\LTspice\\LTspice.exe', '-b', cir], timeout=15)
+    subprocess.run([resolve_ltspice_exe(), '-b', cir], timeout=15)
     with open(cir.replace('.cir', '.log'), 'r') as f:
         log = f.read()
     m = re.search(r'ic_before_off:\s*-I\(R2\)\s*=\s*([\d\.\+\-e]+)', log, re.I)
@@ -78,10 +81,11 @@ def check_p(tp1):
     print(f'PIGBT tp1={tp1:.3f}us -> Ic={val:.4f} A (error vs 40A: {val-40.0:+.4f} A)')
     return val, t0, t1, t2, t3
 
-print("--- NIGBT CALIBRATION ---")
-for t in [3.64, 3.65, 3.66, 3.67, 3.68]:
-    check_n(t)
+if __name__ == '__main__':
+    print("--- NIGBT CALIBRATION ---")
+    for t in [3.64, 3.65, 3.66, 3.67, 3.68]:
+        check_n(t)
 
-print("\n--- PIGBT CALIBRATION ---")
-for t in [8.86, 8.88, 8.90, 8.92]:
-    check_p(t)
+    print("\n--- PIGBT CALIBRATION ---")
+    for t in [8.86, 8.88, 8.90, 8.92]:
+        check_p(t)

@@ -1,8 +1,11 @@
 import os
 import subprocess
 import numpy as np
+import sys
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from parse_raw import parse_ltspice_ascii_raw
 from qa_cientifico_g31 import analyze_sensitivity
+from ltspice_config import resolve_ltspice_exe
 
 # Controlled comparison: P-IGBT at 19.0A (matching N-IGBT at 19.0A)
 net_dir = os.path.abspath('LD3_Yactayo/simulaciones/netlists')
@@ -37,7 +40,7 @@ p_cir = os.path.join(net_dir, 'dpt_pigbt_19a.cir')
 with open(p_cir, 'w') as f:
     f.write(net_p_19a)
 
-subprocess.run(['G:\\LTspice\\LTspice.exe', '-b', '-ascii', p_cir], timeout=60)
+subprocess.run([resolve_ltspice_exe(), '-b', '-ascii', p_cir], timeout=60)
 
 res_p_19a = analyze_sensitivity(p_cir.replace('.cir', '.raw'), 'P', 19.85e-6, 25.0e-6)
 res_n_nom = analyze_sensitivity(os.path.join(net_dir, 'dpt_nigbt_nom.raw'), 'N', 19.85e-6, 25.0e-6)

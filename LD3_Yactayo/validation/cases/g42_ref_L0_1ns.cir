@@ -1,0 +1,55 @@
+* Piloto G4.2 DPT FGW50XS65: g42_ref_L0_1ns
+* Autor: Leonardo Sait Yactayo Tolentino
+.include "../../../Semana_02/Material_Adicional_Semestre/05_Laboratorio_IGBT/Circuitos_y_Modelos/FGW50XS65.LIB"
+
+* Fuente DC de bus y carga inductiva
+V2 Vbus 0 400V
+L1 Vbus VC 100u Rser=1m
+D1 VC Vbus DMOD
+.model DMOD D(IS=1e-12 RS=0.01 BV=800 IBV=10u CJO=100p VJ=0.7 M=0.5 TT=35n)
+
+
+* Sensores ideales de corriente (0V) para aislar puertos terminales del IGBT
+Vsens_C VC C_int 0V
+Vsens_G VG_ext G_int 0V
+Vsens_E E_int VE 0V
+
+* Transistor IGBT bajo prueba
+X1 C_int G_int E_int FGW50XS65
+R2 VE 0 0.001
+
+* Excitacion de compuerta (Pulsos DPT: 15V / 0V con RG = 10 ohm)
+V1 Vpulse 0 PWL(0 0 10.000u 0 10.100u 15 21.540u 15 21.640u 0 26.640u 0 26.740u 15 27.740u 15 27.840u 0 32.840u 0)
+R1 VG_ext Vpulse 10
+
+* Metodo de integracion Gear
+.tran 0 32.840u 0 1.0n
+.options method=gear abstol=1e-8 reltol=1e-3
+
+* Mediciones previas al segundo apagado
+.meas tran Ic_pre FIND I(Vsens_C) AT 27.690u
+.meas tran Ie_pre FIND I(Vsens_E) AT 27.690u
+.meas tran Ig_pre FIND I(Vsens_G) AT 27.690u
+.meas tran Vce_on FIND (V(C_int)-V(E_int)) AT 27.690u
+.meas tran Vge_on FIND (V(G_int)-V(E_int)) AT 27.690u
+
+* Tensiones pico
+.meas tran Vce_peak MAX (V(C_int)-V(E_int)) FROM 27.740u TO 32.840u
+.meas tran Vge_peak MAX (V(G_int)-V(E_int)) FROM 26.740u TO 27.840u
+
+* Umbrales dinamicos de corriente para retardo de apagado (90% y 10% de Ic_pre)
+.meas tran Ic_90 PARAM 0.90*Ic_pre
+.meas tran Ic_10 PARAM 0.10*Ic_pre
+
+* Retardos de conmutacion con corriente terminal de colector I(Vsens_C)
+.meas tran td_off TRIG V(G_int,E_int) VAL=13.5 TD=27.690u FALL=1 TARG I(Vsens_C) VAL=Ic_90 TD=27.690u FALL=1
+.meas tran tf TRIG I(Vsens_C) VAL=Ic_90 TD=27.690u FALL=1 TARG I(Vsens_C) VAL=Ic_10 TD=27.690u FALL=1
+
+* Retardo historico con shunt de emisor I(R2) para diagnostico
+.meas tran td_off_shunt TRIG V(G_int,E_int) VAL=13.5 TD=27.690u FALL=1 TARG I(R2) VAL=45.0 TD=27.690u FALL=1
+
+* Energias de apagado integradas en ventana oficial [27.740u, 32.840u]
+.meas tran Eoff_C INTEG (V(C_int)-V(E_int))*I(Vsens_C) FROM 27.740u TO 32.840u
+.meas tran Eoff_shunt INTEG (V(C_int)-V(E_int))*I(R2) FROM 27.740u TO 32.840u
+.meas tran Eoff_G INTEG (V(G_int)-V(E_int))*I(Vsens_G) FROM 27.740u TO 32.840u
+.end

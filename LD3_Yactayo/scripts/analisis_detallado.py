@@ -3,7 +3,10 @@ import subprocess
 import numpy as np
 
 # Import raw parser
+import sys
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from parse_raw import parse_ltspice_ascii_raw
+from ltspice_config import resolve_ltspice_exe
 
 def analyze_device(raw_path, device_type='N', t_off_start=19.85e-6, t_off_end=25.0e-6):
     data = parse_ltspice_ascii_raw(raw_path)
@@ -126,7 +129,7 @@ if __name__ == '__main__':
     for cir in ['dpt_nigbt_nom.cir', 'dpt_pigbt_nom.cir', 'dpt_nigbt.cir', 'dpt_pigbt.cir']:
         p = os.path.join(net_dir, cir)
         print(f"Ejecutando {cir} (-ascii)...")
-        subprocess.run(['G:\\LTspice\\LTspice.exe', '-b', '-ascii', p], timeout=60)
+        subprocess.run([resolve_ltspice_exe(), '-b', '-ascii', p], timeout=60)
 
     res_n_nom = analyze_device(os.path.join(net_dir, 'dpt_nigbt_nom.raw'), 'N', 19.85e-6, 25.0e-6)
     res_p_nom = analyze_device(os.path.join(net_dir, 'dpt_pigbt_nom.raw'), 'P', 25.08e-6, 30.0e-6)

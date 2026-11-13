@@ -1,0 +1,34 @@
+* G4.1 Validacion Piloto FGW50XS65
+* Autor: Leonardo Sait Yactayo Tolentino
+.include "../../../Semana_02/Material_Adicional_Semestre/05_Laboratorio_IGBT/Circuitos_y_Modelos/FGW50XS65.LIB"
+
+* Fuente DC de bus y carga inductiva
+V2 Vbus 0 400V
+L1 Vbus VC 100u Rser=1m
+D1 VC Vbus DMOD
+.model DMOD D(IS=1e-12 RS=0.01 BV=800 IBV=10u CJO=100p VJ=0.7 M=0.5 TT=35n)
+
+* Inductancia parasita de lazo de conmutacion
+Lpar VC VC_igbt 25.0n Rser=10m Rpar=50.0
+
+* Interruptor bajo prueba (Low-Side IGBT)
+X1 VC_igbt VG VE FGW50XS65
+R2 VE 0 0.001
+
+* Excitacion de compuerta (15V / 0V con RG = 10 ohm)
+V1 Vpulse 0 PWL(0 0 10.000u 0 10.100u 15 21.540u 15 21.640u 0 26.640u 0 26.740u 15 27.740u 15 27.840u 0 32.840u 0)
+R1 VG Vpulse 10
+
+* Metodo de integracion Gear
+.tran 0 32.840u 0 1.0n
+.options method=gear abstol=1e-8 reltol=1e-3
+
+* Mediciones cuantitativas (.meas)
+.meas tran Ic_on FIND I(R2) AT 27.690u
+.meas tran Vce_on FIND (V(VC_igbt)-V(VE)) AT 27.690u
+.meas tran Vce_peak MAX (V(VC_igbt)-V(VE)) FROM 27.740u TO 32.840u
+.meas tran Vge_peak MAX (V(VG)-V(VE)) FROM 26.740u TO 27.840u
+.meas tran td_off TRIG V(VG,VE) VAL=13.5 TD=27.690u FALL=1 TARG I(R2) VAL=45.0 TD=27.690u FALL=1
+.meas tran tf TRIG I(R2) VAL=45.0 TD=27.690u FALL=1 TARG I(R2) VAL=5.0 TD=27.690u FALL=1
+.meas tran Eoff INTEG (V(VC_igbt)-V(VE))*I(R2) FROM 27.740u TO 32.840u
+.end
