@@ -4,17 +4,25 @@ Portable verification suite for LD4 (Stuck-at, Stuck-open & Scan Path).
 Authors: Leonardo Sait Yactayo Tolentino & Marco Antonio Arcila Santander (UNMSM-FIEE).
 
 Modes:
-  1. Standalone public mode (default, no private files required):
-     - Validates all curated CSV tables in LD4_Arcila_Yactayo/resultados/.
-     - Reproduces Part 1 step-by-step unique fault coverage (25% -> 100%).
-     - Reproduces Part 2 test-time equations at 50 MHz.
-     - Runs the exhaustive combinational 32-fault proof (proving <= 31/32 for 4 vectors
-       and 32/32 for both the official V4=001/1 and alternative V4=101/1 5-vector sets).
+  1. Standalone public mode (default, no excluded private/course files required):
+     - Validates Part I healthy sequence (16 vectors) against Boolean equation.
+     - Recomputes and validates all 140 cells (20 faults x 7 vectors) of
+       resultados/p1_diccionario_fallos.csv from the 10-node gate netlist.
+     - Reproduces Part I step-by-step unique fault coverage (25% -> 100%).
+     - Validates Part I stuck-open detection pair T0(0000)->T1(0001).
+     - Validates Part II functional (k=7) and flush (3-cycle delay) sequences.
+     - Recomputes and validates all 25 responses (5 vectors x 5 FAULT=0..4 runs)
+       for both official (V4=001/1) and alternative (V4=101/1) scan matrices.
+     - Reproduces Part II test-time equations at 50 MHz.
+     - Runs the exhaustive combinational 32-fault proof (<= 31/32 for 4 vectors;
+       32/32 for both 5-vector sets).
 
   2. Full local forensic mode (--sim-dir <dir> or --rar <Lab_TestCI_LTspice.rar>):
-     - Requires the locally excluded teaching-annex simulations (.log, .raw, .lib).
-     - Re-verifies all 521 scalar LOG-vs-RAW measurements, P2_scan.raw glitch metrics,
-       P1_stuckopen.raw transient extrema, and SDFF transistor count in cmos035_cells.lib.
+     - Requires locally excluded course simulation files (.log, .raw, .lib).
+     - Re-verifies all 521 scalar LOG-vs-RAW measurements and reports exact max|LOG-RAW|.
+     - Reproduces P2_scan.raw Z glitch metrics (peak, width > 1.65 V, FWHM).
+     - Reproduces P1_stuckopen.raw transient extrema (T1, T2, T3) and .meas samples.
+     - Verifies SDFF transistor count (28 MOS/SDFF, 138 core MOS) in cmos035_cells.lib.
 """
 
 from __future__ import annotations
@@ -22,6 +30,7 @@ from __future__ import annotations
 import argparse
 import csv
 import itertools
+import json
 import os
 import re
 import shutil
@@ -32,25 +41,76 @@ from pathlib import Path
 import numpy as np
 
 
+def eval_p1_gate_netlist(d: int, c: int, b: int, a: int, fault: tuple[int, int] | None = None) -> int:
+    """Evaluate 10-node BCD segment-f gate netlist with optional single stuck-at fault."""
+    def inj(node: int, val: int) -> int:
+        return fault[1] if (fault is not None and fault[0] == node) else val
+
+    n1 = inj(1, d)
+    n2 = inj(2, c)
+    n3 = inj(3, b)
+    n4 = inj(4, a)
+    n5 = inj(5, b)
+    n6 = inj(6, a)
+    n7 = inj(7, 1 - (n3 & n4))       # NAND2(b, a)
+    n8 = inj(8, 1 - (n5 | n6))       # NOR2(b, a)
+    n9 = inj(9, n2 & n7)             # AND2(c, nand)
+    n10 = inj(10, n1 | n8 | n9)      # OR3(d, nor, and)
+    return n10
+
+
+def eval_p2_scan_core(q2: int, q1: int, q0: int, e: int, fault_id: int) -> str:
+    """Evaluate 3-bit scan-path combinational core for FAULT=0..4."""
+    e_x0 = 1 if fault_id == 4 else e
+    d0 = q0 ^ e_x0
+    g1 = e & q0
+    g1_x1 = 0 if fault_id == 1 else g1
+    d1 = q1 ^ g1_x1
+    q1_g2 = 1 if fault_id == 2 else q1
+    g2 = g1 & q1_g2
+    d2x = q2 ^ g2
+    d2 = 0 if fault_id == 3 else d2x
+    z = g2 & q2
+    return f"{d2}{d1}{d0}/{z}"
+
+
 def run_public_checks(ld4_root: Path) -> None:
     res = ld4_root / "resultados"
 
-    # 1. Part 1 healthy sequence
+    # 1. Part I healthy sequence (16 vectors vs Boolean model)
     with (res / "p1_circuito_sano.csv").open(encoding="utf-8") as f:
         rows = list(csv.DictReader(f))
     assert len(rows) == 16
+    for i, r in enumerate(rows):
+        d, c, b, a = (i >> 3) & 1, (i >> 2) & 1, (i >> 1) & 1, i & 1
+        assert int(r["y_logico"]) == eval_p1_gate_netlist(d, c, b, a)
     seq = "".join(r["y_logico"] for r in rows)
-    assert seq == "1000111011111111", f"Unexpected P1 sequence: {seq}"
-    print(f"[PASS] Part 1 healthy sequence (16 vectors): {seq}")
+    assert seq == "1000111011111111"
+    print(f"[PASS] Part I healthy sequence (16/16 vectors match Boolean model): {seq}")
 
-    # 2. Part 1 fault dictionary (140 cells) & cumulative coverage
+    # 2. Part I fault dictionary: recompute & check all 140 cells (20 faults x 7 vectors)
     with (res / "p1_diccionario_fallos.csv").open(encoding="utf-8") as f:
         drows = list(csv.DictReader(f))
-    healthy_row = drows[0]
-    fault_rows = drows[1:]
-    assert len(fault_rows) == 20, f"Expected 20 faults, got {len(fault_rows)}"
-
+    assert len(drows) == 21  # healthy + 20 faults
     opt_cols = ["v_0101", "v_0111", "v_0000", "v_0001", "v_0010", "v_0110", "v_1010"]
+    opt_bits = [(int(c[2]), int(c[3]), int(c[4]), int(c[5])) for c in opt_cols]
+
+    healthy_row = drows[0]
+    for col, bits in zip(opt_cols, opt_bits):
+        assert int(healthy_row[col]) == eval_p1_gate_netlist(*bits)
+
+    fault_rows = drows[1:]
+    cells_checked = 0
+    for fr in fault_rows:
+        m = re.match(r"^(\d+)/s-a-([01])$", fr["fallo"])
+        assert m, f"Unexpected fault label: {fr['fallo']}"
+        fault = (int(m.group(1)), int(m.group(2)))
+        for col, bits in zip(opt_cols, opt_bits):
+            expected_y = eval_p1_gate_netlist(*bits, fault=fault)
+            assert int(fr[col]) == expected_y, f"Mismatch at {fr['fallo']} {col}"
+            cells_checked += 1
+    assert cells_checked == 140
+
     expected_cov = [25, 60, 75, 85, 90, 95, 100]
     detected: set[str] = set()
     cov_seq: list[int] = []
@@ -59,16 +119,16 @@ def run_public_checks(ld4_root: Path) -> None:
             if fr[col] != healthy_row[col]:
                 detected.add(fr["fallo"])
         cov_seq.append(100 * len(detected) // 20)
-    assert cov_seq == expected_cov, f"Coverage mismatch: {cov_seq}"
-    print(f"[PASS] Part 1 dictionary (140 cells) & unique coverage: {cov_seq}%")
+    assert cov_seq == expected_cov
+    print(f"[PASS] Part I dictionary ({cells_checked}/140 cells) & unique coverage: {cov_seq}%")
 
-    # 3. Part 1 stuck-open
+    # 3. Part I stuck-open
     with (res / "p1_stuckopen_muestras.csv").open(encoding="utf-8") as f:
         so_rows = list(csv.DictReader(f))
     assert [r["detecta"] for r in so_rows] == ["No", "Si", "No", "No"]
-    print("[PASS] Part 1 stuck-open detection pair verified: T0(0000)->T1(0001)")
+    print("[PASS] Part I stuck-open detection pair verified: T0(0000)->T1(0001)")
 
-    # 4. Part 2 functional & flush
+    # 4. Part II functional & flush
     with (res / "p2_func_muestras.csv").open(encoding="utf-8") as f:
         fn_rows = list(csv.DictReader(f))
     first_z1 = next(int(r["ciclo_k"]) for r in fn_rows if r["z_logico"] == "1")
@@ -78,18 +138,32 @@ def run_public_checks(ld4_root: Path) -> None:
     si_s = "".join(r["si_aplicado"] for r in fl_rows)
     so_s = "".join(r["so_logico"] for r in fl_rows)
     assert si_s == "1101001000000" and so_s == "0001101001000"
-    print(f"[PASS] Part 2 functional (Z=1 @ k={first_z1}) & flush (3-cycle delay)")
+    print(f"[PASS] Part II functional (Z=1 @ k={first_z1}) & flush (3-cycle delay)")
 
-    # 5. Part 2 scan official (V4=001/1) & ensayo 2.6 (V4=101/1)
-    for fname, v4_exp, f2_z_v4 in [
-        ("p2_scan_oficial.csv", "001/1", "110/0"),
-        ("p2_scan_ensayo26.csv", "101/1", "010/1"),
+    # 5. Part II scan matrices: recompute & verify all 25 combinations for official & ensayo_26
+    fault_cols = ["f0_sano", "f1_g1_sa0", "f2_q1_sa1", "f3_d2_sa0", "f4_e_sa1"]
+    for label, fname, v4_exp in [
+        ("official", "p2_scan_oficial.csv", "001/1"),
+        ("ensayo_26", "p2_scan_ensayo26.csv", "101/1"),
     ]:
         with (res / fname).open(encoding="utf-8") as f:
             srows = list(csv.DictReader(f))
         assert len(srows) == 5 and srows[3]["entrada_q2q1q0_e"] == v4_exp
-        assert srows[3]["f2_q1_sa1"] == f2_z_v4
-    print("[PASS] Part 2 scan matrices verified (official V4=001/1 & ensayo_26 V4=101/1)")
+        combos = 0
+        first_det: dict[int, str] = {}
+        for r in srows:
+            vin = r["entrada_q2q1q0_e"]
+            q2, q1, q0, e = int(vin[0]), int(vin[1]), int(vin[2]), int(vin[4])
+            healthy_resp = eval_p2_scan_core(q2, q1, q0, e, 0)
+            for fid, col in enumerate(fault_cols):
+                expected_resp = eval_p2_scan_core(q2, q1, q0, e, fid)
+                assert r[col] == expected_resp, f"Mismatch {label} {r['vector']} {col}"
+                if fid > 0 and fid not in first_det and expected_resp != healthy_resp:
+                    first_det[fid] = r["vector"]
+                combos += 1
+        assert combos == 25
+        assert first_det == {1: "V3", 2: "V4", 3: "V2", 4: "V1"}
+    print("[PASS] Part II scan matrices (25/25 official V4=001/1 & 25/25 ensayo_26 V4=101/1; F1->V3, F2->V4, F3->V2, F4->V1)")
 
     # 6. Test time formulas at 50 MHz (T_clk = 20 ns)
     cases = [(3, 5, 23, 0.46), (3, 16, 67, 1.34), (32, 500, 16532, 330.64), (8, 500, 4508, 90.16)]
@@ -97,7 +171,7 @@ def run_public_checks(ld4_root: Path) -> None:
         cyc = n + (n + 1) * m
         us = round(cyc * 0.02, 2)
         assert cyc == exp_cyc and us == exp_us
-    print("[PASS] Part 2 test-time formulas verified at 50 MHz")
+    print("[PASS] Part II test-time formulas verified at 50 MHz")
 
     # 7. Exhaustive 32-fault combinational proof (P2_counter_core.inc topology)
     verify_32_faults_scan()
@@ -144,9 +218,9 @@ def verify_32_faults_scan() -> None:
     )
     assert best_4 == 31 and valid_5 == 21
 
-    for name, vec_set in [
-        ("Official (V4=001/1)", ["001/0", "110/1", "011/1", "001/1", "111/1"]),
-        ("Ensayo 2.6 (V4=101/1)", ["001/0", "110/1", "011/1", "101/1", "111/1"]),
+    for vec_set in [
+        ["001/0", "110/1", "011/1", "001/1", "111/1"],
+        ["001/0", "110/1", "011/1", "101/1", "111/1"],
     ]:
         idxs = [vec_labels.index(lbl) for lbl in vec_set]
         cov = sum(1 for fm in det_masks if any((fm >> vi) & 1 for vi in idxs))
@@ -210,24 +284,108 @@ def parse_log_meas(log_path: Path) -> list[tuple[str, int, float, float]]:
     return results
 
 
-def run_local_forensic_checks(sim_dir: Path) -> None:
+def crossing_width(t_arr: np.ndarray, v_arr: np.ndarray, thresh: float) -> float:
+    above = v_arr >= thresh
+    idxs = np.where(np.diff(above.astype(int)) != 0)[0]
+    if len(idxs) < 2:
+        raise ValueError(f"Fewer than 2 crossings at threshold {thresh}")
+    i1, i2 = int(idxs[0]), int(idxs[-1])
+    t1 = t_arr[i1] + (thresh - v_arr[i1]) * (t_arr[i1 + 1] - t_arr[i1]) / (v_arr[i1 + 1] - v_arr[i1])
+    t2 = t_arr[i2] + (thresh - v_arr[i2]) * (t_arr[i2 + 1] - t_arr[i2]) / (v_arr[i2 + 1] - v_arr[i2])
+    return float(t2 - t1)
+
+
+def count_lib_transistors(lib_path: Path) -> dict[str, int]:
+    txt = lib_path.read_text(encoding="utf-8", errors="replace")
+    subckts: dict[str, list[str]] = {}
+    cur = None
+    for line in txt.splitlines():
+        s = line.strip()
+        if not s or s.startswith("*"):
+            continue
+        if s.lower().startswith(".subckt "):
+            cur = s.split()[1].upper()
+            subckts[cur] = []
+        elif s.lower().startswith(".ends"):
+            cur = None
+        elif cur is not None:
+            subckts[cur].append(s)
+
+    def count_mos(name: str) -> int:
+        total = 0
+        for line in subckts[name]:
+            tok = line.split()
+            if tok[0].upper().startswith("M"):
+                total += 1
+            elif tok[0].upper().startswith("X"):
+                total += count_mos(tok[-1].upper())
+        return total
+
+    return {k: count_mos(k) for k in ("INV", "TG", "NOR2", "AND2", "XOR2", "SDFF")}
+
+
+def run_local_forensic_checks(sim_dir: Path, ld4_root: Path) -> None:
+    ref = json.loads((ld4_root / "resultados" / "resumen_verificacion_forense.json").read_text(encoding="utf-8"))
+
+    # 1. Exact LOG-vs-RAW max absolute error across all 521 scalar measurements
     total_m = 0
-    total_ok = 0
+    global_max_err = 0.0
     for base in ["P1_segf_stuckat", "P1_stuckopen", "P2_func", "P2_flush_fix2", "P2_scan"]:
         st = read_ltspice_raw(sim_dir / f"{base}.raw")
         meas = parse_log_meas(sim_dir / f"{base}.log")
+        file_max = 0.0
         for vname, step_i, val_log, at_t in meas:
             val_raw = float(np.interp(at_t, st[step_i]["time"], st[step_i][vname]))
+            err = abs(val_log - val_raw)
+            file_max = max(file_max, err)
+            global_max_err = max(global_max_err, err)
             total_m += 1
-            if abs(val_log - val_raw) < 1e-3:
-                total_ok += 1
-    assert total_m == 521 and total_ok == 521
-    print(f"[PASS] Local LOG-vs-RAW forensic check: {total_ok}/{total_m} scalar measurements match")
+        print(f"[PASS] Local LOG-vs-RAW {base}: {len(meas)} meas, max|LOG-RAW| = {file_max:.3e} V")
+    assert total_m == 521 and global_max_err < 1e-11
+    print(f"[PASS] Local LOG-vs-RAW total: {total_m}/521, global max|LOG-RAW| = {global_max_err:.3e} V")
+
+    # 2. P2_scan.raw Z glitch metrics
+    st_scan = read_ltspice_raw(sim_dir / "P2_scan.raw")
+    t_ns = st_scan[0]["time"] * 1e9
+    vz = st_scan[0]["v(z)"]
+    m = (t_ns >= 229.5) & (t_ns <= 232.0)
+    tw, vw = t_ns[m], vz[m]
+    imax = int(np.argmax(vw))
+    v_peak, t_peak = float(vw[imax]), float(tw[imax])
+    w_165 = crossing_width(tw, vw, 1.65)
+    w_fwhm = crossing_width(tw, vw, v_peak / 2.0)
+    g_ref = ref["p2_scan_glitch_V3_raw_FAULT0"]
+    assert abs(v_peak - g_ref["peak_V"]) < 1e-5
+    assert abs(t_peak - g_ref["peak_ns"]) < 1e-4
+    assert abs(w_165 - g_ref["width_above_1p65V_ns"]) < 1e-5
+    assert abs(w_fwhm - g_ref["fwhm_ns"]) < 1e-5
+    print(f"[PASS] Local Z glitch (P2_scan.raw V3): peak={v_peak:.6f} V @ {t_peak:.3f} ns, >1.65V={w_165:.6f} ns, FWHM={w_fwhm:.6f} ns")
+
+    # 3. P1_stuckopen.raw transient extrema
+    st_so = read_ltspice_raw(sim_dir / "P1_stuckopen.raw")
+    t_so = st_so[1]["time"] * 1e9
+    vo8 = st_so[1]["v(o8)"]
+    so_ref = ref["p1_stuckopen_raw_extrema_RSO_1T"]
+    t1_max = float(np.max(vo8[(t_so >= 10) & (t_so <= 20)]))
+    t2_max = float(np.max(vo8[(t_so >= 20) & (t_so <= 30)]))
+    t3_min = float(np.min(vo8[(t_so >= 30) & (t_so <= 40)]))
+    assert abs(t1_max - so_ref["T1_max_V"]) < 1e-5
+    assert abs(t2_max - so_ref["T2_max_V"]) < 1e-5
+    assert abs(t3_min - so_ref["T3_min_V"]) < 1e-5
+    print(f"[PASS] Local stuck-open extrema (P1_stuckopen.raw RSO=1T): T1_max={t1_max:.6f} V, T2_max={t2_max:.6f} V, T3_min={t3_min:.6f} V")
+
+    # 4. SDFF transistor count in cmos035_cells.lib
+    lib_path = sim_dir / "cmos035_cells.lib"
+    if lib_path.is_file():
+        counts = count_lib_transistors(lib_path)
+        core = 3 * counts["XOR2"] + 3 * counts["AND2"] + 3 * counts["SDFF"]
+        assert counts["SDFF"] == 28 and core == 138
+        print(f"[PASS] Local library check (cmos035_cells.lib): SDFF={counts['SDFF']} MOS, core={core} MOS")
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="LD4 reproducible verification suite")
-    parser.add_argument("--sim-dir", type=Path, help="Local directory with extracted .log/.raw/.lib files")
+    parser.add_argument("--sim-dir", type=Path, help="Local directory with excluded .log/.raw/.lib files")
     parser.add_argument("--rar", type=Path, help="Local Lab_TestCI_LTspice.rar archive (requires UnRAR)")
     args = parser.parse_args()
 
@@ -235,18 +393,18 @@ def main() -> None:
     run_public_checks(ld4_root)
 
     if args.sim_dir:
-        run_local_forensic_checks(args.sim_dir)
+        run_local_forensic_checks(args.sim_dir, ld4_root)
     elif args.rar:
         unrar = shutil.which("unrar") or shutil.which("UnRAR") or r"C:\Program Files\WinRAR\UnRAR.exe"
         tmp = Path(tempfile.mkdtemp(prefix="ld4_val_"))
         try:
             subprocess.run([unrar, "x", "-y", str(args.rar), str(tmp) + os.sep], check=True, stdout=subprocess.DEVNULL)
             sim_dir = tmp / "Lab_TestCI_LTspice" if (tmp / "Lab_TestCI_LTspice").is_dir() else tmp
-            run_local_forensic_checks(sim_dir)
+            run_local_forensic_checks(sim_dir, ld4_root)
         finally:
             shutil.rmtree(tmp, ignore_errors=True)
     else:
-        print("[INFO] Local LOG-vs-RAW check skipped (pass --sim-dir or --rar to run 521-measurement forensic check).")
+        print("[INFO] Local forensic checks skipped (pass --sim-dir or --rar for LOG-vs-RAW, RAW extrema, and cmos035_cells.lib checks).")
 
 
 if __name__ == "__main__":
