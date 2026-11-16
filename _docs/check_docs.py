@@ -153,6 +153,61 @@ def check_traceability_and_authorship(tracked: set[str]) -> list[str]:
     ld2 = open("LD2_Arcila_Yactayo/README.md", encoding="utf-8").read()
     if "act6/README.txt" not in ld2:
         errors.append("[LD2_ACT6] LD2 README does not link act6/README.txt")
+
+    # LD4 checks (only enforced once LD4 public files are tracked/staged in Git)
+    ld4_required = [
+        "LD4_Arcila_Yactayo/README.md",
+        "LD4_Arcila_Yactayo/TRAZABILIDAD.md",
+        "LD4_Arcila_Yactayo/informe/main.pdf",
+        "LD4_Arcila_Yactayo/informe/main.tex",
+        "LD4_Arcila_Yactayo/HC1/README.md",
+        "LD4_Arcila_Yactayo/HC1/HC1_LD4.pdf",
+        "LD4_Arcila_Yactayo/HC1/main.tex",
+        "LD4_Arcila_Yactayo/HC2/README.md",
+        "LD4_Arcila_Yactayo/HC2/HC2_LD4.pdf",
+        "LD4_Arcila_Yactayo/HC2/main.tex",
+        "LD4_Arcila_Yactayo/simulaciones/README.md",
+        "LD4_Arcila_Yactayo/validacion/README.md",
+        "LD4_Arcila_Yactayo/scripts/verificar_ld4.py",
+    ]
+    if any(p.startswith("LD4_Arcila_Yactayo/") for p in tracked):
+        for req in ld4_required:
+            if req not in tracked:
+                errors.append(f"[LD4_MISSING] required LD4 file '{req}' is not tracked in Git")
+
+        for p in [
+            "LD4_Arcila_Yactayo/README.md",
+            "LD4_Arcila_Yactayo/HC1/README.md",
+            "LD4_Arcila_Yactayo/HC2/README.md",
+            "LD4_Arcila_Yactayo/TRAZABILIDAD.md",
+        ]:
+            if p in tracked:
+                txt = open(p, encoding="utf-8").read()
+                if "Leonardo Sait Yactayo Tolentino" not in txt or "Marco Antonio Arcila Santander" not in txt:
+                    errors.append(f"[AUTHORSHIP] {p} missing shared LD4 authorship (Leonardo & Marco)")
+
+        forbidden_prefixes = ("LD4_Arcila_Yactayo/_cierre_ld4/",)
+        forbidden_names = {
+            "LD4_Arcila_Yactayo/LabDirigidoNro04.pdf",
+            "LD4_Arcila_Yactayo/AnexosLD4.zip",
+            "LD4_Arcila_Yactayo/Lab_TestCI_LTspice.rar",
+        }
+        for t in tracked:
+            if t.startswith(forbidden_prefixes) or t in forbidden_names or (
+                t.startswith("LD4_Arcila_Yactayo/") and t.endswith((".docx", ".lib", ".cir", ".inc", ".rar", ".zip", ".raw"))
+            ):
+                errors.append(f"[LD4_HYGIENE] private/third-party file '{t}' must not be tracked in Git")
+
+        if "LD4_Arcila_Yactayo/TRAZABILIDAD.md" in tracked:
+            traz4 = open("LD4_Arcila_Yactayo/TRAZABILIDAD.md", encoding="utf-8").read()
+            cite4 = re.compile(
+                r"`((?:figuras|resultados|scripts|informe|HC1|HC2)/[^`]+\.(?:tex|pdf|png|csv|json|py|md))`"
+            )
+            for m in cite4.finditer(traz4):
+                rel = f"LD4_Arcila_Yactayo/{m.group(1)}"
+                if rel not in tracked:
+                    errors.append(f"[LD4_TRACE] TRAZABILIDAD.md cites '{rel}' which is not in git ls-files")
+
     return errors
 
 
