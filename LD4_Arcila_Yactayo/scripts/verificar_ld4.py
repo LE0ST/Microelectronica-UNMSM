@@ -18,11 +18,12 @@ Modes:
        32/32 for both 5-vector sets).
 
   2. Full local forensic mode (--sim-dir <dir> or --rar <Lab_TestCI_LTspice.rar>):
-     - Requires locally excluded course simulation files (.log, .raw, .lib).
-     - Re-verifies all 521 scalar LOG-vs-RAW measurements and reports exact max|LOG-RAW|.
+     - Requires locally excluded course simulation files (.log, .raw, cmos035_cells.lib).
+     - Re-verifies exact per-file and total (521) scalar LOG-vs-RAW measurements and reports max|LOG-RAW|.
      - Reproduces P2_scan.raw Z glitch metrics (peak, width > 1.65 V, FWHM).
      - Reproduces P1_stuckopen.raw transient extrema (T1, T2, T3) and .meas samples.
-     - Verifies SDFF transistor count (28 MOS/SDFF, 138 core MOS) in cmos035_cells.lib.
+     - Mandatorily verifies individual subcircuit MOS counts (INV=2, TG=2, NOR2=4, AND2=6,
+       XOR2=12, SDFF=28) and core total (138 MOS, separate from 8 output buffer MOS) in cmos035_cells.lib.
 """
 
 from __future__ import annotations
@@ -295,7 +296,31 @@ def crossing_width(t_arr: np.ndarray, v_arr: np.ndarray, thresh: float) -> float
     return float(t2 - t1)
 
 
+EXPECTED_LOG_MEAS_COUNTS: dict[str, int] = {
+    "P1_segf_stuckat": 352,
+    "P1_stuckopen": 16,
+    "P2_func": 40,
+    "P2_flush_fix2": 13,
+    "P2_scan": 100,
+}
+EXPECTED_TOTAL_LOG_MEAS = 521
+MAX_LOG_RAW_ERR_V = 1e-11
+
+EXPECTED_SUBCKT_MOS_COUNTS: dict[str, int] = {
+    "INV": 2,
+    "TG": 2,
+    "NOR2": 4,
+    "AND2": 6,
+    "XOR2": 12,
+    "SDFF": 28,
+}
+EXPECTED_CORE_MOS = 138
+EXPECTED_OUTPUT_BUFFER_MOS = 8
+
+
 def count_lib_transistors(lib_path: Path) -> dict[str, int]:
+    if not lib_path.is_file():
+        raise FileNotFoundError(f"Missing CMOS library file: {lib_path}")
     txt = lib_path.read_text(encoding="utf-8", errors="replace")
     subckts: dict[str, list[str]] = {}
     cur = None
@@ -311,38 +336,113 @@ def count_lib_transistors(lib_path: Path) -> dict[str, int]:
         elif cur is not None:
             subckts[cur].append(s)
 
-    def count_mos(name: str) -> int:
+    def count_mos(name: str, visiting: set[str] | None = None) -> int:
+        if name not in subckts:
+            raise ValueError(f"Missing required subcircuit '{name}' in {lib_path}")
+        stack = set() if visiting is None else set(visiting)
+        if name in stack:
+            raise ValueError(f"Cyclic subcircuit reference '{name}' in {lib_path}")
+        stack.add(name)
         total = 0
         for line in subckts[name]:
             tok = line.split()
             if tok[0].upper().startswith("M"):
                 total += 1
             elif tok[0].upper().startswith("X"):
-                total += count_mos(tok[-1].upper())
+                total += count_mos(tok[-1].upper(), stack)
         return total
 
-    return {k: count_mos(k) for k in ("INV", "TG", "NOR2", "AND2", "XOR2", "SDFF")}
+    return {k: count_mos(k) for k in EXPECTED_SUBCKT_MOS_COUNTS}
 
 
 def run_local_forensic_checks(sim_dir: Path, ld4_root: Path) -> None:
+    if not sim_dir.is_dir():
+        raise FileNotFoundError(f"Simulation directory not found: {sim_dir}")
+
     ref = json.loads((ld4_root / "resultados" / "resumen_verificacion_forense.json").read_text(encoding="utf-8"))
+    ref_log = ref["log_raw_scalar_verification"]
+    if (
+        ref_log.get("breakdown") != EXPECTED_LOG_MEAS_COUNTS
+        or ref_log.get("total_checked") != EXPECTED_TOTAL_LOG_MEAS
+        or ref_log.get("total_matched") != EXPECTED_TOTAL_LOG_MEAS
+        or sum(EXPECTED_LOG_MEAS_COUNTS.values()) != EXPECTED_TOTAL_LOG_MEAS
+    ):
+        raise ValueError(
+            "Inconsistent LOG-RAW breakdown between script constants and "
+            f"resumen_verificacion_forense.json: {ref_log}"
+        )
 
     # 1. Exact LOG-vs-RAW max absolute error across all 521 scalar measurements
     total_m = 0
     global_max_err = 0.0
-    for base in ["P1_segf_stuckat", "P1_stuckopen", "P2_func", "P2_flush_fix2", "P2_scan"]:
-        st = read_ltspice_raw(sim_dir / f"{base}.raw")
-        meas = parse_log_meas(sim_dir / f"{base}.log")
+    for base, expected_count in EXPECTED_LOG_MEAS_COUNTS.items():
+        raw_path = sim_dir / f"{base}.raw"
+        log_path = sim_dir / f"{base}.log"
+        if not raw_path.is_file():
+            raise FileNotFoundError(f"Missing required RAW file: {raw_path}")
+        if not log_path.is_file():
+            raise FileNotFoundError(f"Missing required LOG file: {log_path}")
+
+        st = read_ltspice_raw(raw_path)
+        if not st:
+            raise ValueError(f"No simulation steps found in RAW file: {raw_path}")
+        meas = parse_log_meas(log_path)
+        if len(meas) != expected_count:
+            raise ValueError(
+                f"Measurement count mismatch in {log_path.name}: "
+                f"expected {expected_count}, got {len(meas)}"
+            )
+
         file_max = 0.0
         for vname, step_i, val_log, at_t in meas:
-            val_raw = float(np.interp(at_t, st[step_i]["time"], st[step_i][vname]))
+            if step_i < 0 or step_i >= len(st):
+                raise ValueError(
+                    f"Missing simulation step {step_i} in {raw_path.name} "
+                    f"(available steps: {len(st)}) for {vname}"
+                )
+            step_data = st[step_i]
+            if vname not in step_data:
+                raise ValueError(f"Missing signal '{vname}' in {raw_path.name} step {step_i}")
+            t_arr = step_data["time"]
+            v_arr = step_data[vname]
+            if len(t_arr) == 0 or len(v_arr) == 0:
+                raise ValueError(f"Empty waveform for '{vname}' in {raw_path.name} step {step_i}")
+            if not (np.isfinite(val_log) and np.isfinite(at_t)):
+                raise ValueError(
+                    f"Non-finite LOG measurement for '{vname}' in {log_path.name} step {step_i}"
+                )
+            if at_t < float(t_arr[0]) or at_t > float(t_arr[-1]):
+                raise ValueError(
+                    f"Measurement time {at_t} outside RAW time range "
+                    f"[{float(t_arr[0])}, {float(t_arr[-1])}] in {raw_path.name} step {step_i} ({vname})"
+                )
+            val_raw = float(np.interp(at_t, t_arr, v_arr))
+            if not np.isfinite(val_raw):
+                raise ValueError(
+                    f"Non-finite interpolated RAW value for '{vname}' in {raw_path.name} "
+                    f"step {step_i} at t={at_t}"
+                )
             err = abs(val_log - val_raw)
             file_max = max(file_max, err)
             global_max_err = max(global_max_err, err)
             total_m += 1
-        print(f"[PASS] Local LOG-vs-RAW {base}: {len(meas)} meas, max|LOG-RAW| = {file_max:.3e} V")
-    assert total_m == 521 and global_max_err < 1e-11
-    print(f"[PASS] Local LOG-vs-RAW total: {total_m}/521, global max|LOG-RAW| = {global_max_err:.3e} V")
+        print(
+            f"[PASS] Local LOG-vs-RAW {base}: {len(meas)}/{expected_count} meas, "
+            f"max|LOG-RAW| = {file_max:.3e} V"
+        )
+
+    if total_m != EXPECTED_TOTAL_LOG_MEAS:
+        raise ValueError(
+            f"Total LOG-vs-RAW measurements mismatch: expected {EXPECTED_TOTAL_LOG_MEAS}, got {total_m}"
+        )
+    if not np.isfinite(global_max_err) or global_max_err >= MAX_LOG_RAW_ERR_V:
+        raise ValueError(
+            f"Global max|LOG-RAW| exceeds limit {MAX_LOG_RAW_ERR_V:.1e} V: {global_max_err:.3e} V"
+        )
+    print(
+        f"[PASS] Local LOG-vs-RAW total: {total_m}/{EXPECTED_TOTAL_LOG_MEAS}, "
+        f"global max|LOG-RAW| = {global_max_err:.3e} V"
+    )
 
     # 2. P2_scan.raw Z glitch metrics
     st_scan = read_ltspice_raw(sim_dir / "P2_scan.raw")
@@ -374,13 +474,41 @@ def run_local_forensic_checks(sim_dir: Path, ld4_root: Path) -> None:
     assert abs(t3_min - so_ref["T3_min_V"]) < 1e-5
     print(f"[PASS] Local stuck-open extrema (P1_stuckopen.raw RSO=1T): T1_max={t1_max:.6f} V, T2_max={t2_max:.6f} V, T3_min={t3_min:.6f} V")
 
-    # 4. SDFF transistor count in cmos035_cells.lib
+    # 4. Mandatory CMOS 0.35 um library transistor count in cmos035_cells.lib
     lib_path = sim_dir / "cmos035_cells.lib"
-    if lib_path.is_file():
-        counts = count_lib_transistors(lib_path)
-        core = 3 * counts["XOR2"] + 3 * counts["AND2"] + 3 * counts["SDFF"]
-        assert counts["SDFF"] == 28 and core == 138
-        print(f"[PASS] Local library check (cmos035_cells.lib): SDFF={counts['SDFF']} MOS, core={core} MOS")
+    if not lib_path.is_file():
+        raise FileNotFoundError(f"Missing required CMOS library in forensic mode: {lib_path}")
+
+    counts = count_lib_transistors(lib_path)
+    ref_lib = ref["sdff_transistors_cmos035_cells"]
+    for subckt, expected_cnt in EXPECTED_SUBCKT_MOS_COUNTS.items():
+        if ref_lib.get(subckt) != expected_cnt:
+            raise ValueError(
+                f"Inconsistent expected count for '{subckt}' in resumen_verificacion_forense.json: "
+                f"expected {expected_cnt}, got {ref_lib.get(subckt)}"
+            )
+        if counts[subckt] != expected_cnt:
+            raise ValueError(
+                f"MOS count mismatch for subcircuit '{subckt}' in {lib_path.name}: "
+                f"expected {expected_cnt}, got {counts[subckt]}"
+            )
+
+    core = 3 * counts["XOR2"] + 3 * counts["AND2"] + 3 * counts["SDFF"]
+    if ref_lib.get("core_total") != EXPECTED_CORE_MOS or ref_lib.get("output_buffers") != EXPECTED_OUTPUT_BUFFER_MOS:
+        raise ValueError(
+            "Inconsistent core_total/output_buffers in resumen_verificacion_forense.json: "
+            f"{ref_lib}"
+        )
+    if core != EXPECTED_CORE_MOS:
+        raise ValueError(
+            f"Core MOS total mismatch (3*XOR2 + 3*AND2 + 3*SDFF): expected {EXPECTED_CORE_MOS}, got {core}"
+        )
+
+    subckt_summary = ", ".join(f"{k}={counts[k]}" for k in EXPECTED_SUBCKT_MOS_COUNTS)
+    print(
+        f"[PASS] Local library check ({lib_path.name}): {subckt_summary} MOS; "
+        f"core={core} MOS (output_buffers={EXPECTED_OUTPUT_BUFFER_MOS} MOS separate)"
+    )
 
 
 def main() -> None:
