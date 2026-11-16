@@ -59,7 +59,7 @@ MicroNano/
 ├── LD3_Yactayo/                 # Lab 3: IGBT DPT Characterization (Yactayo, Individual)
 ├── LD4_Arcila_Yactayo/          # Lab 4: IC Testing & Scan Path (Yactayo & Arcila)
 │   ├── README.md                # LD4 technical documentation
-│   ├── TRAZABILIDAD.md          # Public bijective traceability matrix
+│   ├── TRAZABILIDAD.md          # Public End-to-End Traceability Matrix
 │   ├── informe/                 # 3-page technical report (main.tex, main.pdf)
 │   ├── HC1/                     # Control Sheet 1 (README.md, main.tex, HC1_LD4.pdf)
 │   ├── HC2/                     # Control Sheet 2 (README.md, main.tex, HC2_LD4.pdf)

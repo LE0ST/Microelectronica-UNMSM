@@ -8,7 +8,7 @@ Este archivo define la infraestructura de contexto, reglas de operación, comand
 
 * **Institución:** Universidad Nacional Mayor de San Marcos (UNMSM) — Facultad de Ingeniería Electrónica y Eléctrica (FIEE).
 * **Curso:** Microelectrónica y Sistemas Nanoelectrónicos (Semestre 2026-II).
-* **Docente:** MsC. Luz Adanaqué Infante.
+* **Docente:** MsC. Luz Antuanet Adanaqué Infante.
 * **Autores:**
   * **Leonardo Sait Yactayo Tolentino** (`23190214`) — Coautor de LD1, LD2 y LD4; Autor individual de LD3.
   * **Marco Antonio Arcila Santander** (`23190140`) — Coautor de LD1, LD2 y LD4.
@@ -64,7 +64,7 @@ MicroNano/
 │   ├── scripts/                           # Scripts portables de validación y figuras
 │   ├── validacion/README.md               # Alcance de verificación pública vs. forense local
 │   ├── README.md                          # Documentación principal del módulo LD4
-│   └── TRAZABILIDAD.md                    # Matriz biunívoca pública de LD4
+│   └── TRAZABILIDAD.md                    # Matriz de trazabilidad pública de LD4
 │
 ├── Semana_01/ a Semana_05/                # Fundamentos CMOS, guías oficiales LD1 y LD2, teoría y ejercicios
 ├── Semana_07/                             # Guía oficial LD3 (LabDirigidoNro03.pdf) y notas de aplicación IGBT

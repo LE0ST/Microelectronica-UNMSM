@@ -8,7 +8,7 @@ This file defines the project instructions and environment configuration for Cla
 
 ## Authorship & Project Context
 * **Course:** Microelectrónica y Sistemas Nanoelectrónicos (Semestre 2026-II) — UNMSM (FIEE).
-* **Instructor:** MsC. Luz Adanaqué Infante.
+* **Instructor:** MsC. Luz Antuanet Adanaqué Infante.
 * **Authors:**
   * **Leonardo Sait Yactayo Tolentino** (23190214): Co-author LD1, LD2 & LD4; Sole author for LD3 (*Individual*).
   * **Marco Antonio Arcila Santander** (23190140): Co-author LD1, LD2 & LD4.

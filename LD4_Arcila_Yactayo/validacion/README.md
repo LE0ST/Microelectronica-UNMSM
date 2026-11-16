@@ -9,6 +9,11 @@
 
 Because the course SPICE library (`cmos035_cells.lib`), netlists (`.cir`, `.inc`), and raw simulation logs/waveforms (`.log`, `.raw`) are excluded from public redistribution, validation is split into two transparent layers in [`../scripts/verificar_ld4.py`](../scripts/verificar_ld4.py):
 
+* **Python Dependencies:**
+  * **Public validation:** Python standard library only (no third-party packages required; verified with `python -S`).
+  * **Local LOG–RAW forensic validation:** `numpy` (lazily imported in forensic mode) and local excluded simulation files.
+  * **Figure regeneration (`../scripts/generar_figuras_ld4.py`):** `matplotlib`.
+
 ### A. Standalone Public Checks (No Private Files Required)
 Run directly from a clean Git clone:
 ```powershell

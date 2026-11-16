@@ -13,7 +13,7 @@
 
 ---
 
-## 2. Bijective Traceability Chain (Requirement → Simulation → Measurement → Deliverable)
+## 2. End-to-End Traceability Chain (Requirement → Simulation → Measurement → Deliverable)
 
 | Requirement | Local Circuit & Dependencies *(Excluded)* | Local LOG / RAW Source *(Excluded)* | Public Curated Data & Verification | Public Deliverable / Figure |
 | :--- | :--- | :--- | :--- | :--- |

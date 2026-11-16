@@ -54,7 +54,7 @@ Evaluated on a 3-bit synchronous counter with enable `E` (`3 XOR2 + 3 AND2 + 3 S
 ```text
 LD4_Arcila_Yactayo/
 ├── README.md                    # This file
-├── TRAZABILIDAD.md              # Public bijective traceability matrix
+├── TRAZABILIDAD.md              # Public End-to-End Traceability Matrix
 ├── informe/                     # 3-page Spanish technical report (main.tex, main.pdf)
 ├── HC1/                         # Control Sheet 1 (README.md, main.tex, HC1_LD4.pdf)
 ├── HC2/                         # Control Sheet 2 (README.md, main.tex, HC2_LD4.pdf)
@@ -76,6 +76,11 @@ LD4_Arcila_Yactayo/
 ---
 
 ## Reproduction Instructions
+
+* **Dependencies:**
+  * **Public validation (`verificar_ld4.py`):** Python standard library only (runs even with `python -S`).
+  * **Local LOG–RAW forensic validation (`--sim-dir` / `--rar`):** `numpy` + local excluded simulation files (`.log`, `.raw`, `cmos035_cells.lib`).
+  * **Figure regeneration (`generar_figuras_ld4.py`):** `matplotlib`.
 
 1. **Run standalone public validation (no private files required):**
    ```powershell

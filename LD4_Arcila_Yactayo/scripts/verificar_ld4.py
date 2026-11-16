@@ -38,8 +38,21 @@ import shutil
 import subprocess
 import tempfile
 from pathlib import Path
+from typing import TYPE_CHECKING
 
-import numpy as np
+if TYPE_CHECKING:
+    import numpy as np
+
+
+def _require_numpy():
+    try:
+        import numpy as np
+        return np
+    except ImportError as exc:
+        raise RuntimeError(
+            "Local forensic mode requires 'numpy' (install with `pip install numpy`). "
+            "Standalone public validation runs with the Python standard library only."
+        ) from exc
 
 
 def eval_p1_gate_netlist(d: int, c: int, b: int, a: int, fault: tuple[int, int] | None = None) -> int:
@@ -79,38 +92,73 @@ def run_public_checks(ld4_root: Path) -> None:
     res = ld4_root / "resultados"
 
     # 1. Part I healthy sequence (16 vectors vs Boolean model)
-    with (res / "p1_circuito_sano.csv").open(encoding="utf-8") as f:
+    p1_healthy_path = res / "p1_circuito_sano.csv"
+    with p1_healthy_path.open(encoding="utf-8") as f:
         rows = list(csv.DictReader(f))
-    assert len(rows) == 16
+    if len(rows) != 16:
+        raise ValueError(
+            f"Row count mismatch in {p1_healthy_path.name}: expected 16, got {len(rows)}"
+        )
     for i, r in enumerate(rows):
         d, c, b, a = (i >> 3) & 1, (i >> 2) & 1, (i >> 1) & 1, i & 1
-        assert int(r["y_logico"]) == eval_p1_gate_netlist(d, c, b, a)
+        actual_y = int(r["y_logico"])
+        expected_y = eval_p1_gate_netlist(d, c, b, a)
+        if actual_y != expected_y:
+            raise ValueError(
+                f"Output mismatch in {p1_healthy_path.name} at vector {d}{c}{b}{a} (index {i}): "
+                f"expected {expected_y}, got {actual_y}"
+            )
     seq = "".join(r["y_logico"] for r in rows)
-    assert seq == "1000111011111111"
+    if seq != "1000111011111111":
+        raise ValueError(
+            f"Healthy sequence mismatch in {p1_healthy_path.name}: "
+            f"expected '1000111011111111', got '{seq}'"
+        )
     print(f"[PASS] Part I healthy sequence (16/16 vectors match Boolean model): {seq}")
 
     # 2. Part I fault dictionary: recompute & check all 140 cells (20 faults x 7 vectors)
-    with (res / "p1_diccionario_fallos.csv").open(encoding="utf-8") as f:
+    dict_path = res / "p1_diccionario_fallos.csv"
+    with dict_path.open(encoding="utf-8") as f:
         drows = list(csv.DictReader(f))
-    assert len(drows) == 21  # healthy + 20 faults
+    if len(drows) != 21:  # healthy + 20 faults
+        raise ValueError(
+            f"Row count mismatch in {dict_path.name}: expected 21 (healthy + 20 faults), got {len(drows)}"
+        )
     opt_cols = ["v_0101", "v_0111", "v_0000", "v_0001", "v_0010", "v_0110", "v_1010"]
     opt_bits = [(int(c[2]), int(c[3]), int(c[4]), int(c[5])) for c in opt_cols]
 
     healthy_row = drows[0]
     for col, bits in zip(opt_cols, opt_bits):
-        assert int(healthy_row[col]) == eval_p1_gate_netlist(*bits)
+        actual_y = int(healthy_row[col])
+        expected_y = eval_p1_gate_netlist(*bits)
+        if actual_y != expected_y:
+            raise ValueError(
+                f"Healthy row mismatch in {dict_path.name} at vector {col}: "
+                f"expected {expected_y}, got {actual_y}"
+            )
 
     fault_rows = drows[1:]
     cells_checked = 0
     for fr in fault_rows:
         m = re.match(r"^(\d+)/s-a-([01])$", fr["fallo"])
-        assert m, f"Unexpected fault label: {fr['fallo']}"
+        if not m:
+            raise ValueError(
+                f"Unexpected fault label in {dict_path.name}: '{fr['fallo']}'"
+            )
         fault = (int(m.group(1)), int(m.group(2)))
         for col, bits in zip(opt_cols, opt_bits):
             expected_y = eval_p1_gate_netlist(*bits, fault=fault)
-            assert int(fr[col]) == expected_y, f"Mismatch at {fr['fallo']} {col}"
+            actual_y = int(fr[col])
+            if actual_y != expected_y:
+                raise ValueError(
+                    f"Fault dictionary mismatch in {dict_path.name} for fault {fr['fallo']} "
+                    f"at vector {col}: expected {expected_y}, got {actual_y}"
+                )
             cells_checked += 1
-    assert cells_checked == 140
+    if cells_checked != 140:
+        raise ValueError(
+            f"Checked cell count mismatch in {dict_path.name}: expected 140, got {cells_checked}"
+        )
 
     expected_cov = [25, 60, 75, 85, 90, 95, 100]
     detected: set[str] = set()
@@ -120,25 +168,44 @@ def run_public_checks(ld4_root: Path) -> None:
             if fr[col] != healthy_row[col]:
                 detected.add(fr["fallo"])
         cov_seq.append(100 * len(detected) // 20)
-    assert cov_seq == expected_cov
+    if cov_seq != expected_cov:
+        raise ValueError(
+            f"Cumulative unique fault coverage mismatch in {dict_path.name}: "
+            f"expected {expected_cov}, got {cov_seq}"
+        )
     print(f"[PASS] Part I dictionary ({cells_checked}/140 cells) & unique coverage: {cov_seq}%")
 
     # 3. Part I stuck-open
-    with (res / "p1_stuckopen_muestras.csv").open(encoding="utf-8") as f:
+    so_path = res / "p1_stuckopen_muestras.csv"
+    with so_path.open(encoding="utf-8") as f:
         so_rows = list(csv.DictReader(f))
-    assert [r["detecta"] for r in so_rows] == ["No", "Si", "No", "No"]
+    actual_detecta = [r["detecta"] for r in so_rows]
+    if actual_detecta != ["No", "Si", "No", "No"]:
+        raise ValueError(
+            f"Stuck-open detection sequence mismatch in {so_path.name}: "
+            f"expected ['No', 'Si', 'No', 'No'], got {actual_detecta}"
+        )
     print("[PASS] Part I stuck-open detection pair verified: T0(0000)->T1(0001)")
 
     # 4. Part II functional & flush
-    with (res / "p2_func_muestras.csv").open(encoding="utf-8") as f:
+    fn_path = res / "p2_func_muestras.csv"
+    with fn_path.open(encoding="utf-8") as f:
         fn_rows = list(csv.DictReader(f))
-    first_z1 = next(int(r["ciclo_k"]) for r in fn_rows if r["z_logico"] == "1")
-    assert first_z1 == 7
-    with (res / "p2_flush_secuencia.csv").open(encoding="utf-8") as f:
+    first_z1 = next((int(r["ciclo_k"]) for r in fn_rows if r["z_logico"] == "1"), None)
+    if first_z1 != 7:
+        raise ValueError(
+            f"First Z=1 cycle mismatch in {fn_path.name}: expected cycle 7, got {first_z1}"
+        )
+    fl_path = res / "p2_flush_secuencia.csv"
+    with fl_path.open(encoding="utf-8") as f:
         fl_rows = list(csv.DictReader(f))
     si_s = "".join(r["si_aplicado"] for r in fl_rows)
     so_s = "".join(r["so_logico"] for r in fl_rows)
-    assert si_s == "1101001000000" and so_s == "0001101001000"
+    if si_s != "1101001000000" or so_s != "0001101001000":
+        raise ValueError(
+            f"Flush sequence mismatch in {fl_path.name}: "
+            f"expected SI='1101001000000' SO='0001101001000', got SI='{si_s}' SO='{so_s}'"
+        )
     print(f"[PASS] Part II functional (Z=1 @ k={first_z1}) & flush (3-cycle delay)")
 
     # 5. Part II scan matrices: recompute & verify all 25 combinations for official & ensayo_26
@@ -147,9 +214,18 @@ def run_public_checks(ld4_root: Path) -> None:
         ("official", "p2_scan_oficial.csv", "001/1"),
         ("ensayo_26", "p2_scan_ensayo26.csv", "101/1"),
     ]:
-        with (res / fname).open(encoding="utf-8") as f:
+        scan_path = res / fname
+        with scan_path.open(encoding="utf-8") as f:
             srows = list(csv.DictReader(f))
-        assert len(srows) == 5 and srows[3]["entrada_q2q1q0_e"] == v4_exp
+        if len(srows) != 5:
+            raise ValueError(
+                f"Row count mismatch in {fname} ({label}): expected 5 vectors, got {len(srows)}"
+            )
+        if srows[3]["entrada_q2q1q0_e"] != v4_exp:
+            raise ValueError(
+                f"V4 input vector mismatch in {fname} ({label}): "
+                f"expected '{v4_exp}', got '{srows[3]['entrada_q2q1q0_e']}'"
+            )
         combos = 0
         first_det: dict[int, str] = {}
         for r in srows:
@@ -158,12 +234,24 @@ def run_public_checks(ld4_root: Path) -> None:
             healthy_resp = eval_p2_scan_core(q2, q1, q0, e, 0)
             for fid, col in enumerate(fault_cols):
                 expected_resp = eval_p2_scan_core(q2, q1, q0, e, fid)
-                assert r[col] == expected_resp, f"Mismatch {label} {r['vector']} {col}"
+                if r[col] != expected_resp:
+                    raise ValueError(
+                        f"Scan matrix mismatch in {fname} ({label}) at vector {r['vector']} "
+                        f"({vin}), fault {col}: expected '{expected_resp}', got '{r[col]}'"
+                    )
                 if fid > 0 and fid not in first_det and expected_resp != healthy_resp:
                     first_det[fid] = r["vector"]
                 combos += 1
-        assert combos == 25
-        assert first_det == {1: "V3", 2: "V4", 3: "V2", 4: "V1"}
+        if combos != 25:
+            raise ValueError(
+                f"Scan matrix cell count mismatch in {fname} ({label}): expected 25, got {combos}"
+            )
+        expected_first_det = {1: "V3", 2: "V4", 3: "V2", 4: "V1"}
+        if first_det != expected_first_det:
+            raise ValueError(
+                f"First-detection map mismatch in {fname} ({label}): "
+                f"expected {expected_first_det}, got {first_det}"
+            )
     print("[PASS] Part II scan matrices (25/25 official V4=001/1 & 25/25 ensayo_26 V4=101/1; F1->V3, F2->V4, F3->V2, F4->V1)")
 
     # 6. Test time formulas at 50 MHz (T_clk = 20 ns)
@@ -171,7 +259,11 @@ def run_public_checks(ld4_root: Path) -> None:
     for n, m, exp_cyc, exp_us in cases:
         cyc = n + (n + 1) * m
         us = round(cyc * 0.02, 2)
-        assert cyc == exp_cyc and us == exp_us
+        if cyc != exp_cyc or us != exp_us:
+            raise ValueError(
+                f"Test-time formula mismatch for (n={n}, m={m}): "
+                f"expected ({exp_cyc} cycles, {exp_us} us), got ({cyc} cycles, {us} us)"
+            )
     print("[PASS] Part II test-time formulas verified at 50 MHz")
 
     # 7. Exhaustive 32-fault combinational proof (P2_counter_core.inc topology)
@@ -217,19 +309,28 @@ def verify_32_faults_scan() -> None:
         1 for comb in itertools.combinations(range(16), 5)
         if sum(1 for fm in det_masks if any((fm >> vi) & 1 for vi in comb)) == 32
     )
-    assert best_4 == 31 and valid_5 == 21
+    if best_4 != 31 or valid_5 != 21:
+        raise ValueError(
+            f"32-fault combinational proof invariant failed: "
+            f"expected (best_4=31, valid_5=21), got (best_4={best_4}, valid_5={valid_5})"
+        )
 
-    for vec_set in [
-        ["001/0", "110/1", "011/1", "001/1", "111/1"],
-        ["001/0", "110/1", "011/1", "101/1", "111/1"],
+    for label, vec_set in [
+        ("Official", ["001/0", "110/1", "011/1", "001/1", "111/1"]),
+        ("Ensayo 2.6", ["001/0", "110/1", "011/1", "101/1", "111/1"]),
     ]:
         idxs = [vec_labels.index(lbl) for lbl in vec_set]
         cov = sum(1 for fm in det_masks if any((fm >> vi) & 1 for vi in idxs))
-        assert cov == 32
+        if cov != 32:
+            raise ValueError(
+                f"32-fault coverage mismatch for {label} vector set {vec_set}: "
+                f"expected 32/32, got {cov}/32"
+            )
     print(f"[PASS] 32-fault proof: max 4-vec = {best_4}/32; valid 5-vec sets = {valid_5}/4368; Official & 2.6 = 32/32")
 
 
 def read_ltspice_raw(path: Path) -> list[dict[str, np.ndarray]]:
+    np = _require_numpy()
     data = path.read_bytes()
     for marker, enc in [
         ("Binary:\n".encode("utf-16le"), "utf-16le"),
@@ -286,6 +387,7 @@ def parse_log_meas(log_path: Path) -> list[tuple[str, int, float, float]]:
 
 
 def crossing_width(t_arr: np.ndarray, v_arr: np.ndarray, thresh: float) -> float:
+    np = _require_numpy()
     above = v_arr >= thresh
     idxs = np.where(np.diff(above.astype(int)) != 0)[0]
     if len(idxs) < 2:
@@ -356,6 +458,7 @@ def count_lib_transistors(lib_path: Path) -> dict[str, int]:
 
 
 def run_local_forensic_checks(sim_dir: Path, ld4_root: Path) -> None:
+    np = _require_numpy()
     if not sim_dir.is_dir():
         raise FileNotFoundError(f"Simulation directory not found: {sim_dir}")
 
@@ -455,10 +558,17 @@ def run_local_forensic_checks(sim_dir: Path, ld4_root: Path) -> None:
     w_165 = crossing_width(tw, vw, 1.65)
     w_fwhm = crossing_width(tw, vw, v_peak / 2.0)
     g_ref = ref["p2_scan_glitch_V3_raw_FAULT0"]
-    assert abs(v_peak - g_ref["peak_V"]) < 1e-5
-    assert abs(t_peak - g_ref["peak_ns"]) < 1e-4
-    assert abs(w_165 - g_ref["width_above_1p65V_ns"]) < 1e-5
-    assert abs(w_fwhm - g_ref["fwhm_ns"]) < 1e-5
+    for metric_name, actual, expected, tol in [
+        ("peak_V", v_peak, g_ref["peak_V"], 1e-5),
+        ("peak_ns", t_peak, g_ref["peak_ns"], 1e-4),
+        ("width_above_1p65V_ns", w_165, g_ref["width_above_1p65V_ns"], 1e-5),
+        ("fwhm_ns", w_fwhm, g_ref["fwhm_ns"], 1e-5),
+    ]:
+        if abs(actual - expected) >= tol:
+            raise ValueError(
+                f"P2_scan.raw Z glitch metric '{metric_name}' mismatch: "
+                f"expected {expected} (+/- {tol}), got {actual}"
+            )
     print(f"[PASS] Local Z glitch (P2_scan.raw V3): peak={v_peak:.6f} V @ {t_peak:.3f} ns, >1.65V={w_165:.6f} ns, FWHM={w_fwhm:.6f} ns")
 
     # 3. P1_stuckopen.raw transient extrema
@@ -469,9 +579,16 @@ def run_local_forensic_checks(sim_dir: Path, ld4_root: Path) -> None:
     t1_max = float(np.max(vo8[(t_so >= 10) & (t_so <= 20)]))
     t2_max = float(np.max(vo8[(t_so >= 20) & (t_so <= 30)]))
     t3_min = float(np.min(vo8[(t_so >= 30) & (t_so <= 40)]))
-    assert abs(t1_max - so_ref["T1_max_V"]) < 1e-5
-    assert abs(t2_max - so_ref["T2_max_V"]) < 1e-5
-    assert abs(t3_min - so_ref["T3_min_V"]) < 1e-5
+    for metric_name, actual, expected in [
+        ("T1_max_V", t1_max, so_ref["T1_max_V"]),
+        ("T2_max_V", t2_max, so_ref["T2_max_V"]),
+        ("T3_min_V", t3_min, so_ref["T3_min_V"]),
+    ]:
+        if abs(actual - expected) >= 1e-5:
+            raise ValueError(
+                f"P1_stuckopen.raw transient extremum '{metric_name}' mismatch: "
+                f"expected {expected} (+/- 1e-5), got {actual}"
+            )
     print(f"[PASS] Local stuck-open extrema (P1_stuckopen.raw RSO=1T): T1_max={t1_max:.6f} V, T2_max={t2_max:.6f} V, T3_min={t3_min:.6f} V")
 
     # 4. Mandatory CMOS 0.35 um library transistor count in cmos035_cells.lib
