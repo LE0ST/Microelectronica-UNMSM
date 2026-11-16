@@ -79,6 +79,27 @@ def check_markdown_links(md_files: list[str], tracked: set[str], tracked_dirs: s
     return errors
 
 
+LD4_FORBIDDEN_PREFIXES = ("LD4_Arcila_Yactayo/_cierre_ld4/",)
+LD4_FORBIDDEN_NAMES = {
+    "LD4_Arcila_Yactayo/LabDirigidoNro04.pdf",
+    "LD4_Arcila_Yactayo/AnexosLD4.zip",
+    "LD4_Arcila_Yactayo/Lab_TestCI_LTspice.rar",
+}
+LD4_FORBIDDEN_EXTENSIONS = {".docx", ".lib", ".cir", ".inc", ".rar", ".zip", ".raw"}
+
+
+def is_forbidden_ld4_path(path: str) -> bool:
+    """Return True if a tracked path under LD4_Arcila_Yactayo/ violates public hygiene."""
+    norm = path.replace("\\", "/")
+    if norm.startswith(LD4_FORBIDDEN_PREFIXES) or norm in LD4_FORBIDDEN_NAMES:
+        return True
+    if norm.startswith("LD4_Arcila_Yactayo/"):
+        _, ext = posixpath.splitext(norm)
+        if ext.lower() in LD4_FORBIDDEN_EXTENSIONS:
+            return True
+    return False
+
+
 def self_test(tracked: set[str], tracked_dirs: set[str]) -> list[str]:
     """Negative/positive tests on in-memory text only; no document is modified."""
     fails: list[str] = []
@@ -98,6 +119,30 @@ def self_test(tracked: set[str], tracked_dirs: set[str]) -> list[str]:
         got = len(scan_text("x.md", text, tracked, tracked_dirs))
         if got != expected:
             fails.append(f"[SELFTEST] {label}: expected {expected} error(s), got {got}")
+
+    hygiene_cases = [
+        ("LD4_Arcila_Yactayo/simulaciones/test.lib", True, "lowercase .lib"),
+        ("LD4_Arcila_Yactayo/test.raw", True, "lowercase .raw"),
+        ("LD4_Arcila_Yactayo/draft.docx", True, "lowercase .docx"),
+        ("LD4_Arcila_Yactayo/simulaciones/test.LIB", True, "uppercase .LIB"),
+        ("LD4_Arcila_Yactayo/test.RAW", True, "uppercase .RAW"),
+        ("LD4_Arcila_Yactayo/netlist.CIR", True, "uppercase .CIR"),
+        ("LD4_Arcila_Yactayo/sub.INC", True, "uppercase .INC"),
+        ("LD4_Arcila_Yactayo/pack.RAR", True, "uppercase .RAR"),
+        ("LD4_Arcila_Yactayo/pack.ZIP", True, "uppercase .ZIP"),
+        ("LD4_Arcila_Yactayo/simulaciones/test.Lib", True, "mixed-case .Lib"),
+        ("LD4_Arcila_Yactayo/test.rAw", True, "mixed-case .rAw"),
+        ("LD4_Arcila_Yactayo/draft.DocX", True, "mixed-case .DocX"),
+        ("LD4_Arcila_Yactayo/informe/main.pdf", False, "academic PDF informe/main.pdf"),
+        ("LD4_Arcila_Yactayo/HC1/HC1_LD4.pdf", False, "academic PDF HC1/HC1_LD4.pdf"),
+        ("LD4_Arcila_Yactayo/HC2/HC2_LD4.pdf", False, "academic PDF HC2/HC2_LD4.pdf"),
+    ]
+    for path, expected_forbidden, label in hygiene_cases:
+        got_forbidden = is_forbidden_ld4_path(path)
+        if got_forbidden != expected_forbidden:
+            fails.append(
+                f"[SELFTEST] LD4 hygiene ({label}): expected {expected_forbidden}, got {got_forbidden}"
+            )
     return fails
 
 
@@ -186,16 +231,8 @@ def check_traceability_and_authorship(tracked: set[str]) -> list[str]:
                 if "Leonardo Sait Yactayo Tolentino" not in txt or "Marco Antonio Arcila Santander" not in txt:
                     errors.append(f"[AUTHORSHIP] {p} missing shared LD4 authorship (Leonardo & Marco)")
 
-        forbidden_prefixes = ("LD4_Arcila_Yactayo/_cierre_ld4/",)
-        forbidden_names = {
-            "LD4_Arcila_Yactayo/LabDirigidoNro04.pdf",
-            "LD4_Arcila_Yactayo/AnexosLD4.zip",
-            "LD4_Arcila_Yactayo/Lab_TestCI_LTspice.rar",
-        }
         for t in tracked:
-            if t.startswith(forbidden_prefixes) or t in forbidden_names or (
-                t.startswith("LD4_Arcila_Yactayo/") and t.endswith((".docx", ".lib", ".cir", ".inc", ".rar", ".zip", ".raw"))
-            ):
+            if is_forbidden_ld4_path(t):
                 errors.append(f"[LD4_HYGIENE] private/third-party file '{t}' must not be tracked in Git")
 
         if "LD4_Arcila_Yactayo/TRAZABILIDAD.md" in tracked:

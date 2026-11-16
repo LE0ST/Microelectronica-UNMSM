@@ -128,6 +128,11 @@ def run_public_checks(ld4_root: Path) -> None:
     opt_bits = [(int(c[2]), int(c[3]), int(c[4]), int(c[5])) for c in opt_cols]
 
     healthy_row = drows[0]
+    if healthy_row.get("fallo") != "sin_fallo":
+        raise ValueError(
+            f"First row label mismatch in {dict_path.name}: "
+            f"expected 'sin_fallo', got '{healthy_row.get('fallo')}'"
+        )
     for col, bits in zip(opt_cols, opt_bits):
         actual_y = int(healthy_row[col])
         expected_y = eval_p1_gate_netlist(*bits)
@@ -137,24 +142,46 @@ def run_public_checks(ld4_root: Path) -> None:
                 f"expected {expected_y}, got {actual_y}"
             )
 
+    expected_faults = {f"{node}/s-a-{sa}" for node in range(1, 11) for sa in (0, 1)}
+    seen_faults: set[str] = set()
     fault_rows = drows[1:]
     cells_checked = 0
     for fr in fault_rows:
-        m = re.match(r"^(\d+)/s-a-([01])$", fr["fallo"])
+        label = fr.get("fallo", "")
+        m = re.match(r"^(\d+)/s-a-([01])$", label)
         if not m:
             raise ValueError(
-                f"Unexpected fault label in {dict_path.name}: '{fr['fallo']}'"
+                f"Malformed fault label in {dict_path.name}: '{label}'"
             )
-        fault = (int(m.group(1)), int(m.group(2)))
+        node_id = int(m.group(1))
+        if node_id < 1 or node_id > 10:
+            raise ValueError(
+                f"Fault node out of expected range [1..10] in {dict_path.name}: '{label}'"
+            )
+        if label in seen_faults:
+            raise ValueError(
+                f"Duplicate fault label in {dict_path.name}: '{label}'"
+            )
+        if label not in expected_faults:
+            raise ValueError(
+                f"Unexpected fault identifier in {dict_path.name}: '{label}'"
+            )
+        seen_faults.add(label)
+        fault = (node_id, int(m.group(2)))
         for col, bits in zip(opt_cols, opt_bits):
             expected_y = eval_p1_gate_netlist(*bits, fault=fault)
             actual_y = int(fr[col])
             if actual_y != expected_y:
                 raise ValueError(
-                    f"Fault dictionary mismatch in {dict_path.name} for fault {fr['fallo']} "
+                    f"Fault dictionary mismatch in {dict_path.name} for fault {label} "
                     f"at vector {col}: expected {expected_y}, got {actual_y}"
                 )
             cells_checked += 1
+    missing_faults = sorted(expected_faults - seen_faults)
+    if missing_faults:
+        raise ValueError(
+            f"Missing expected fault(s) in {dict_path.name}: {missing_faults}"
+        )
     if cells_checked != 140:
         raise ValueError(
             f"Checked cell count mismatch in {dict_path.name}: expected 140, got {cells_checked}"
