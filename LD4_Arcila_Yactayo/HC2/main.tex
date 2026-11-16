@@ -1,0 +1,134 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[utf8]{inputenc}\usepackage[T1]{fontenc}\usepackage[spanish,es-nodecimaldot]{babel}
+\addto\captionsspanish{\renewcommand{\tablename}{Tabla}}
+\renewcommand{\thetable}{2.\arabic{table}}
+\usepackage{lmodern,microtype}\usepackage[a4paper,margin=1.5cm,headheight=14pt]{geometry}
+\usepackage{amsmath,amssymb,graphicx,booktabs,tabularx,longtable,array,xcolor,colortbl,caption,enumitem,fancyhdr,pdflscape,hyperref,needspace,float}
+\definecolor{accent}{HTML}{174A6E}\hypersetup{colorlinks=true,linkcolor=accent,urlcolor=accent}
+\setlength{\parindent}{0pt}\setlength{\parskip}{3pt}\setlength{\tabcolsep}{4pt}\renewcommand{\arraystretch}{1.15}
+\setlist{nosep,leftmargin=*}\captionsetup{font=small,labelfont=bf}
+\pagestyle{fancy}\fancyhf{}\fancyhead[L]{UNMSM -- FIEE}\fancyhead[R]{Microelectrónica y Sistemas Nanoelectrónicos | LD4}\fancyfoot[C]{\thepage}
+\newcommand{\hojatitulo}[2]{\begin{center}{\Large\bfseries #1}\\[2pt]{\large #2}\\[3pt]Leonardo Sait Yactayo Tolentino (23190214) \quad Marco Antonio Arcila Santander (23190140)\\UNMSM -- Facultad de Ingeniería Electrónica y Eléctrica\\Docente: MsC. Luz Antuanet Adanaqué Infante \quad | \quad Semestre 2026-II\end{center}\vspace{-3pt}\hrule\vspace{5pt}}
+\fancypagestyle{ldlandscape}{\fancyhf{}\fancyfoot[C]{\thepage}\renewcommand{\headrulewidth}{0pt}}
+\newcommand{\ej}[1]{\needspace{3\baselineskip}\subsection*{#1}}
+\begin{document}
+\renewcommand{\tablename}{Tabla}
+
+\hojatitulo{Hoja de Control 2}{Scan path}
+
+\vspace{2pt}
+
+\textbf{Convenciones:} estado $Q_2Q_1Q_0$; vector $Q_2Q_1Q_0/E$; umbral lógico $V_{th}=1{,}65\,\mathrm{V}$; reloj de $50\,\mathrm{MHz}$ ($T_{CLK}=20\,\mathrm{ns}$, flancos de subida en $10+20k\,\mathrm{ns}$; muestreo $1\,\mathrm{ns}$ antes de cada flanco). Cadena: $SI\to FF0\to FF1\to FF2\to SO$, con $SO=Q_2$.
+
+\ej{Ejercicio 2.1 -- Modo funcional (\texttt{P2\_func.cir})}
+
+\begin{table}[ht]\centering\caption{Estado y salida $Z$ muestreados en modo funcional ($SE=0$, \texttt{P2\_func.log})}\label{tab:2.1}\scriptsize
+\begin{tabularx}{\linewidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}\toprule
+Ciclo $k$ & Muestreo [ns] & $E$ & $Q_2Q_1Q_0$ esperado & $Q_2Q_1Q_0$ medido & $Z$ medido \\ \midrule
+0 & 9 & 1 & 000 & 000 & 0 \\
+1 & 29 & 1 & 001 & 001 & 0 \\
+2 & 49 & 1 & 010 & 010 & 0 \\
+3 & 69 & 1 & 011 & 011 & 0 \\
+4 & 89 & 1 & 100 & 100 & 0 \\
+5 & 109 & 1 & 101 & 101 & 0 \\
+6 & 129 & 1 & 110 & 110 & 0 \\
+7 & 149 & 1 & 111 & 111 & 1 \\
+8 & 169 & 0 & 000 & 000 & 0 \\
+9 & 189 & 0 & 000 & 000 & 0 \\
+\bottomrule\end{tabularx}\end{table}
+
+Primer $Z=1$: en el muestreo del ciclo $k=7$ ($t=149\,\mathrm{ns}$), tras 7 flancos de subida útiles desde $000$. Para un contador de $N$ bits desde cero se requieren $2^N-1$ ciclos hasta alcanzar $11\dots 1$; para $N=20$ a $50\,\mathrm{MHz}$ ($T_{CLK}=20\,\mathrm{ns}$), se precisan $(2^{20}-1)\cdot 20\,\mathrm{ns}=20{,}9715\,\mathrm{ms}$ (en el ciclo $k=2^{20}-1$, sin contar la captura inicial).
+
+\ej{Ejercicio 2.2 -- Integridad de la cadena (\emph{flush test}, \texttt{P2\_flush\_fix2.cir})}
+
+La cadena $SI \to FF0 \to FF1 \to FF2 \to SO$ ($SO=Q_2$), tras el pulso inicial de \emph{reset} ($000$), reproduce la entrada $SI$ con un retardo de exactamente \textbf{3 ciclos de reloj}: $SO[k] = SI[k-3]$ para $k \ge 3$.
+
+\textbf{Análisis de fallos individuales en los biestables:}
+\begin{itemize}
+  \item \textbf{Fallo \emph{stuck-at-0} (\emph{s-a-0}):} Si cualquiera de los tres biestables ($FF0$, $FF1$ o $FF2$) queda bloqueado a cero, ningún bit 1 alcanza la salida y los biestables posteriores conservan el cero del \emph{reset}; por tanto, se observa $SO_{\text{s-a-0}}[k] = 0$ para todo $k \in [0, 12]$. La discrepancia frente al circuito sano aparece en el ciclo $k=3$ (cuando debería emerger el primer 1). Este ensayo detecta el defecto en la cadena, pero sin inicialización a unos no discrimina cuál biestable falló.
+  \item \textbf{Fallo \emph{stuck-at-1} (\emph{s-a-1}):} Cada biestable bloqueado a uno produce una firma temporal diferenciada que permite localizarlo unívocamente:
+  \begin{itemize}
+    \item \textbf{$FF2$ \emph{s-a-1}:} Como $SO=Q_2$, entrega 1 continuo desde el inicio: $SO = [1, 1, 1, 1, \dots]$. Retardo de manifestación: \textbf{0 ciclos} (detectado en $k=0$, donde el sano vale 0).
+    \item \textbf{$FF1$ \emph{s-a-1}:} En $k=0$, $FF2$ muestra su valor de \emph{reset} ($0$); desde $k=1$ captura el 1 permanente de $FF1$: $SO = [0, 1, 1, 1, \dots]$. Retardo de manifestación: \textbf{1 ciclo} (detectado en $k=1$).
+    \item \textbf{$FF0$ \emph{s-a-1}:} $SO$ mantiene el cero de \emph{reset} en $k=0$ y $k=1$, recibiendo en $k=2$ el 1 propagado desde $FF0$ vía $FF1$: $SO = [0, 0, 1, 1, \dots]$. Retardo de manifestación: \textbf{2 ciclos} (detectado en $k=2$).
+  \end{itemize}
+\end{itemize}
+
+\textbf{Convergencia y opciones numéricas:} Las corridas \texttt{P2\_flush.log} (\texttt{method=gear}) y \texttt{P2\_flush\_fix.log} (\texttt{cshunt=2f}) fueron abortadas tras $92{,}72\,\mathrm{s}$ y $99{,}20\,\mathrm{s}$ por acumulación de advertencias de convergencia ($>350$ y $411$ avisos). La Tabla~\ref{tab:2.2} se respalda exclusivamente en \texttt{P2\_flush\_fix2.log}, que convergió en $6{,}334\,\mathrm{s}$ sin advertencias usando \texttt{.options cshunt=20f gshunt=1n reltol=0.01 trtol=7 vntol=1m abstol=1n itl4=500}, parámetros numéricos de estabilización del simulador (no componentes físicos del circuito).
+
+\begin{table}[ht]\centering\caption{Secuencia $SI/SO$ por ciclo en \emph{flush test} ($SE=1$, \texttt{P2\_flush\_fix2.log})}\label{tab:2.2}\scriptsize
+\begin{tabularx}{\linewidth}{>{\raggedright\arraybackslash}p{2.2cm}*{13}{>{\centering\arraybackslash}X}}\toprule
+Señal & $k{=}0$ & $k{=}1$ & $k{=}2$ & $k{=}3$ & $k{=}4$ & $k{=}5$ & $k{=}6$ & $k{=}7$ & $k{=}8$ & $k{=}9$ & $k{=}10$ & $k{=}11$ & $k{=}12$ \\ \midrule
+$SI$ aplicado & 1 & 1 & 0 & 1 & 0 & 0 & 1 & 0 & 0 & 0 & 0 & 0 & 0 \\
+$SO$ esperado & 0 & 0 & 0 & 1 & 1 & 0 & 1 & 0 & 0 & 1 & 0 & 0 & 0 \\
+$SO$ medido & 0 & 0 & 0 & 1 & 1 & 0 & 1 & 0 & 0 & 1 & 0 & 0 & 0 \\
+\bottomrule\end{tabularx}\end{table}
+
+\ej{Ejercicio 2.3 -- Programa \emph{scan} sano (\texttt{P2\_scan.cir}, \texttt{FAULT=0})}
+
+\begin{table}[H]\centering\caption{Respuesta teórica y observada en \texttt{P2\_scan.log} para el programa oficial ($V_4=001/1$)}\label{tab:2.3}\scriptsize
+\begin{tabularx}{\linewidth}{>{\centering\arraybackslash}p{0.8cm}>{\centering\arraybackslash}p{2.3cm}>{\centering\arraybackslash}p{2.3cm}>{\centering\arraybackslash}p{1.6cm}>{\centering\arraybackslash}X>{\centering\arraybackslash}p{1.8cm}>{\centering\arraybackslash}p{1.6cm}}\toprule
+Vector & Cargado $Q_2Q_1Q_0/E$ & Esperado $Q_2^+Q_1^+Q_0^+$ & $Z$ esperado & \texttt{so\_vj} $q_2 \cdot q_1 \cdot q_0$ observado & \texttt{z\_vj} observado & ¿Coincide? \\ \midrule
+V1 & 001 / 0 & 001 & 0 & $0 \cdot 0 \cdot 1$ & 0 & Sí \\
+V2 & 110 / 1 & 111 & 0 & $1 \cdot 1 \cdot 1$ & 0 & Sí \\
+V3 & 011 / 1 & 100 & 0 & $1 \cdot 0 \cdot 0$ & 0 & Sí \\
+V4 & 001 / 1 & 010 & 0 & $0 \cdot 1 \cdot 0$ & 0 & Sí \\
+V5 & 111 / 1 & 000 & 1 & $0 \cdot 0 \cdot 0$ & 1 & Sí \\
+\bottomrule\end{tabularx}\end{table}
+
+El programa oficial insume $N=n+(n+1)m=3+4(5)=23$ ciclos ($0{,}46\,\mu\mathrm{s}$ a $50\,\mathrm{MHz}$). \textbf{Glitch de $Z$ en V3:} al transicionar $011 \to 100$ tras el flanco de reloj ($230\,\mathrm{ns}$), $Q_2$ sube hacia $1$ antes de que se apague la señal interna $g_2=E\cdot Q_0\cdot Q_1$ (que atraviesa la lógica AND), generando un riesgo estático-0 en $Z=g_2\cdot Q_2$. En \texttt{P2\_scan.raw} medimos un pico de $2{,}1694\,\mathrm{V}$ en $t=230{,}700\,\mathrm{ns}$, con ancho sobre el umbral lógico ($1{,}65\,\mathrm{V}$) de $0{,}134\,\mathrm{ns}$ y ancho a media altura (FWHM a $1{,}0847\,\mathrm{V}$) de $0{,}210\,\mathrm{ns}$ (simulado con las opciones numéricas \texttt{cshunt=20f gshunt=1n reltol=0.01 trtol=7 vntol=1m abstol=1n itl4=500}). Este pulso no afecta el diagnóstico porque \texttt{z\_v3} se muestrea en $t=229\,\mathrm{ns}$ ($1\,\mathrm{ns}$ antes del flanco), en régimen estático ($V(z)\approx 0\,\mathrm{V}$).
+
+\ej{Ejercicio 2.4 -- Diagnóstico de fallos inyectados (\texttt{FAULT=0\dots 4})}
+
+\begin{table}[ht]\centering\caption{Matriz de diagnóstico $Q_2Q_1Q_0/Z$ (\texttt{P2\_scan.log}; negrita indica diferencia respecto a \texttt{FAULT=0})}\label{tab:2.4}\footnotesize
+\begin{tabularx}{\linewidth}{>{\centering\arraybackslash}p{1.0cm}>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}\toprule
+Vector & Sano (F0) & F1: $g_1\to$XOR1 \emph{sa0} & F2: $Q_1\to$AND \emph{sa1} & F3: $D_2$ \emph{sa0} & F4: $E\to$XOR0 \emph{sa1} \\ \midrule
+V1 & 001 / 0 & 001 / 0 & 001 / 0 & 001 / 0 & \textbf{000 / 0} \\
+V2 & 111 / 0 & 111 / 0 & 111 / 0 & \textbf{011 / 0} & 111 / 0 \\
+V3 & 100 / 0 & \textbf{110 / 0} & 100 / 0 & \textbf{000 / 0} & 100 / 0 \\
+V4 & 010 / 0 & \textbf{000 / 0} & \textbf{110 / 0} & 010 / 0 & 010 / 0 \\
+V5 & 000 / 1 & \textbf{010 / 1} & 000 / 1 & 000 / 1 & 000 / 1 \\
+\bottomrule\end{tabularx}\end{table}
+
+\textbf{Primeros detectores oficiales:} F1$\to$V3, F2$\to$V4, F3$\to$V2 y F4$\to$V1 (todos observados exclusivamente por $SO$, mientras $Z$ no detecta ninguno en este conjunto). \textbf{D-algoritmo para F2:} el fallo $Q_1\to\text{AND}$ \emph{s-a-1} exige activar $\overline{D}=0/1$ en $Q_1$ ($Q_1=0$) y propagar por la puerta AND que genera $g_2=g_1\cdot Q_1$ fijando la entrada lateral $g_1=E\cdot Q_0=1$ ($E=1$ y $Q_0=1$). La salida $\overline{D}$ en $g_2$ siempre atraviesa la compuerta XOR2 hacia $D_2$ y se captura en $FF2$ para observarse por $SO$. La máscara resultante es $X01/1$: $V_1$ falla por $E=0$, $V_2$ por $Q_0=0$, $V_3$ y $V_5$ por $Q_1=1$; únicamente $V_4=001/1$ cumple $X01/1$.
+
+\ej{Ejercicio 2.5 -- Tiempo de test a 50 MHz ($T_{CLK}=20\,\mathrm{ns}$)}
+
+\begin{table}[ht]\centering\caption{Ciclos totales y duración del test a $50\,\mathrm{MHz}$ ($N=n+(n+1)m$)}\label{tab:2.5}\scriptsize
+\begin{tabularx}{\linewidth}{>{\raggedright\arraybackslash}X>{\centering\arraybackslash}p{2.2cm}>{\centering\arraybackslash}p{1.6cm}>{\centering\arraybackslash}p{3.0cm}>{\centering\arraybackslash}p{2.2cm}}\toprule
+Caso & Biestables / cadena ($n$) & Vectores ($m$) & $N = n + (n+1)\cdot m$ & Tiempo [$\mu\mathrm{s}$] \\ \midrule
+(a) Programa oficial de este laboratorio & 3 & 5 & $3 + 4\cdot 5 = 23$ & 0,46 \\
+(b) 16 vectores exhaustivos con \emph{scan} & 3 & 16 & $3 + 4\cdot 16 = 67$ & 1,34 \\
+(c) 32 biestables en 1 cadena única & 32 & 500 & $32 + 33\cdot 500 = 16\,532$ & 330,64 \\
+(d) 32 biestables en 4 cadenas paralelas & 8 & 500 & $8 + 9\cdot 500 = 4\,508$ & 90,16 \\
+\bottomrule\end{tabularx}\end{table}
+
+Dividir la cadena de 32 biestables en 4 cadenas paralelas de 8 reduce la duración de $330{,}64\,\mu\mathrm{s}$ a $90{,}16\,\mu\mathrm{s}$ ($3{,}67\times$ más rápido). Bajo la hipótesis de que todas las cadenas comparten el pad de control $SE$ y cada cadena requiere 2 pads dedicados de datos ($SI_i, SO_i$), una cadena emplea 3 pads ($SE, SI, SO$) y cuatro cadenas emplean $1 + 4\times 2 = 9$ pads, lo que supone \textbf{6 pads adicionales}.
+
+\ej{Ejercicio 2.6 -- Reto experimental con vectores propios ($V_{4,\text{exp}}=101/1$)}
+
+En este ensayo independiente (\texttt{\_cierre\_ld4/ensayo\_26/}) evaluamos el conjunto alternativo \{\texttt{001/0}, \texttt{110/1}, \texttt{011/1}, \texttt{101/1}, \texttt{111/1}\}, manteniendo separados los resultados teóricos y experimentales respecto del programa oficial de 2.3--2.4. Las 25 respuestas de \texttt{ensayo\_26/P2\_scan.log} coinciden con la predicción booleana: los primeros detectores son F1$\to$V3, F2$\to$V4, F3$\to$V2 y F4$\to$V1, haciendo además a F2 observable directamente en $Z$ durante V4 ($Z=1$ frente al sano $0$).
+
+\textbf{Imposibilidad de cubrir los 32 fallos combinacionales con 4 vectores:} al enumerar los 16 nudos de test (32 fallos \emph{stuck-at}) de las 6 compuertas en \texttt{P2\_counter\_core.inc}, existen 5 conjuntos disjuntos de vectores cada uno exigido unívocamente por al menos un fallo: $S_1=\{111/1\}$ (para $Z/\text{s-a-0}$), $S_2=\{011/1\}$ (para $q_2@\text{XGZ}/\text{s-a-1}$), $S_3=\{001/1,\,101/1\}$ (para $q_1@\text{XG2}/\text{s-a-1}$), $S_4=\{xx0/1\}$ (para $q_0@\text{XG1}/\text{s-a-1}$) y $S_5=\{xx1/0\}$ (para $e@\text{XG1}/\text{s-a-1}$). Ningún conjunto de 4 vectores puede intersecar los 5 conjuntos disjuntos (máximo comprobado exhaustivamente: $31/32$), mientras que tanto el programa oficial como el conjunto alternativo de 5 vectores cubren $32/32$ en el modelo teórico (en LTspice solo se simulan los 4 inyectores \texttt{FAULT=1..4}).
+
+\begin{table}[ht]\centering\caption{Ensayo con vectores propios ($V_{4,\text{exp}}=101/1$): (a) predicción teórica y (b) mediciones en \texttt{ensayo\_26/P2\_scan.log} (negrita indica diferencia respecto a F0)}\label{tab:2.6}\scriptsize
+\begin{tabularx}{\linewidth}{>{\centering\arraybackslash}p{0.8cm}>{\centering\arraybackslash}p{2.1cm}*{5}{>{\centering\arraybackslash}X}}\toprule
+\multicolumn{7}{l}{\textbf{(a) Predicción teórica ($Q_2Q_1Q_0/Z$)}} \\ \midrule
+Vector & Entrada $Q_2Q_1Q_0/E$ & Sano (F0) & FAULT 1 & FAULT 2 & FAULT 3 & FAULT 4 \\ \midrule
+V1 & 001/0 & 001/0 & 001/0 & 001/0 & 001/0 & \textbf{000/0} \\
+V2 & 110/1 & 111/0 & 111/0 & 111/0 & \textbf{011/0} & 111/0 \\
+V3 & 011/1 & 100/0 & \textbf{110/0} & 100/0 & \textbf{000/0} & 100/0 \\
+V4 & 101/1 & 110/0 & \textbf{100/0} & \textbf{010/1} & \textbf{010/0} & 110/0 \\
+V5 & 111/1 & 000/1 & \textbf{010/1} & 000/1 & 000/1 & 000/1 \\ \midrule
+\multicolumn{7}{l}{\textbf{(b) Mediciones experimentales en LTspice (\texttt{ensayo\_26/P2\_scan.log}, $Q_2Q_1Q_0/Z$)}} \\ \midrule
+Vector & Entrada $Q_2Q_1Q_0/E$ & Sano (F0) & FAULT 1 & FAULT 2 & FAULT 3 & FAULT 4 \\ \midrule
+V1 & 001/0 & 001/0 & 001/0 & 001/0 & 001/0 & \textbf{000/0} \\
+V2 & 110/1 & 111/0 & 111/0 & 111/0 & \textbf{011/0} & 111/0 \\
+V3 & 011/1 & 100/0 & \textbf{110/0} & 100/0 & \textbf{000/0} & 100/0 \\
+V4 & 101/1 & 110/0 & \textbf{100/0} & \textbf{010/1} & \textbf{010/0} & 110/0 \\
+V5 & 111/1 & 000/1 & \textbf{010/1} & 000/1 & 000/1 & 000/1 \\
+\bottomrule\end{tabularx}\end{table}
+
+\textbf{Conclusiones del grupo:} (1) La arquitectura \emph{scan path} proporciona controlabilidad y observabilidad directas sobre el estado interno con $n+1$ ciclos por vector. (2) La prueba de \emph{flush} verifica la cadena con 3 ciclos de latencia y localiza biunívocamente fallos \emph{s-a-1}. (3) Tanto el conjunto oficial ($V_4=001/1$) como el ensayo alternativo ($V_4=101/1$) detectaron el 100\,\% de los 4 fallos inyectados en LTspice y cubren teóricamente los 32 fallos del bloque combinacional.
+
+\end{document}
