@@ -85,7 +85,7 @@ LD4_FORBIDDEN_NAMES = {
     "LD4_Arcila_Yactayo/AnexosLD4.zip",
     "LD4_Arcila_Yactayo/Lab_TestCI_LTspice.rar",
 }
-LD4_FORBIDDEN_EXTENSIONS = {".docx", ".lib", ".cir", ".inc", ".rar", ".zip", ".raw"}
+LD4_FORBIDDEN_EXTENSIONS = {".docx", ".lib", ".cir", ".inc", ".rar", ".zip", ".raw", ".log"}
 
 
 def is_forbidden_ld4_path(path: str) -> bool:
@@ -133,6 +133,9 @@ def self_test(tracked: set[str], tracked_dirs: set[str]) -> list[str]:
         ("LD4_Arcila_Yactayo/simulaciones/test.Lib", True, "mixed-case .Lib"),
         ("LD4_Arcila_Yactayo/test.rAw", True, "mixed-case .rAw"),
         ("LD4_Arcila_Yactayo/draft.DocX", True, "mixed-case .DocX"),
+        ("LD4_Arcila_Yactayo/simulaciones/sim.log", True, "lowercase .log"),
+        ("LD4_Arcila_Yactayo/simulaciones/sim.LOG", True, "uppercase .LOG"),
+        ("LD4_Arcila_Yactayo/simulaciones/sim.LoG", True, "mixed-case .LoG"),
         ("LD4_Arcila_Yactayo/informe/main.pdf", False, "academic PDF informe/main.pdf"),
         ("LD4_Arcila_Yactayo/HC1/HC1_LD4.pdf", False, "academic PDF HC1/HC1_LD4.pdf"),
         ("LD4_Arcila_Yactayo/HC2/HC2_LD4.pdf", False, "academic PDF HC2/HC2_LD4.pdf"),
