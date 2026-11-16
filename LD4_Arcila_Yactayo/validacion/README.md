@@ -1,6 +1,6 @@
 # LD4 Validation Scope and Reproducibility Guide
 
-**Module:** [`LD4_Arcila_Yactayo/`](../README.md)  
+**Module:** [`LD4_Arcila_Yactayo/`](../README.md)<br>
 **Authors:** **Leonardo Sait Yactayo Tolentino** (`23190214`) & **Marco Antonio Arcila Santander** (`23190140`)
 
 ---

@@ -1,7 +1,7 @@
 # Control Sheet 1 (HC1) — Part I: Combinational Stuck-At & Stuck-Open Testing
 
-**Module:** [`LD4_Arcila_Yactayo/`](../README.md)  
-**Authors:** **Leonardo Sait Yactayo Tolentino** (`23190214`) & **Marco Antonio Arcila Santander** (`23190140`)  
+**Module:** [`LD4_Arcila_Yactayo/`](../README.md)<br>
+**Authors:** **Leonardo Sait Yactayo Tolentino** (`23190214`) & **Marco Antonio Arcila Santander** (`23190140`)<br>
 **Deliverables:** [`HC1_LD4.pdf`](HC1_LD4.pdf) (4 pages, Spanish) | [`main.tex`](main.tex)
 
 ---

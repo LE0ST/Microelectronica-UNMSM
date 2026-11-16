@@ -1,7 +1,7 @@
 # Public Traceability Matrix — LD4 (`LD4_Arcila_Yactayo/`)
 
-**Course:** Microelectrónica y Sistemas Nanoelectrónicos (`2026-II`) — UNMSM FIEE  
-**Instructor:** MsC. Luz Antuanet Adanaqué Infante  
+**Course:** Microelectrónica y Sistemas Nanoelectrónicos (`2026-II`) — UNMSM FIEE<br>
+**Instructor:** MsC. Luz Antuanet Adanaqué Infante<br>
 **Authors:** **Leonardo Sait Yactayo Tolentino** (`23190214`) & **Marco Antonio Arcila Santander** (`23190140`)
 
 ---

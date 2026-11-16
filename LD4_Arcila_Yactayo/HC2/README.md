@@ -1,7 +1,7 @@
 # Control Sheet 2 (HC2) — Part II: Sequential Logic & Scan Path
 
-**Module:** [`LD4_Arcila_Yactayo/`](../README.md)  
-**Authors:** **Leonardo Sait Yactayo Tolentino** (`23190214`) & **Marco Antonio Arcila Santander** (`23190140`)  
+**Module:** [`LD4_Arcila_Yactayo/`](../README.md)<br>
+**Authors:** **Leonardo Sait Yactayo Tolentino** (`23190214`) & **Marco Antonio Arcila Santander** (`23190140`)<br>
 **Deliverables:** [`HC2_LD4.pdf`](HC2_LD4.pdf) (3 pages, Spanish) | [`main.tex`](main.tex)
 
 ---

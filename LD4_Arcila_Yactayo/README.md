@@ -1,9 +1,9 @@
 # Laboratory Project No. 4: Integrated Circuit Testing — Stuck-At, Stuck-Open, and Scan Path
 
-**Institution:** Universidad Nacional Mayor de San Marcos (UNMSM) — Faculty of Electronic and Electrical Engineering (FIEE)  
-**Course:** Microelectronics and Nanoelectronic Systems (`2026-II`)  
-**Instructor:** MsC. Luz Antuanet Adanaqué Infante  
-**Authors:** **Leonardo Sait Yactayo Tolentino** (`23190214`) & **Marco Antonio Arcila Santander** (`23190140`)  
+**Institution:** Universidad Nacional Mayor de San Marcos (UNMSM) — Faculty of Electronic and Electrical Engineering (FIEE)<br>
+**Course:** Microelectronics and Nanoelectronic Systems (`2026-II`)<br>
+**Instructor:** MsC. Luz Antuanet Adanaqué Infante<br>
+**Authors:** **Leonardo Sait Yactayo Tolentino** (`23190214`) & **Marco Antonio Arcila Santander** (`23190140`)<br>
 **Public Deliverables (Spanish):**
 * **Technical Report (3 pages):** [`informe/main.pdf`](informe/main.pdf) | [`informe/main.tex`](informe/main.tex)
 * **Control Sheet 1 (Part I — Combinational):** [`HC1/HC1_LD4.pdf`](HC1/HC1_LD4.pdf) | [`HC1/main.tex`](HC1/main.tex) | [`HC1/README.md`](HC1/README.md)
