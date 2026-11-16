@@ -10,8 +10,8 @@ This file defines the project instructions and environment configuration for Cla
 * **Course:** Microelectrónica y Sistemas Nanoelectrónicos (Semestre 2026-II) — UNMSM (FIEE).
 * **Instructor:** MsC. Luz Adanaqué Infante.
 * **Authors:**
-  * **Leonardo Sait Yactayo Tolentino** (23190214): Co-author LD1 & LD2; Sole author for LD3 (*Individual*).
-  * **Marco Antonio Arcila Santander** (23190140): Co-author LD1 & LD2.
+  * **Leonardo Sait Yactayo Tolentino** (23190214): Co-author LD1, LD2 & LD4; Sole author for LD3 (*Individual*).
+  * **Marco Antonio Arcila Santander** (23190140): Co-author LD1, LD2 & LD4.
 
 ---
 
@@ -52,3 +52,4 @@ This file defines the project instructions and environment configuration for Cla
 * **LD1 (CMOS Static):** $\beta_{\text{opt}} = 2.50$, AOI $\beta = 2.0$, strict 12-page ceiling in IEEE format.
 * **LD2 (CMOS Dynamic):** 5 activities developed (domino, charge sharing, keeper sizing, NTV), 20 pages in IEEE format.
 * **LD3 (IGBT Characterization):** Individual work by Leonardo Yactayo. Governed by local official guide `Semana_07/Guia_Oficial_LD3/LabDirigidoNro03.pdf` (excluded from public repo for licensing). Focus on Double Pulse Test (DPT), tail current, $t_{d(\text{off})}$, $E_{\text{off}}$, $V_{CE,\text{peak}}$, and $R_G$ influence using Fuji Electric and Duncan Electronics models (also excluded from public repo; placed locally per [`LD3_Yactayo/modelos/NOTAS_MODELOS.md`](LD3_Yactayo/modelos/NOTAS_MODELOS.md)). Deliverables: full comparative table, clear waveforms, conclusions ($\ge 1$ page), and presentation on October 21, 2026.
+* **LD4 (IC Testing & Scan Path):** Joint work by Leonardo Yactayo & Marco Arcila. Uses `0.35 µm` CMOS Level-1 models ($V_{DD} = 3.3\text{ V}$, excluded course teaching files per [`LD4_Arcila_Yactayo/simulaciones/README.md`](LD4_Arcila_Yactayo/simulaciones/README.md)). Deliverables: 3-page report ([`LD4_Arcila_Yactayo/informe/main.pdf`](LD4_Arcila_Yactayo/informe/main.pdf)), Control Sheet 1 ([`LD4_Arcila_Yactayo/HC1/HC1_LD4.pdf`](LD4_Arcila_Yactayo/HC1/HC1_LD4.pdf)), Control Sheet 2 ([`LD4_Arcila_Yactayo/HC2/HC2_LD4.pdf`](LD4_Arcila_Yactayo/HC2/HC2_LD4.pdf)), and portable validation script [`LD4_Arcila_Yactayo/scripts/verificar_ld4.py`](LD4_Arcila_Yactayo/scripts/verificar_ld4.py).

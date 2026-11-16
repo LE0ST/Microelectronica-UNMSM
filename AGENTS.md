@@ -10,8 +10,8 @@ Este archivo define la infraestructura de contexto, reglas de operación, comand
 * **Curso:** Microelectrónica y Sistemas Nanoelectrónicos (Semestre 2026-II).
 * **Docente:** MsC. Luz Adanaqué Infante.
 * **Autores:**
-  * **Leonardo Sait Yactayo Tolentino** (`23190214`) — Coautor de LD1 y LD2; Autor individual de LD3.
-  * **Marco Antonio Arcila Santander** (`23190140`) — Coautor de LD1 y LD2.
+  * **Leonardo Sait Yactayo Tolentino** (`23190214`) — Coautor de LD1, LD2 y LD4; Autor individual de LD3.
+  * **Marco Antonio Arcila Santander** (`23190140`) — Coautor de LD1, LD2 y LD4.
 * **Propósito:** Diseño, simulación física SPICE (BSIM4 / PTM nanométrico y transistores de potencia IGBT en LTspice), post-procesamiento analítico cuantitativo en Python y redacción de informes técnicos de alto impacto.
 
 ---
@@ -53,6 +53,18 @@ MicroNano/
 │   ├── informe/                           # Documento del reporte técnico (conclusiones >= 1 pág.)
 │   ├── README.md                          # Guía rápida de reproducción LD3
 │   └── TRAZABILIDAD.md                    # Matriz biunívoca de experimentos y figuras
+│
+├── LD4_Arcila_Yactayo/                    # LABORATORIO DIRIGIDO N.° 4: Test de CI (Stuck-at, Stuck-open y Scan Path)
+│   ├── informe/                           # Informe técnico (3 págs., main.tex y main.pdf)
+│   ├── HC1/                               # Hoja de Control 1 (HC1_LD4.pdf, main.tex, README.md)
+│   ├── HC2/                               # Hoja de Control 2 (HC2_LD4.pdf, main.tex, README.md)
+│   ├── figuras/                           # Esquema de 10 nudos, muestras discretas y capturas LTspice
+│   ├── resultados/                        # Tablas CSV verificadas y resumen JSON
+│   ├── simulaciones/README.md             # Configuración SPICE y dependencias docentes excluidas
+│   ├── scripts/                           # Scripts portables de validación y figuras
+│   ├── validacion/README.md               # Alcance de verificación pública vs. forense local
+│   ├── README.md                          # Documentación principal del módulo LD4
+│   └── TRAZABILIDAD.md                    # Matriz biunívoca pública de LD4
 │
 ├── Semana_01/ a Semana_05/                # Fundamentos CMOS, guías oficiales LD1 y LD2, teoría y ejercicios
 ├── Semana_07/                             # Guía oficial LD3 (LabDirigidoNro03.pdf) y notas de aplicación IGBT
@@ -135,6 +147,10 @@ Queda prohibido el uso de `git add .` indiscriminado o confirmaciones directas s
   * **Ensayos:** Banco *Double Pulse Test* (DPT), corriente de cola (*tail current*), retardo de apagado ($t_{d(\text{off})}$ 90% a 90%), energía de apagado ($E_{\text{off}}$), sobretensión pico por inductancia parásita ($V_{CE,\text{peak}}$) e influencia de $R_G$.
   * **Entregables:** Tabla de resultados completa, gráficas comparativas de transitorios ($V_{GE}, V_{CE}, I_C$), conclusiones técnicas fundamentadas ($\ge 1$ página) y exposición oral programada para el **21 de octubre de 2026**.
   * **Reglas particulares:** No aplican reglas de $\beta$ CMOS ni límites arbitrarios de 12 páginas; el desarrollo se rige estrictamente por su guía oficial.
+* **Laboratorio Dirigido N.° 4 (Test de Circuitos Integrados — Stuck-at, Stuck-open y Scan Path):**
+  * **Autores:** Leonardo Sait Yactayo Tolentino y Marco Antonio Arcila Santander.
+  * **Tecnología y Modelos:** CMOS $0{,}35\,\mu\mathrm{m}$ Nivel 1 ($V_{DD}=3{,}3\,\mathrm{V}$, biblioteca docente `cmos035_cells.lib` excluida del repositorio público; ver [`LD4_Arcila_Yactayo/simulaciones/README.md`](LD4_Arcila_Yactayo/simulaciones/README.md)).
+  * **Entregables:** Informe técnico ($\le 4$ páginas, 3 págs. finales en [`LD4_Arcila_Yactayo/informe/main.pdf`](LD4_Arcila_Yactayo/informe/main.pdf)), Hoja de Control 1 ([`LD4_Arcila_Yactayo/HC1/HC1_LD4.pdf`](LD4_Arcila_Yactayo/HC1/HC1_LD4.pdf)), Hoja de Control 2 ([`LD4_Arcila_Yactayo/HC2/HC2_LD4.pdf`](LD4_Arcila_Yactayo/HC2/HC2_LD4.pdf)) y validación reproducible en [`LD4_Arcila_Yactayo/scripts/verificar_ld4.py`](LD4_Arcila_Yactayo/scripts/verificar_ld4.py).
 
 ---
 
