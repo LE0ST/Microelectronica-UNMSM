@@ -28,6 +28,25 @@ Para registrar una nueva actividad, añadir una sección al inicio de la lista c
 
 ## Registro Cronológico de Entradas
 
+### [2026-11-15] — Actividad: Cierre Técnico y Preparación de Integración Pública de LD4 en `feat/ld4-stuckat-scan`
+* **Módulo / Entregable:** `LD4_Arcila_Yactayo` / Informe (3 págs.), HC1 (4 págs.), HC2 (3 págs.), resultados curados, scripts y documentación
+* **Autor(es):** Leonardo Sait Yactayo Tolentino & Marco Antonio Arcila Santander
+* **Estado:** EN REVISIÓN (Rama `feat/ld4-stuckat-scan` preparada para Draft PR; pendiente aprobación antes de fusión a `main`)
+* **Rama / Commit:** `feat/ld4-stuckat-scan`
+* **Archivos Modificados / Creados:**
+  * `LD4_Arcila_Yactayo/informe/main.tex` / `main.pdf` — Informe técnico definitivo en 3 páginas ($\le 4$ págs.), corregido a 28 transistores/SDFF y métricas RAW exactas.
+  * `LD4_Arcila_Yactayo/HC1/main.tex` / `HC1_LD4.pdf` y `LD4_Arcila_Yactayo/HC2/main.tex` / `HC2_LD4.pdf` — Hojas de control 1 y 2 con numeración uniforme `Tabla 1.1`–`Tabla 2.6` y separación estricta entre programa oficial ($V_4=001/1$) y ensayo `2.6` ($V_4=101/1$).
+  * `LD4_Arcila_Yactayo/resultados/` y `LD4_Arcila_Yactayo/scripts/verificar_ld4.py` — Tablas CSV/JSON curadas y suite portable de validación (modo público autónomo + modo forense local `--rar`/`--sim-dir`).
+  * `LD4_Arcila_Yactayo/README.md`, `HC1/README.md`, `HC2/README.md`, `simulaciones/README.md`, `validacion/README.md`, `TRAZABILIDAD.md` — Documentación técnica y trazabilidad pública excluyendo materiales docentes/terceros y archivos internos de `_cierre_ld4/`.
+  * `README.md`, `AGENTS.md`, `CLAUDE.md`, `.gitignore`, `_docs/plan.md`, `_docs/process.md`, `_docs/check_docs.py` — Integración global de LD4 y ampliación del validador Markdown.
+* **Decisiones Técnicas / Justificación:**
+  * Se excluyeron `LabDirigidoNro04.pdf`, `cmos035_cells.lib`, netlists `.cir`/`.inc` docentes, archivos `.rar`/`.zip`/`.docx` originales y `_cierre_ld4/` por ausencia de licencia de redistribución pública e higiene del repositorio.
+  * Se preservaron los resultados científicos y el carácter conjunto de LD1, LD2 y LD4 (Leonardo y Marco) frente al carácter individual de LD3 (Leonardo).
+* **Resultados Obtenidos:**
+  * `521/521` mediciones escalares LOG–RAW verificadas localmente ($\max|\Delta V| \le 4{,}863 \times 10^{-12}\text{ V}$); demostración combinacional de 32 fallos (`4` vectores $\le 31/32$, `5` vectores $= 32/32$); `python _docs/check_docs.py` con 0 errores.
+* **Pendientes / Próximos Pasos:**
+  * [ ] Revisión del Draft PR hacia `main` antes de su fusión.
+
 ### [2026-10-13] — Actividad: Cierre Científico Definitivo de Correcciones Residuales (H-03, H-04, H-07) en LD3
 * **Módulo / Entregable:** LD3_Yactayo / Informe Académico LaTeX, PDF, Markdown y Tablas
 * **Autor(es):** Leonardo Sait Yactayo Tolentino

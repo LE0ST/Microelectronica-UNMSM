@@ -94,6 +94,15 @@ LD1_Arcila_Yactayo/modelos/*.lib
 LD1_Arcila_Yactayo/simulaciones/*/*.pm
 LD2_Arcila_Yactayo/modelos/*.lib
 LD2_Arcila_Yactayo/modelos/originales/
+LD4_Arcila_Yactayo/_cierre_ld4/
+LD4_Arcila_Yactayo/*.pdf
+LD4_Arcila_Yactayo/**/*.docx
+LD4_Arcila_Yactayo/**/*.zip
+LD4_Arcila_Yactayo/**/*.rar
+LD4_Arcila_Yactayo/**/*.cir
+LD4_Arcila_Yactayo/**/*.inc
+LD4_Arcila_Yactayo/**/*.lib
+LD4_Arcila_Yactayo/**/*.LIB
 Semana_01/**/*.pdf
 Semana_02/**/*.pdf
 Semana_02/**/*.pptx

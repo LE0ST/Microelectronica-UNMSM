@@ -1,0 +1,51 @@
+{
+  "log_raw_scalar_verification": {
+    "total_checked": 521,
+    "total_matched": 521,
+    "max_abs_diff_V": 4.863e-12,
+    "breakdown": {
+      "P1_segf_stuckat": 352,
+      "P1_stuckopen": 16,
+      "P2_func": 40,
+      "P2_flush_fix2": 13,
+      "P2_scan": 100
+    }
+  },
+  "p1_healthy_sequence_dcba_0000_to_1111": "1000111011111111",
+  "p1_cursor_delay_0001_ps": 38.09,
+  "p1_stuckopen_raw_extrema_RSO_1T": {
+    "T1_max_V": 3.450989,
+    "T1_max_ns": 10.1199,
+    "T1_meas_18ns_V": 3.450976,
+    "T2_max_V": 3.8111,
+    "T2_max_ns": 20.0446,
+    "T2_meas_28ns_V": 0.0,
+    "T3_min_V": -0.143817,
+    "T3_min_ns": 30.1,
+    "T3_meas_38ns_V": -0.114028
+  },
+  "p2_scan_glitch_V3_raw_FAULT0": {
+    "peak_V": 2.169395,
+    "peak_ns": 230.7,
+    "width_above_1p65V_ns": 0.133661,
+    "fwhm_ns": 0.210248
+  },
+  "sdff_transistors_cmos035_cells": {
+    "INV": 2,
+    "TG": 2,
+    "NOR2": 4,
+    "AND2": 6,
+    "XOR2": 12,
+    "SDFF": 28,
+    "core_total": 138,
+    "output_buffers": 8
+  },
+  "scan_combinational_32_faults_proof": {
+    "test_nodes": 16,
+    "total_faults": 32,
+    "max_4vec_coverage_over_1820_combos": 31,
+    "valid_5vec_sets_over_4368_combos": 21,
+    "official_5vec_coverage": 32,
+    "ensayo26_5vec_coverage": 32
+  }
+}

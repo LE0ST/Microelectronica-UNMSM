@@ -79,6 +79,27 @@ def check_markdown_links(md_files: list[str], tracked: set[str], tracked_dirs: s
     return errors
 
 
+LD4_FORBIDDEN_PREFIXES = ("LD4_Arcila_Yactayo/_cierre_ld4/",)
+LD4_FORBIDDEN_NAMES = {
+    "LD4_Arcila_Yactayo/LabDirigidoNro04.pdf",
+    "LD4_Arcila_Yactayo/AnexosLD4.zip",
+    "LD4_Arcila_Yactayo/Lab_TestCI_LTspice.rar",
+}
+LD4_FORBIDDEN_EXTENSIONS = {".docx", ".lib", ".cir", ".inc", ".rar", ".zip", ".raw", ".log"}
+
+
+def is_forbidden_ld4_path(path: str) -> bool:
+    """Return True if a tracked path under LD4_Arcila_Yactayo/ violates public hygiene."""
+    norm = path.replace("\\", "/")
+    if norm.startswith(LD4_FORBIDDEN_PREFIXES) or norm in LD4_FORBIDDEN_NAMES:
+        return True
+    if norm.startswith("LD4_Arcila_Yactayo/"):
+        _, ext = posixpath.splitext(norm)
+        if ext.lower() in LD4_FORBIDDEN_EXTENSIONS:
+            return True
+    return False
+
+
 def self_test(tracked: set[str], tracked_dirs: set[str]) -> list[str]:
     """Negative/positive tests on in-memory text only; no document is modified."""
     fails: list[str] = []
@@ -98,6 +119,33 @@ def self_test(tracked: set[str], tracked_dirs: set[str]) -> list[str]:
         got = len(scan_text("x.md", text, tracked, tracked_dirs))
         if got != expected:
             fails.append(f"[SELFTEST] {label}: expected {expected} error(s), got {got}")
+
+    hygiene_cases = [
+        ("LD4_Arcila_Yactayo/simulaciones/test.lib", True, "lowercase .lib"),
+        ("LD4_Arcila_Yactayo/test.raw", True, "lowercase .raw"),
+        ("LD4_Arcila_Yactayo/draft.docx", True, "lowercase .docx"),
+        ("LD4_Arcila_Yactayo/simulaciones/test.LIB", True, "uppercase .LIB"),
+        ("LD4_Arcila_Yactayo/test.RAW", True, "uppercase .RAW"),
+        ("LD4_Arcila_Yactayo/netlist.CIR", True, "uppercase .CIR"),
+        ("LD4_Arcila_Yactayo/sub.INC", True, "uppercase .INC"),
+        ("LD4_Arcila_Yactayo/pack.RAR", True, "uppercase .RAR"),
+        ("LD4_Arcila_Yactayo/pack.ZIP", True, "uppercase .ZIP"),
+        ("LD4_Arcila_Yactayo/simulaciones/test.Lib", True, "mixed-case .Lib"),
+        ("LD4_Arcila_Yactayo/test.rAw", True, "mixed-case .rAw"),
+        ("LD4_Arcila_Yactayo/draft.DocX", True, "mixed-case .DocX"),
+        ("LD4_Arcila_Yactayo/simulaciones/sim.log", True, "lowercase .log"),
+        ("LD4_Arcila_Yactayo/simulaciones/sim.LOG", True, "uppercase .LOG"),
+        ("LD4_Arcila_Yactayo/simulaciones/sim.LoG", True, "mixed-case .LoG"),
+        ("LD4_Arcila_Yactayo/informe/main.pdf", False, "academic PDF informe/main.pdf"),
+        ("LD4_Arcila_Yactayo/HC1/HC1_LD4.pdf", False, "academic PDF HC1/HC1_LD4.pdf"),
+        ("LD4_Arcila_Yactayo/HC2/HC2_LD4.pdf", False, "academic PDF HC2/HC2_LD4.pdf"),
+    ]
+    for path, expected_forbidden, label in hygiene_cases:
+        got_forbidden = is_forbidden_ld4_path(path)
+        if got_forbidden != expected_forbidden:
+            fails.append(
+                f"[SELFTEST] LD4 hygiene ({label}): expected {expected_forbidden}, got {got_forbidden}"
+            )
     return fails
 
 
@@ -153,6 +201,53 @@ def check_traceability_and_authorship(tracked: set[str]) -> list[str]:
     ld2 = open("LD2_Arcila_Yactayo/README.md", encoding="utf-8").read()
     if "act6/README.txt" not in ld2:
         errors.append("[LD2_ACT6] LD2 README does not link act6/README.txt")
+
+    # LD4 checks (only enforced once LD4 public files are tracked/staged in Git)
+    ld4_required = [
+        "LD4_Arcila_Yactayo/README.md",
+        "LD4_Arcila_Yactayo/TRAZABILIDAD.md",
+        "LD4_Arcila_Yactayo/informe/main.pdf",
+        "LD4_Arcila_Yactayo/informe/main.tex",
+        "LD4_Arcila_Yactayo/HC1/README.md",
+        "LD4_Arcila_Yactayo/HC1/HC1_LD4.pdf",
+        "LD4_Arcila_Yactayo/HC1/main.tex",
+        "LD4_Arcila_Yactayo/HC2/README.md",
+        "LD4_Arcila_Yactayo/HC2/HC2_LD4.pdf",
+        "LD4_Arcila_Yactayo/HC2/main.tex",
+        "LD4_Arcila_Yactayo/simulaciones/README.md",
+        "LD4_Arcila_Yactayo/validacion/README.md",
+        "LD4_Arcila_Yactayo/scripts/verificar_ld4.py",
+    ]
+    if any(p.startswith("LD4_Arcila_Yactayo/") for p in tracked):
+        for req in ld4_required:
+            if req not in tracked:
+                errors.append(f"[LD4_MISSING] required LD4 file '{req}' is not tracked in Git")
+
+        for p in [
+            "LD4_Arcila_Yactayo/README.md",
+            "LD4_Arcila_Yactayo/HC1/README.md",
+            "LD4_Arcila_Yactayo/HC2/README.md",
+            "LD4_Arcila_Yactayo/TRAZABILIDAD.md",
+        ]:
+            if p in tracked:
+                txt = open(p, encoding="utf-8").read()
+                if "Leonardo Sait Yactayo Tolentino" not in txt or "Marco Antonio Arcila Santander" not in txt:
+                    errors.append(f"[AUTHORSHIP] {p} missing shared LD4 authorship (Leonardo & Marco)")
+
+        for t in tracked:
+            if is_forbidden_ld4_path(t):
+                errors.append(f"[LD4_HYGIENE] private/third-party file '{t}' must not be tracked in Git")
+
+        if "LD4_Arcila_Yactayo/TRAZABILIDAD.md" in tracked:
+            traz4 = open("LD4_Arcila_Yactayo/TRAZABILIDAD.md", encoding="utf-8").read()
+            cite4 = re.compile(
+                r"`((?:figuras|resultados|scripts|informe|HC1|HC2)/[^`]+\.(?:tex|pdf|png|csv|json|py|md))`"
+            )
+            for m in cite4.finditer(traz4):
+                rel = f"LD4_Arcila_Yactayo/{m.group(1)}"
+                if rel not in tracked:
+                    errors.append(f"[LD4_TRACE] TRAZABILIDAD.md cites '{rel}' which is not in git ls-files")
+
     return errors
 
 

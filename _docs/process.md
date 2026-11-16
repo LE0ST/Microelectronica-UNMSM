@@ -71,7 +71,7 @@ Las siguientes 6 directivas rigen de forma universal en el repositorio y **NUNCA
 * **Alcance:** 5 actividades desarrolladas (Dinámica vs. Estática, Charge Sharing y Mitigaciones, Fugas y Keeper a 27 °C/85 °C, Monotonicidad y Skew en Cascada, Régimen NTV). Actividad 6 opcional no desarrollada.
 * **Extensión del Informe:** 20 páginas físicas exactas bajo estándar IEEE.
 
-### C. Laboratorio Dirigido N.° 3 (Transistores IGBT en LTspice) — *En Preparación*
+### C. Laboratorio Dirigido N.° 3 (Transistores IGBT en LTspice) — *Cerrado*
 * **Autor:** Leonardo Sait Yactayo Tolentino (*Modalidad Individual*).
 * **Tecnología:** Transistores bipolares de compuerta aislada (IGBT):
   - Modelos teóricos: `NIGBT` (`XIRGBC20S`), `PIGBT` (`XPIGBT`).
@@ -84,6 +84,12 @@ Las siguientes 6 directivas rigen de forma universal en el repositorio y **NUNCA
   - Conclusiones de mínimo una página física con fundamentos físicos detallados.
   - Exposición técnica programada para el **21 de octubre de 2026**.
 * **Nota Operativa:** No aplican reglas de $\beta$ CMOS ni límites arbitrarios de 12 páginas. El laboratorio se rige estrictamente por su guía oficial.
+
+### D. Laboratorio Dirigido N.° 4 (Test de Circuitos Integrados: Stuck-at, Stuck-open y Scan Path) — *En Revisión (`feat/ld4-stuckat-scan`)*
+* **Autores:** Leonardo Sait Yactayo Tolentino y Marco Antonio Arcila Santander.
+* **Tecnología:** CMOS $0{,}35\,\mu\mathrm{m}$ Nivel 1 ($V_{DD}=3{,}3\,\mathrm{V}$, umbral lógico $1{,}65\,\mathrm{V}$, biblioteca docente `cmos035_cells.lib` excluida del repositorio público).
+* **Alcance:** Parte I combinacional (segmento `f` de 10 nudos, D-algoritmo, diccionario de 140 celdas, cobertura 25 %–100 % y *stuck-open* en `NOR2_SO`) y Parte II secuencial (contador de 3 bits, *flush* de 3 ciclos en `P2_flush_fix2.log`, programa *scan* oficial de 23 ciclos con $V_4=001/1$, diagnóstico `FAULT=0..4`, tiempos a $50\,\mathrm{MHz}$ y ensayo independiente `2.6` con $V_4=101/1$).
+* **Entregables:** Informe breve ($\le 4$ páginas, 3 págs. finales), Hoja de Control 1 (4 págs.), Hoja de Control 2 (3 págs.), resultados curados en CSV/JSON y validador portable `LD4_Arcila_Yactayo/scripts/verificar_ld4.py`.
 
 ---
 

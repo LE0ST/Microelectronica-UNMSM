@@ -11,11 +11,20 @@ Este documento registra la planificación general del curso, el estado de los en
 | **LD1** | Inversor CMOS, márgenes de ruido, retardo transitorio, compuertas lógicas (NAND2/NOR2/AOI), fuga y oscilador de anillo | Leonardo Yactayo & Marco Arcila | **COMPLETO (100%)** | Entregado en LaTeX (12 págs.) + SPICE verificado |
 | **LD2** | Lógica CMOS Dinámica: Dominó Footed/Unfooted, Compartición de Carga, Balance Causal de Fugas, Keeper y Operación NTV (5 actividades) | Leonardo Yactayo & Marco Arcila | **COMPLETO (100%)** | Integrado en `main`, informe oficial (20 págs. IEEE) |
 | **LD3** | Caracterización y Simulación Comparativa de Transistores IGBT en LTspice (DPT, corriente de cola, $t_{d(\text{off})}$, $E_{\text{off}}$, $V_{CE,\text{peak}}$, $R_G$) | **Leonardo Yactayo** *(Individual)* | **COMPLETO (100%)** | Integrado en `main`, informe (15 págs.) y exposición (`21/10/2026`) |
-| **LD4** | Amplificadores y Diseños Avanzados (Tema por confirmar según calendario docente) | Por definir | *Planificado* | Post-Examen Parcial |
+| **LD4** | Test de Circuitos Integrados: Modelos *Stuck-at*, *Stuck-open*, D-Algoritmo y *Scan Path* (`0.35 µm` CMOS Nivel 1) | Leonardo Yactayo & Marco Arcila | **En revisión (`feat/ld4-stuckat-scan`)** | Draft PR pendiente de revisión antes de fusión a `main` |
 
 ---
 
-## 2. Estado Detallado: Laboratorio Dirigido N.° 3 (LD3) — *Completado*
+## 2. Estado Detallado: Laboratorio Dirigido N.° 4 (LD4) — *En Revisión (`feat/ld4-stuckat-scan`)*
+
+* **Autores:** Leonardo Sait Yactayo Tolentino (`23190214`) & Marco Antonio Arcila Santander (`23190140`).
+* **Entregables Académicos (Español):** [`LD4_Arcila_Yactayo/informe/main.pdf`](../LD4_Arcila_Yactayo/informe/main.pdf) (3 págs.), [`LD4_Arcila_Yactayo/HC1/HC1_LD4.pdf`](../LD4_Arcila_Yactayo/HC1/HC1_LD4.pdf) (4 págs.) y [`LD4_Arcila_Yactayo/HC2/HC2_LD4.pdf`](../LD4_Arcila_Yactayo/HC2/HC2_LD4.pdf) (3 págs.).
+* **Resultados y Verificación:** 521/521 mediciones LOG–RAW verificadas localmente; cobertura combinacional 25 % → 100 % en 7 vectores; detección *stuck-open* por pareja `0000->0001`; *flush* de 3 ciclos (`P2_flush_fix2.log`); diagnóstico *scan* de 23 ciclos (`V4=001/1`) y ensayo independiente `ensayo_26` (`V4=101/1`); demostración computacional de 32 fallos en [`LD4_Arcila_Yactayo/scripts/verificar_ld4.py`](../LD4_Arcila_Yactayo/scripts/verificar_ld4.py).
+* **Estado:** Integrado en rama `feat/ld4-stuckat-scan` mediante Draft PR para revisión; aún no fusionado en `main`.
+
+---
+
+## 3. Estado Detallado: Laboratorio Dirigido N.° 3 (LD3) — *Completado*
 
 * **Guía Oficial de Referencia:** `Semana_07/Guia_Oficial_LD3/LabDirigidoNro03.pdf` *(documento docente local excluido del repositorio público)*
 * **Informe Técnico Oficial:** [`LD3_Yactayo/informe/informe_ld3_yactayo.pdf`](../LD3_Yactayo/informe/informe_ld3_yactayo.pdf) (15 páginas) y presentación [`LD3_Yactayo/presentacion/LD3_IGBT_Yactayo.pdf`](../LD3_Yactayo/presentacion/LD3_IGBT_Yactayo.pdf).
